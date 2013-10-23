@@ -26,15 +26,12 @@
 #include <boost/filesystem.hpp>
 
 #define HOME_DIRECTORY "/home/pkas7/"
-#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/piecewise-nonlinear/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
-#define AOM 0.001
-#define AOPV 0.1
+#define AOM 0.1
 #define LARGE_NUMBER 1000000
-#define TOLERANCE 0.0000001
 #define PI boost::math::constants::pi<double>()
-#define twoPI 2 * PI
 #define ZERO std::numeric_limits<double>::epsilon()
 
 #define SET 1 

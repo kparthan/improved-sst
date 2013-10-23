@@ -6,6 +6,7 @@
 struct Parameters
 {
   string file;
+  int force;
 };
 
 // general functions
@@ -14,12 +15,14 @@ void Usage (const char *, options_description &);
 bool checkFile(string &);
 void writeToFile(vector<Point<double>> &, const char *);
 string extractName(string &);
-string getPDBFilePath(string &);
-string getSCOPFilePath(string &);
 
 // Protein functions
+string getPDBFilePath(string &);
+string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
+bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
+void updateLogFile(string &, double, int);
 
 #endif
 

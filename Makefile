@@ -13,7 +13,7 @@ main: $(OBJECTS)
 main.o: main.cpp Support.h 
 	g++ -c $(CFLAGS) $< -o $@
 
-Support.o: Support.cpp Support.h 
+Support.o: Support.cpp Support.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Protein.o: Protein.cpp Protein.h Support.h 
