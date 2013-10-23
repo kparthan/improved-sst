@@ -177,7 +177,7 @@ Protein::computeSphericalValues(vector<Point<double>> &transformed_coordinates)
 void Protein::load(string &identifier)
 {
   name = identifier;
-  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/"
+  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
                      + name + ".profile";
   ifstream profile(file_name.c_str());
   string line;
@@ -219,7 +219,7 @@ void Protein::load(string &identifier)
  */
 void Protein::save()
 {
-  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/"
+  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
                      + name + ".profile";
   ofstream profile(file_name.c_str());
   for (int i=0; i<spherical_coordinates.size(); i++) {

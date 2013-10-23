@@ -182,7 +182,7 @@ void buildAngularProfile(struct Parameters &parameters)
 bool checkIfSphericalProfileExists(string &name)
 {
   string spherical_profile = string(CURRENT_DIRECTORY) 
-                             + "spherical_system/" + name + ".profile";
+                             + "spherical_system/profiles/" + name + ".profile";
   return checkFile(spherical_profile); 
 }
 
