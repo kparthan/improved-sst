@@ -40,6 +40,7 @@
 #define PRINT_NON_DETAIL 0
 #define PRINT_DETAIL 1
 
+#define DEFAULT_RESOLUTION 0.1
 #define MIN_SIGMA (3 * AOM)
 #define MAX_SIGMA 4.0
 
@@ -48,6 +49,7 @@ using namespace std::chrono;
 using namespace lcb;
 using namespace lcb::geometry;
 using namespace boost::program_options;
+using namespace boost::filesystem;
 
 #endif
 

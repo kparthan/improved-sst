@@ -1,4 +1,4 @@
-#include "Protein.h"
+#include "Support.h"
 
 /*!
  *  \brief Null constructor module.
@@ -95,7 +95,7 @@ void Protein::computeSphericalTransformation()
       vector<Point<double>> transformed_coordinates = computeTransformation(i,j);
       //string file_index = boost::lexical_cast<string>(j);
       //writeToFile(transformed_coordinates,file_index.c_str());
-      array<double,3> values = computeSphericalValues(transformed_coordinates);
+      array<double,3> values = computeSphericalValues(transformed_coordinates[3]);
       chain_coordinates.push_back(values);
     }
     spherical_coordinates.push_back(chain_coordinates);
@@ -153,24 +153,6 @@ vector<Point<double>> Protein::computeTransformation(int chain_index, int index)
 }
 
 /*!
- *  \brief This function computes the spherical coordinate values
- *  \param transformed_coordinates a reference to a vector<Point<double>>
- *  \return the spherical coordinates at a given index
- */
-array<double,3>
-Protein::computeSphericalValues(vector<Point<double>> &transformed_coordinates)
-{
-  array<double,3> values;
-  Point<double> origin(0,0,0);
-  values[0] = distance<double>(origin,transformed_coordinates[3]);
-  Vector<double> i_plus_1 = transformed_coordinates[3].positionVector();
-  array<double,2> angles = angleWithAxes<double>(i_plus_1);
-  values[1] = angles[0] * (180/PI);
-  values[2] = angles[1] * (180/PI);
-  return values;
-}
-
-/*!
  *  \brief Loads the profile from an existing file.
  *  \param identifier a reference to a string
  */
@@ -179,9 +161,31 @@ void Protein::load(string &identifier)
   name = identifier;
   string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
                      + name + ".profile";
+  read_profile(file_name);
+}
+
+/*!
+ *  \brief Loads the profile from an existing file.
+ *  \param path_to_file a reference to path object 
+ */
+void Protein::load(path &path_to_file)
+{
+  name = "example";
+  string file_name = path_to_file.string();
+  read_profile(file_name);
+}
+
+/*!
+ *  \brief This functions reads the profile from a regular file.
+ *  \param file_name a reference to a string
+ */
+void Protein::read_profile(string &file_name)
+{
+  cout << "Reading " << file_name << " ..." << endl;
   ifstream profile(file_name.c_str());
   string line;
   spherical_coordinates.clear();
+  all_spherical_coordinates.clear();
 
   vector<array<double,3>> chain_coordinates;
   while(getline(profile,line)) {
@@ -241,7 +245,7 @@ void Protein::save()
  */
 vector<array<double,3>> Protein::getSphericalCoordinatesList()
 {
-  if (all_spherical_coordinates.size() != 0) {
+  if (all_spherical_coordinates.size() == 0) {
     for (int i=0; i<spherical_coordinates.size(); i++) {
       for (int j=0; j<spherical_coordinates[i].size(); j++) {
         all_spherical_coordinates.push_back(spherical_coordinates[i][j]);
@@ -249,6 +253,15 @@ vector<array<double,3>> Protein::getSphericalCoordinatesList()
     }
   }
   return all_spherical_coordinates;
+}
+
+/*!
+ *  \brief This function returns the size of transformed spherical coordinates.
+ *  \return the size
+ */
+int Protein::getNumberOfSphericalCoordinates()
+{
+  return all_spherical_coordinates.size();
 }
 
 /*!
@@ -267,5 +280,32 @@ double Protein::getCPUTime()
 int Protein::getNumberOfChains()
 {
   return chains.size();
+}
+
+/*!
+ *  \brief This function computes the mean direction vector as per the
+ *  von Mises distribution.
+ *  \return the mean direction
+ */
+array<double,3> Protein::computeMeanDirection()
+{
+  if (all_spherical_coordinates.size() == 0) {
+    getSphericalCoordinatesList();
+  }
+  double r,theta,phi;
+  array<double,3> estimate,x;
+  
+  for (int i=0; i<all_spherical_coordinates.size(); i++) {
+    r = all_spherical_coordinates[i][0];
+    theta = all_spherical_coordinates[i][1];
+    phi = all_spherical_coordinates[i][2];
+
+    x = convertToCartesian(1,theta,phi);
+
+    for (int j=0; j<3; j++) {
+      estimate[j] += x[j];
+    }
+  }
+  return estimate;
 }
 

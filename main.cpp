@@ -4,7 +4,14 @@ int main(int argc, char **argv)
 {
   struct Parameters parameters = parseCommandLineInput(argc,argv);
 
-  buildAngularProfile(parameters);
+  if (parameters.read_profiles == SET) {
+    array<double,3> estimates = readProfiles(parameters.profiles_dir,parameters.res);
+    cout << "Estimates: ";
+    print(estimates);
+    //generateHeatMap(estimates);
+  } else if (parameters.read_profiles == UNSET) {
+    buildAngularProfile(parameters);
+  }
 
   return 0;
 }

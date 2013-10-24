@@ -1,11 +1,14 @@
 #include "VonMises3D.h"
+#include "Support.h"
 
 /*!
  *  \brief This is a null constructor module
  *  sets default values of mean vector as 0 and kappa as 1
  */
-VonMises3D::VonMises3D() : mean(array<double,2>()),kappa(1)
-{}
+VonMises3D::VonMises3D() : mu(array<double,2>()),kappa(1)
+{
+  computeConstants();
+}
 
 /*!
  *  \brief constructor function which sets the value of mean and 
@@ -13,9 +16,25 @@ VonMises3D::VonMises3D() : mean(array<double,2>()),kappa(1)
  *  \param mean a reference to a array<double,2>
  *  \param kappa a double
  */
-VonMises3D::VonMises3D(array<double,2> &mean, double kappa) : 
-                       mean(mean), kappa(kappa)
-{}
+VonMises3D::VonMises3D(array<double,2> &mu, double kappa) : 
+                       mu(mu), kappa(kappa)
+{
+  computeConstants();
+}
+
+/*!
+ *  \brief This function pre computes the constants.
+ */
+void VonMises3D::computeConstants()
+{
+  double expk = exp(kappa);
+  double inv_expk = 1.0 / expk;
+  c3k = kappa / (2 * PI * (expk - inv_expk));
+  array<double,3> x = convertToCartesian(1,mu[0],mu[1]);
+  for (int i=0; i<3; i++) {
+    kmu[i] = kappa * x[i];
+  }
+}
 
 /*!
  *  \brief This function assigns a source VonMises3D distribution.
@@ -24,19 +43,21 @@ VonMises3D::VonMises3D(array<double,2> &mean, double kappa) :
 VonMises3D VonMises3D::operator=(const VonMises3D &source)
 {
   if (this != &source) {
-    mean = source.mean;
+    mu = source.mu;
     kappa = source.kappa;
+    c3k = source.c3k;
+    kmu = source.kmu;
   }
   return *this;
 }
 
 /*!
- *  \brief This function returns the mean of the distribution
- *  \return the mean of the distribution
+ *  \brief This function returns the mu of the distribution
+ *  \return the mu of the distribution
  */
 const array<double,2> VonMises3D::mean(void)
 {
-	return mean;
+	return mu;
 }
 
 /*!
@@ -50,10 +71,17 @@ const double VonMises3D::scale(void)
 
 /*!
  *  \brief This function computes the value of the distribution at a given x
- *  \param x a reference to a double
- *  \return value of the function given x
+ *  \param theta a double
+ *  \param phi a double
+ *  \return the probability density
  */
-double VonMises3D::value(array<double,2> &x)
+double VonMises3D::density(double theta, double phi)
 {
+  array<double,3> x = convertToCartesian(1,theta,phi);
+  double exponent = 0;
+  for (int i=0; i<3; i++) {
+    exponent += kmu[i] * x[i];
+  }
+  return c3k * exp(exponent);
 }
 

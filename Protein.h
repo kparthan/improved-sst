@@ -1,7 +1,7 @@
 #ifndef PROTEIN_H
 #define PROTEIN_H
 
-#include "Support.h"
+#include "Header.h"
 
 class Protein
 {
@@ -37,8 +37,8 @@ class Protein
     //! Computes the transformation at an index
     vector<Point<double>> computeTransformation(int, int);
 
-    //! Computes the spherical coordinate values
-    array<double,3> computeSphericalValues(vector<Point<double>> &);
+    //! Reads the profile from a file
+    void read_profile(string &);
 
   public: 
     //! Null constructor
@@ -53,6 +53,9 @@ class Protein
     //! Loads the spherical system
     void load(string &);
 
+    //! Loads the spherical system
+    void load(path &);
+
     //! Saves the spherical system
     void save();
 
@@ -64,6 +67,12 @@ class Protein
 
     //! Gets the number of usable chains
     int getNumberOfChains();
+
+    //! Gets the size of spherical coordinates list 
+    int getNumberOfSphericalCoordinates();
+
+    //! Computes the mean direction
+    array<double,3> computeMeanDirection();
 
 };
 

@@ -7,10 +7,17 @@ class VonMises3D
 {
   private:
     //! Mean of the distribution
-		array<double,2> mean;
+		array<double,2> mu;
 
     //! Scale parameter of the distribution
 		double kappa;
+
+    //! Precomputed constants
+    double c3k;
+		array<double,3> kmu;
+
+    //!
+    void computeConstants();
 
   public:
 		//! Constructor
@@ -29,7 +36,7 @@ class VonMises3D
     const double scale(); 
 
 		//! Function value
-		double value(array<double,2> &);
+		double density(double, double);
 
 };
 

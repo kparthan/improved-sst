@@ -1,5 +1,5 @@
 #include "Support.h"
-#include "Protein.h"
+#include "VonMises3D.h"
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -27,6 +27,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("pdbid",value<string>(&pdb_id),"PDB ID")
        ("scopid",value<string>(&scop_id),"SCOP ID")
        ("force","force build the profile")
+       ("profiles_dir",value<string>(&parameters.profiles_dir),
+                                      "path to all profiles")
+       ("res",value<double>(&parameters.res),"heat map resolution")
 
   ;
   variables_map vm;
@@ -43,20 +46,28 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.force = UNSET;
   }
   
-  if (vm.count("file") && vm.count("pdbid")) {
-    cout << "Please use one of --file or --pdbid ..." << endl;
-    Usage(argv[0],desc);
-  } else if (vm.count("file")) {
-    cout << "Using protein file: " << parameters.file << endl;
-  } else if (vm.count("pdbid")) {
-    cout << "Using PDB ID: " << pdb_id << endl;
-    parameters.file = getPDBFilePath(pdb_id);
-  } else if (vm.count("scopid")) {
-    cout << "Using SCOP ID: " << scop_id << endl;
-    parameters.file = getSCOPFilePath(scop_id);
+  if (vm.count("profiles_dir")) {
+    parameters.read_profiles = SET;
+    if (!vm.count("res")) {
+      parameters.res = DEFAULT_RESOLUTION;
+    }
   } else {
-    cout << "Input protein structure file not provided ..." << endl;
-    Usage(argv[0],desc);
+    parameters.read_profiles = UNSET;
+    if (vm.count("file") && vm.count("pdbid")) {
+      cout << "Please use one of --file or --pdbid ..." << endl;
+      Usage(argv[0],desc);
+    } else if (vm.count("file")) {
+      cout << "Using protein file: " << parameters.file << endl;
+    } else if (vm.count("pdbid")) {
+      cout << "Using PDB ID: " << pdb_id << endl;
+      parameters.file = getPDBFilePath(pdb_id);
+    } else if (vm.count("scopid")) {
+      cout << "Using SCOP ID: " << scop_id << endl;
+      parameters.file = getSCOPFilePath(scop_id);
+    } else {
+      cout << "Input protein structure file not provided ..." << endl;
+      Usage(argv[0],desc);
+    }
   }
   noargs = 0;
 
@@ -118,6 +129,23 @@ string extractName(string &file)
   int length = pos2 - pos1 - 1;
   string sub = file.substr(pos1+1,length);
   return sub;
+}
+
+/*!
+ *  \brief This function computes the spherical coordinate values
+ *  \param point a reference to a Point<double>
+ *  \return the spherical coordinates at a given index
+ */
+array<double,3> computeSphericalValues(Point<double> &point)
+{
+  array<double,3> values;
+  Point<double> origin(0,0,0);
+  values[0] = distance<double>(origin,point);
+  Vector<double> i_plus_1 = point.positionVector();
+  array<double,2> angles = angleWithAxes<double>(i_plus_1);
+  values[1] = angles[0] * (180/PI);
+  values[2] = angles[1] * (180/PI);
+  return values;
 }
 
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -229,5 +257,202 @@ void updateLogFile(string &name, double time, int num_chains)
   log << fixed << setw(10) << num_chains;
   log << endl;
   log.close();
+}
+
+/*!
+ *  \brief This function reads through the profiles from a given directory.
+ *  \param path_to_dir a reference to a string
+ *  \param res a double
+ */
+array<double,3> readProfiles(string &path_to_dir, double res)
+{
+  path p(path_to_dir);
+  cout << "path: " << p.string() << endl;
+  //try
+  //{
+    if (exists(p)) { 
+      if (is_directory(p)) { 
+        vector<path> files; // store paths,
+        copy(directory_iterator(p), directory_iterator(), back_inserter(files));
+        cout << "# of profiles: " << files.size() << endl;
+        int num_rows = 180 / res;
+        int num_cols = 360 / res;
+        cout << "rows: " << num_rows << endl;
+        cout << "cols: " << num_cols << endl;
+        vector<vector<int>> bins;
+        for (int i=0; i<num_rows; i++) {
+          vector<int> tmp(num_cols,0);
+          bins.push_back(tmp);
+        }
+        array<double,3> direction;
+        double n = 0;
+        ofstream log("directions");
+        for (int j=0; j<3; j++) {
+          log << scientific << direction[j] << "\t";
+        }
+        log << endl;
+        for (int i=0; i<files.size(); i++) {
+          Protein protein;
+          protein.load(files[i]);
+          updateEstimator(direction,&n,protein);
+          updateBins(bins,res,protein);
+          log << files[i].string() << "\t";
+          for (int j=0; j<3; j++) {
+            log << scientific << direction[j] << "\t";
+          }
+          log << endl;
+        }
+        log.close();
+        ofstream log2("matlab/bins_res1");
+        for (int i=0; i<bins.size(); i++) {
+          for (int j=0; j<bins[i].size(); j++) {
+            log2 << fixed << setw(10) << bins[i][j];
+          }
+          log2 << endl;
+        }
+        log2.close();
+        return computeVonMisesEstimates(direction,n);
+      } else {
+        cout << p << " exists, but is neither a regular file nor a directory\n";
+      }
+    } else {
+      cout << p << " does not exist\n";
+    }
+  /*}
+  catch (const filesystem_error& ex)
+  {
+    cout << ex.what() << '\n';
+  }*/
+}
+
+/*!
+ *  \brief This function updates the mean estimator of the Von Mises
+ *  distribution.
+ *  \param direction a reference to a array<double,3>
+ *  \param n a pointer to an double
+ *  \param protein a reference to a Protein object.
+ */
+void updateEstimator(array<double,3> &direction, double *n, Protein &protein)
+{
+  array<double,3> mean = protein.computeMeanDirection();
+  for (int i=0; i<3; i++) {
+    direction[i] += mean[i];
+  }
+  *n += protein.getNumberOfSphericalCoordinates();
+  //cout << *n << endl;
+}
+
+/*!
+ *  \brief This function updates the frequencies of angles.
+ *  \param bins a reference to a vector<vector<int>>
+ *  \param res a double
+ *  \param protein a reference to a Protein object.
+ */
+void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
+{
+  vector<array<double,3>> spherical_coordinates = protein.getSphericalCoordinatesList();
+  double theta,phi;
+  int row,col;
+  for (int i=0; i<spherical_coordinates.size(); i++) {
+    theta = spherical_coordinates[i][1];
+    row = (int)(ceil(theta/res)) - 1;
+    phi = spherical_coordinates[i][2];
+    col = (int)(ceil(phi/res)) - 1;
+    bins[row][col]++;
+    //cout << "row,col: " << row << "," << col << endl;
+  }
+}
+
+/*!
+ *  \brief This function normalizes the direction and returns the corresponding
+ *  von mises mean direction.
+ *  \param direction a reference to a array<double,3>
+ *  \param n a double
+ */
+array<double,3> computeVonMisesEstimates(array<double,3> &direction, double n)
+{
+  cout << "\nCartesian coordinates of direction vector: ";
+  print(direction);
+  Point<double> point(direction);
+  array<double,3> spherical_coordinates = computeSphericalValues(point);
+  cout << "Spherical coordinates of direction vector: ";
+  print(spherical_coordinates);
+
+  double magnitude_sq = 0;
+  for (int i=0; i<3; i++) {
+    magnitude_sq += direction[i] * direction[i];
+  }
+  double magnitude = sqrt(magnitude_sq);
+  for (int i=0; i<3; i++) {
+    direction[i] /= magnitude;
+  }
+  cout << "Cartesian coordinates of mean direction vector: ";
+  print(direction);
+  point = Point<double>(direction);
+  spherical_coordinates = computeSphericalValues(point);
+  cout << "Spherical coordinates of mean direction vector: ";
+  print(spherical_coordinates);
+  array<double,3> estimates;
+  estimates[1] = spherical_coordinates[1];
+  estimates[2] = spherical_coordinates[2];
+
+  double rbar = magnitude / n;
+  cout << "magnitude of direction vector: " << magnitude << endl;
+  cout << "n: " << n << endl;
+  cout << "rbar: " << rbar << endl;
+  double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
+  estimates[0] = kappa;
+  return estimates;
+}
+
+/*!
+ *  \brief This function prints the elements of an array.
+ *  \param a a reference to an array<double,3>
+ */
+void print(array<double,3> &a)
+{
+  cout << "(" << a[0] << "," << a[1] << "," << a[2] << ")\n";
+}
+
+/*!
+ *  \brief This function generates the heat map for theta vs phi
+ *  \param estimates a reference to a array<double,3>
+ */
+void generateHeatMap(array<double,3> &estimates)
+{
+  double kappa = estimates[0];
+  array<double,2> mu({estimates[1],estimates[2]});
+  VonMises3D von_mises(mu,kappa);
+  ofstream log("matlab/heat_map.data");
+  double density;
+  for (double theta=0; theta<=180; theta+=0.1) {
+    for (double phi=0; phi<=360; phi+=0.1) {
+      //log << fixed << setw(10) << setprecision(2) << theta;
+      //log << fixed << setw(10) << setprecision(2) << phi;
+      density = von_mises.density(theta,phi);
+      log << fixed << setw(10) << setprecision(4) << density;
+    }
+    log << endl;
+  }
+  log.close();
+}
+
+/*!
+ *  \brief This function converts spherical coordinates into Cartesian
+ *  coordinates.
+ *  \param r a double
+ *  \param theta (in degrees) a double
+ *  \param phi (in degrees) a double
+ *  \return the Cartesian coordinates
+ */
+array<double,3> convertToCartesian(double r, double theta, double phi)
+{
+  array<double,3> x;
+  double theta_rad = theta * PI / 180;
+  double phi_rad = phi * PI / 180;
+  x[0] = r * sin(theta_rad) * cos(phi_rad);
+  x[1] = r * sin(theta_rad) * sin(phi_rad);
+  x[2] = r * cos(theta_rad);
+  return x;
 }
 
