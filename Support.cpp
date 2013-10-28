@@ -402,9 +402,22 @@ void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
   int row,col;
   for (int i=0; i<spherical_coordinates.size(); i++) {
     theta = spherical_coordinates[i][1];
-    row = (int)(ceil(theta/res)) - 1;
+    if (fabs(theta) <= ZERO) {
+      row = 0;
+    } else {
+      row = (int)(ceil(theta/res) - 1);
+    }
     phi = spherical_coordinates[i][2];
-    col = (int)(ceil(phi/res)) - 1;
+    if (fabs(phi) <= ZERO) {
+      col = 0;
+    } else {
+      col = (int)(ceil(phi/res) - 1);
+    }
+    if (row >= bins.size() || col >= bins[0].size()) {
+      cout << "outside bounds: " << row << " " << col << "\n";
+      cout << "theta: " << theta << " phi: " << phi << endl;
+      cout.flush();
+    }
     bins[row][col]++;
     //cout << "row,col: " << row << "," << col << endl;
   }
