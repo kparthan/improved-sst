@@ -95,7 +95,7 @@ void Protein::computeSphericalTransformation()
       vector<Point<double>> transformed_coordinates = computeTransformation(i,j);
       //string file_index = boost::lexical_cast<string>(j);
       //writeToFile(transformed_coordinates,file_index.c_str());
-      array<double,3> values = computeSphericalValues(transformed_coordinates[3]);
+      array<double,3> values = convertToSpherical(transformed_coordinates[3]);
       chain_coordinates.push_back(values);
     }
     spherical_coordinates.push_back(chain_coordinates);

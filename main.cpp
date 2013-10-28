@@ -7,8 +7,8 @@ int main(int argc, char **argv)
   if (parameters.read_profiles == SET) {
     array<double,3> estimates = readProfiles(parameters.profiles_dir,parameters.res);
     cout << "Estimates: ";
-    print(estimates);
-    //generateHeatMap(estimates);
+    print(cout,estimates);
+    //vonMisesDistribution_2DPlot(estimates,parameters.res);
   } else if (parameters.read_profiles == UNSET) {
     buildAngularProfile(parameters);
   }
