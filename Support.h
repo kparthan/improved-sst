@@ -19,11 +19,9 @@ void Usage (const char *, options_description &);
 bool checkFile(string &);
 void writeToFile(vector<Point<double>> &, const char *);
 string extractName(string &);
-array<double,3> computeSphericalValues(Point<double> &);
-array<double,3> computeVonMisesEstimates(array<double,3> &, double);
-void print(array<double,3> &);
-void generateHeatMap(array<double,3> &);
+array<double,3> convertToSpherical(Point<double> &);
 array<double,3> convertToCartesian(double, double, double);
+void print(ostream &, array<double,3> &);
 
 // Protein functions
 string getPDBFilePath(string &);
@@ -31,11 +29,14 @@ string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
-void updateLogFile(string &, double, int);
+array<double,3> computeVonMisesEstimates(array<double,3> &, double);
 
 array<double,3> readProfiles(string &, double);
+void updateLogFile(string &, double, int);
 void updateEstimator(array<double,3> &, double *, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
+void outputBins(vector<vector<int>> &, double);
+void vonMisesDistribution_2DPlot(array<double,3> &);
 
 #endif
 
