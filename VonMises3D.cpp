@@ -27,9 +27,7 @@ VonMises3D::VonMises3D(array<double,2> &mu, double kappa) :
  */
 void VonMises3D::computeConstants()
 {
-  double expk = exp(kappa);
-  double inv_expk = 1.0 / expk;
-  c3k = kappa / (2 * PI * (expk - inv_expk));
+  c3k = kappa / (4 * PI * sinh(k));
   array<double,3> x = convertToCartesian(1,mu[0],mu[1]);
   for (int i=0; i<3; i++) {
     kmu[i] = kappa * x[i];
