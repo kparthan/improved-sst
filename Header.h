@@ -32,6 +32,7 @@
 #define AOM 0.1
 #define LARGE_NUMBER 1000000
 #define PI boost::math::constants::pi<double>()
+#define LOG_PI log(PI)
 #define ZERO std::numeric_limits<double>::epsilon()
 
 #define SET 1 

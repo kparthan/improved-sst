@@ -1,5 +1,6 @@
 #include "Support.h"
 #include "VonMises3D.h"
+#include "Message.h"
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -29,6 +30,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("force","force build the profile")
        ("profiles_dir",value<string>(&parameters.profiles_dir),
                                       "path to all profiles")
+       ("bins","to compute the frequencies of angles")
        ("res",value<double>(&parameters.res),"heat map resolution")
 
   ;
@@ -48,8 +50,13 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   
   if (vm.count("profiles_dir")) {
     parameters.read_profiles = SET;
-    if (!vm.count("res")) {
-      parameters.res = DEFAULT_RESOLUTION;
+    if (vm.count("bins")) {
+      parameters.update_bins = SET;
+      if (!vm.count("res")) {
+        parameters.res = DEFAULT_RESOLUTION;
+      }
+    } else {
+      parameters.update_bins = UNSET;
     }
   } else {
     parameters.read_profiles = UNSET;
@@ -167,6 +174,105 @@ array<double,3> convertToCartesian(double r, double theta, double phi)
   return x;
 }
 
+/*!
+ *  \brief This function prints the elements of an array.
+ *  \param os a reference to a ostream
+ *  \param a a reference to an array<double,3>
+ */
+void print(ostream &os, array<double,3> &a)
+{
+  os << "(" << a[0] << "," << a[1] << "," << a[2] << ")\n";
+}
+
+/*!
+ *  \brief This function generates the heat map for theta vs phi
+ *  \param estimates a reference to a array<double,3>
+ *  \param res a double
+ */
+void vonMisesDistribution_2DPlot(array<double,3> &estimates, double res)
+{
+  double kappa = estimates[0];
+  array<double,2> mu({estimates[1],estimates[2]});
+  VonMises3D von_mises(mu,kappa);
+  ofstream log("matlab/distribution_heat_map_2D.data");
+  double density;
+  for (double theta=0; theta<=180; theta+=res) {
+    for (double phi=0; phi<=360; phi+=res) {
+      //log << fixed << setw(10) << setprecision(2) << theta;
+      //log << fixed << setw(10) << setprecision(2) << phi;
+      density = von_mises.density(theta,phi);
+      log << fixed << setw(10) << setprecision(4) << density;
+    }
+    log << endl;
+  }
+  log.close();
+}
+
+/*!
+ *  \brief This function computes the ratio of Bessel functions -- A3(k)
+ *  \param k a double
+ *  \return the value of the ratio at a given k
+ */
+double ratioBesselFunction(double k)
+{
+  double k_inv = 1 / (double)k;
+  double cothk = 1 / (double) tanh(k);
+  return cothk - k_inv;
+}
+
+/*!
+ *  \brief This function computes the first derivative of the 
+ *  ratio of Bessel functions -- A3'(k)
+ *  \param k a double
+ *  \return the value of the first derivative of the ratio at a given k
+ */
+double ratioBesselFunction_firstDerivative(double k)
+{
+  double value = 0;
+  double cschk = 1 / (double) sinh(k);
+  value -= cschk * cschk;
+  double k_inv = 1 / (double)k;
+  value += k_inv * k_inv; 
+  return value ;
+}
+
+/*!
+ *  \brief This function computes the second derivative of the 
+ *  ratio of Bessel functions -- A3''(k)
+ *  \param k a double
+ *  \return the value of the second derivative of the ratio at a given k
+ */
+double ratioBesselFunction_secondDerivative(double k)
+{
+  double value = 0;
+  double cothk = 1 / (double) tanh(k);
+  double cschk = 1 / (double) sinh(k);
+  value += cothk * cschk * cschk;
+  double k_inv = 1 / (double)k;
+  value -= k_inv * k_inv * k_inv;
+  return 2 * value ;
+}
+
+/*!
+ *  \brief This function computes the third derivative of the 
+ *  ratio of Bessel functions -- A3'''(k)
+ *  \param k a double
+ *  \return the value of the third derivative of the ratio at a given k
+ */
+double ratioBesselFunction_thirdDerivative(double k)
+{
+  double value = 0;
+  double cothk = 1 / (double) tanh(k);
+  double cothksq = cothk * cothk;
+  double cschk = 1 / (double) sinh(k);
+  double cschksq = cschk * cschk;
+
+  value += -2 * cschksq * (cothksq + cschksq);
+  double k_inv = 1 / (double)k;
+  value += 6 * k_inv * k_inv * k_inv * k_inv;
+  return value ;
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -264,69 +370,44 @@ ProteinStructure *parsePDBFile(string &pdb_file)
 }
 
 /*!
- *  \brief This function normalizes the direction and returns the corresponding
- *  von mises mean direction.
- *  \param direction a reference to a array<double,3>
- *  \param n a double
+ *  \brief This function is used to read the angular profiles and use this data
+ *  to estimate parameters of a Von Mises distribution.
+ *  \param parameters a reference to a struct Parameters
  */
-array<double,3> computeVonMisesEstimates(array<double,3> &direction, double n)
+void computeEstimators(struct Parameters &parameters)
 {
-  cout << "\nCartesian coordinates of direction vector: ";
-  print(cout,direction);
-  Point<double> point(direction);
-  array<double,3> spherical_coordinates = convertToSpherical(point);
-  cout << "Spherical coordinates of direction vector: ";
-  print(cout,spherical_coordinates);
-
-  double magnitude_sq = 0;
-  for (int i=0; i<3; i++) {
-    magnitude_sq += direction[i] * direction[i];
-  }
-  double magnitude = sqrt(magnitude_sq);
-  for (int i=0; i<3; i++) {
-    direction[i] /= magnitude;
-  }
-  cout << "Cartesian coordinates of mean direction vector: ";
-  print(cout,direction);
-  point = Point<double>(direction);
-  spherical_coordinates = convertToSpherical(point);
-  cout << "Spherical coordinates of mean direction vector: ";
-  print(cout,spherical_coordinates);
-  array<double,3> estimates;
-  estimates[1] = spherical_coordinates[1];
-  estimates[2] = spherical_coordinates[2];
-
-  double rbar = magnitude / n;
-  cout << "magnitude of direction vector: " << magnitude << endl;
-  cout << "n: " << n << endl;
-  cout << "rbar: " << rbar << endl;
-  double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
-  estimates[0] = kappa;
-  return estimates;
+  pair<array<double,3>,double> data = readProfiles(parameters);
+  array<double,3> direction = data.first;
+  double num_samples = data.second;
+  //vonMisesDistribution_2DPlot(direction,parameters.res);
+  Message message(direction,num_samples);
+  message.minimize();
 }
 
 /*!
  *  \brief This function reads through the profiles from a given directory.
- *  \param path_to_dir a reference to a string
- *  \param res a double
+ *  \param parameters a reference to a struct Parameters
+ *  \return a pair of mean direction and the sample size
  */
-array<double,3> readProfiles(string &path_to_dir, double res)
+pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
 {
-  path p(path_to_dir);
+  path p(parameters.profiles_dir);
   cout << "path: " << p.string() << endl;
   if (exists(p)) { 
     if (is_directory(p)) { 
       vector<path> files; // store paths,
       copy(directory_iterator(p), directory_iterator(), back_inserter(files));
       cout << "# of profiles: " << files.size() << endl;
-      int num_rows = 180 / res;
-      int num_cols = 360 / res;
-      cout << "rows: " << num_rows << endl;
-      cout << "cols: " << num_cols << endl;
       vector<vector<int>> bins;
-      for (int i=0; i<num_rows; i++) {
-        vector<int> tmp(num_cols,0);
-        bins.push_back(tmp);
+      if (parameters.update_bins == SET) {
+        int num_rows = 180 / parameters.res;
+        int num_cols = 360 / parameters.res;
+        cout << "rows: " << num_rows << endl;
+        cout << "cols: " << num_cols << endl;
+        for (int i=0; i<num_rows; i++) {
+          vector<int> tmp(num_cols,0);
+          bins.push_back(tmp);
+        }
       }
       array<double,3> direction({0,0,0});
       double n = 0;
@@ -338,8 +419,10 @@ array<double,3> readProfiles(string &path_to_dir, double res)
       for (int i=0; i<files.size(); i++) {
         Protein protein;
         protein.load(files[i]);
-        updateEstimator(direction,&n,protein);
-        updateBins(bins,res,protein);
+        updateMeanDirection(direction,&n,protein);
+        if (parameters.update_bins == SET) {
+          updateBins(bins,parameters.res,protein);
+        }
         /*log << files[i].string() << "\t";
         for (int j=0; j<3; j++) {
           log << scientific << direction[j] << "\t";
@@ -347,14 +430,17 @@ array<double,3> readProfiles(string &path_to_dir, double res)
         log << endl;*/
       }
       //log.close();
-      outputBins(bins,res);
-      return computeVonMisesEstimates(direction,n);
+      if (parameters.update_bins == SET) {
+        outputBins(bins,parameters.res);
+      }
+      return pair<array<double,3>,double>(direction,n);
     } else {
       cout << p << " exists, but is neither a regular file nor a directory\n";
     }
   } else {
     cout << p << " does not exist\n";
   }
+  exit(1);
 }
 
 /*!
@@ -376,10 +462,10 @@ void updateLogFile(string &name, double time, int num_chains)
  *  \brief This function updates the mean estimator of the Von Mises
  *  distribution.
  *  \param direction a reference to a array<double,3>
- *  \param n a pointer to an double
+ *  \param n a pointer to an integer 
  *  \param protein a reference to a Protein object.
  */
-void updateEstimator(array<double,3> &direction, double *n, Protein &protein)
+void updateMeanDirection(array<double,3> &direction, double *n, Protein &protein)
 {
   array<double,3> mean = protein.computeMeanDirection();
   for (int i=0; i<3; i++) {
@@ -449,39 +535,5 @@ void outputBins(vector<vector<int>> &bins, double res)
   }
   fbins.close();
   fbins3D.close();
-}
-
-/*!
- *  \brief This function prints the elements of an array.
- *  \param os a reference to a ostream
- *  \param a a reference to an array<double,3>
- */
-void print(ostream &os, array<double,3> &a)
-{
-  os << "(" << a[0] << "," << a[1] << "," << a[2] << ")\n";
-}
-
-/*!
- *  \brief This function generates the heat map for theta vs phi
- *  \param estimates a reference to a array<double,3>
- *  \param res a double
- */
-void vonMisesDistribution_2DPlot(array<double,3> &estimates, double res)
-{
-  double kappa = estimates[0];
-  array<double,2> mu({estimates[1],estimates[2]});
-  VonMises3D von_mises(mu,kappa);
-  ofstream log("matlab/distribution_heat_map_2D.data");
-  double density;
-  for (double theta=0; theta<=180; theta+=res) {
-    for (double phi=0; phi<=360; phi+=res) {
-      //log << fixed << setw(10) << setprecision(2) << theta;
-      //log << fixed << setw(10) << setprecision(2) << phi;
-      density = von_mises.density(theta,phi);
-      log << fixed << setw(10) << setprecision(4) << density;
-    }
-    log << endl;
-  }
-  log.close();
 }
 
