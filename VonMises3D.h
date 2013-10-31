@@ -16,7 +16,7 @@ class VonMises3D
     double c3k;
 		array<double,3> kmu;
 
-    //!
+    //! Precompute normalization constant
     void computeConstants();
 
   public:

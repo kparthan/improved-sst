@@ -25,13 +25,14 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/parthan/"
-#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/pkas7/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.1
 #define LARGE_NUMBER 1000000
 #define PI boost::math::constants::pi<double>()
+#define LOG_PI log(PI)
 #define ZERO std::numeric_limits<double>::epsilon()
 
 #define SET 1 

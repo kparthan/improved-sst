@@ -4,7 +4,8 @@ LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -lboost_program_options -
 OBJECTS = main.o \
   Support.o \
   Protein.o \
-  VonMises3D.o
+  VonMises3D.o \
+  Message.o
 
 all: main 
 
@@ -21,6 +22,9 @@ Protein.o: Protein.cpp Protein.h Support.h
 	g++ -c $(CFLAGS) $< -o $@
 
 VonMises3D.o: VonMises3D.cpp VonMises3D.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Message.o: Message.cpp Message.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:

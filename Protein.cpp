@@ -293,7 +293,7 @@ array<double,3> Protein::computeMeanDirection()
     getSphericalCoordinatesList();
   }
   double r,theta,phi;
-  array<double,3> estimate,x;
+  array<double,3> estimate({0,0,0}),x;
   
   for (int i=0; i<all_spherical_coordinates.size(); i++) {
     r = all_spherical_coordinates[i][0];
