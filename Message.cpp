@@ -101,11 +101,11 @@ double Message::estimateKappa_MML(double initial)
     }
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
-    if (fabs(fx_der) > ZERO) {
+    if (fabs(fx_der) > 1e-10) {
       current = prev - (fx/(double)fx_der);
       cout << "Iteration " << num_iterations << ": [" << prev << ", " 
            << current <<  ", " << fx << ", " << fx_der << "]" << endl;
-      if (fabs(current - prev) > ZERO) {
+      if (fabs(current - prev) > 1e-10) {
         prev = current;
       } else {
         cout << "No significant change ..." << endl;
