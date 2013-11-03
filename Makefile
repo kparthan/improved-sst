@@ -5,7 +5,8 @@ OBJECTS = main.o \
   Support.o \
   Protein.o \
   VonMises3D.o \
-  Message.o
+  Component.o \
+  Mixture.o
 
 all: main 
 
@@ -24,7 +25,10 @@ Protein.o: Protein.cpp Protein.h Support.h
 VonMises3D.o: VonMises3D.cpp VonMises3D.h 
 	g++ -c $(CFLAGS) $< -o $@
 
-Message.o: Message.cpp Message.h 
+Component.o: Component.cpp Component.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Mixture.o: Mixture.cpp Mixture.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:

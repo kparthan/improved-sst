@@ -12,6 +12,7 @@ struct Parameters
   int read_profiles;
   int update_bins;
   double res;
+  int mixture_model;
 };
 
 // general functions

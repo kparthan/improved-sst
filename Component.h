@@ -1,9 +1,9 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 #include "Header.h"
 
-class Message
+class Component
 {
   private:
     //! Unit mean direction (Cartesian)
@@ -23,13 +23,13 @@ class Message
 
   public:
     //! Null constructor
-    Message();
+    Component();
 
     //! Constructor
-    Message(array<double,3> &, double);
+    Component(array<double,3> &, double);
 
     //! Minimize message length
-    void minimize();
+    void minimizeMessageLength();
 
     //! Estimate MML mean parameter
     void estimateVonMisesMean();
@@ -41,7 +41,7 @@ class Message
     double estimateKappa_MML(double);
 
     //! Computes the message length
-    double computeMessageLength(double);
+    double computeComponentLength(double);
 
     //! Computes the first part of the message
     double computeFirstPart(double);

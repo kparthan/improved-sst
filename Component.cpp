@@ -1,10 +1,10 @@
-#include "Message.h"
+#include "Component.h"
 #include "Support.h"
 
 /*!
  *  \brief The null constructor module.
  */
-Message::Message()
+Component::Component()
 {}
 
 /*!
@@ -12,7 +12,7 @@ Message::Message()
  *  \param direction a reference to an array<double,3>
  *  \param N an integer
  */
-Message::Message(array<double,3> &mean_direction, double N) :
+Component::Component(array<double,3> &mean_direction, double N) :
                  mean_direction(mean_direction), N(N)
 {
   //double lattice_constant = 0.08;
@@ -24,7 +24,7 @@ Message::Message(array<double,3> &mean_direction, double N) :
  *  \brief This function is used to minimize the message length expression
  *  by finding the suitable model parameters.
  */
-void Message::minimize()
+void Component::minimizeMessageLength()
 {
   estimateVonMisesMean();
   kappa_ml = estimateKappa_ML();
@@ -34,7 +34,7 @@ void Message::minimize()
 /*!
  *  \brief This function is used to estimate the Von Mises mean
  */
-void Message::estimateVonMisesMean()
+void Component::estimateVonMisesMean()
 {
   cout << "\nCartesian coordinates of mean direction vector: ";
   print(cout,mean_direction);
@@ -77,7 +77,7 @@ void Message::estimateVonMisesMean()
  *  (ref: http://en.wikipedia.org/wiki/Von_Mises%E2%80%93Fisher_distribution)
  *  \return the ML estimate of kappa
  */
-double Message::estimateKappa_ML()
+double Component::estimateKappa_ML()
 {
   double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
   cout << "Kappa (ML): " << kappa << endl;
@@ -89,7 +89,7 @@ double Message::estimateKappa_ML()
  *  \param initial a double
  *  \return the ML estimate of kappa
  */
-double Message::estimateKappa_MML(double initial)
+double Component::estimateKappa_MML(double initial)
 {
   double prev = initial;
   double current;
@@ -125,7 +125,7 @@ double Message::estimateKappa_MML(double initial)
  *  \param kappa a double
  *  \return the message length for a given kappa value
  */
-double Message::computeMessageLength(double kappa)
+double Component::computeComponentLength(double kappa)
 {
   double part1 = computeFirstPart(kappa);
   double part2 = computeSecondPart(kappa);
@@ -138,7 +138,7 @@ double Message::computeMessageLength(double kappa)
  *  \param kappa a double
  *  \return the the first message length for a given kappa value
  */
-double Message::computeFirstPart(double kappa)
+double Component::computeFirstPart(double kappa)
 {
   double lattice_constant = 0.08;
   double part1 = 1.5 * (log(lattice_constant) + log(N)) + 2 * LOG_PI
@@ -153,7 +153,7 @@ double Message::computeFirstPart(double kappa)
  *  \param kappa a double
  *  \return the the second message length for a given kappa value
  */
-double Message::computeSecondPart(double kappa)
+double Component::computeSecondPart(double kappa)
 {
   double part2 = 1.5 - kappa * R -  N * log(kappa) + N * log(4) + N * LOG_PI
                  + N * log(sinh(kappa));
@@ -166,7 +166,7 @@ double Message::computeSecondPart(double kappa)
  *  \param kappa a double
  *  \return the derivative value
  */
-double Message::computeFirstDerivative(double kappa)
+double Component::computeFirstDerivative(double kappa)
 {
   double A = ratioBesselFunction(kappa);
   double A1 = ratioBesselFunction_firstDerivative(kappa);
@@ -186,7 +186,7 @@ double Message::computeFirstDerivative(double kappa)
  *  \param kappa a double
  *  \return the derivative value
  */
-double Message::computeSecondDerivative(double kappa)
+double Component::computeSecondDerivative(double kappa)
 {
   double A = ratioBesselFunction(kappa);
   double A1 = ratioBesselFunction_firstDerivative(kappa);

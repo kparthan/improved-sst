@@ -1,6 +1,6 @@
 #include "Support.h"
 #include "VonMises3D.h"
-#include "Message.h"
+#include "Component.h"
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -21,7 +21,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   cout << "Checking command-line input ..." << endl;
   options_description desc("Allowed options");
   desc.add_options()
-       ("help","produce help message")
+       ("help","produce help component")
        ("test","perform a demo")
        ("verbose","print some details")
        ("file",value<string>(&parameters.file),"pdb file")
@@ -32,6 +32,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
                                       "path to all profiles")
        ("bins","to compute the frequencies of angles")
        ("res",value<double>(&parameters.res),"heat map resolution")
+       ("mixture","flag to do mixture modelling")
 
   ;
   variables_map vm;
@@ -77,6 +78,12 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     }
   }
   noargs = 0;
+
+  if (vm.count("mixture")) {
+    parameters.mixture_model = SET;
+  } else {
+    parameters.mixture_model = UNSET;
+  }
 
   if (noargs) {
     cout << "Not enough arguments supplied..." << endl;
@@ -380,8 +387,8 @@ void computeEstimators(struct Parameters &parameters)
   array<double,3> direction = data.first;
   double num_samples = data.second;
   //vonMisesDistribution_2DPlot(direction,parameters.res);
-  Message message(direction,num_samples);
-  message.minimize();
+  Component component(direction,num_samples);
+  component.minimizeMessageLength();
 }
 
 /*!
