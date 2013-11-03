@@ -6,13 +6,16 @@
 
 struct Parameters
 {
-  string file;
-  int force;
-  string profiles_dir;
-  int read_profiles;
-  int update_bins;
-  double res;
-  int mixture_model;
+  string file;              // pdb file
+  int force;                // flag to force build the angular profile
+  string profiles_dir;      // path to the directory containing the profiles
+  int read_profiles;        // flag to read through the existing profiles
+  int update_bins;          // flag to update bins for MATLAB visualization
+  double res;               // resolution of the bins
+  int mixture_model;        // flag to run mixture modelling algorithm
+  int infer_num_components; // flag to infer the number of components
+  int num_components;       // the number of mixture components
+  int update_weights_new;   // flag to update weights using modified rule
 };
 
 // general functions
@@ -39,6 +42,7 @@ ProteinStructure *parsePDBFile(string &);
 
 void computeEstimators(struct Parameters &);
 pair<array<double,3>,double> readProfiles(struct Parameters &);
+vector<array<double,2>> gatherData(struct Parameters &);
 void updateLogFile(string &, double, int);
 void updateMeanDirection(array<double,3> &, double *, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);

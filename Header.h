@@ -25,8 +25,8 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/parthan/"
-#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/pkas7/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.1
@@ -42,6 +42,8 @@
 #define PRINT_DETAIL 1
 
 #define DEFAULT_RESOLUTION 0.1
+#define DEFAULT_COMPONENTS 2
+#define MAX_COMPONENTS 10
 #define MIN_SIGMA (3 * AOM)
 #define MAX_SIGMA 4.0
 

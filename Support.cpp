@@ -1,6 +1,6 @@
 #include "Support.h"
 #include "VonMises3D.h"
-#include "Component.h"
+#include "Mixture.h"
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -33,6 +33,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("bins","to compute the frequencies of angles")
        ("res",value<double>(&parameters.res),"heat map resolution")
        ("mixture","flag to do mixture modelling")
+       ("infer_components","flag to infer the number of components")
+       ("k",value<int>(&parameters.num_components),"number of components")
+       ("update_weights_new","flag to update weights using modified rule")
 
   ;
   variables_map vm;
@@ -51,14 +54,6 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   
   if (vm.count("profiles_dir")) {
     parameters.read_profiles = SET;
-    if (vm.count("bins")) {
-      parameters.update_bins = SET;
-      if (!vm.count("res")) {
-        parameters.res = DEFAULT_RESOLUTION;
-      }
-    } else {
-      parameters.update_bins = UNSET;
-    }
   } else {
     parameters.read_profiles = UNSET;
     if (vm.count("file") && vm.count("pdbid")) {
@@ -81,8 +76,30 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
 
   if (vm.count("mixture")) {
     parameters.mixture_model = SET;
+    if (vm.count("infer_components")) {
+      parameters.infer_num_components = SET;
+    } else {
+      parameters.infer_num_components = UNSET;
+      if (!vm.count("k")) {
+        parameters.num_components = DEFAULT_COMPONENTS; 
+      }
+      cout << "# of components: " << parameters.num_components << endl;
+    }
+    if (vm.count("update_weights_new")) {
+      parameters.update_weights_new = SET;
+    } else {
+      parameters.update_weights_new = UNSET;
+    }
   } else {
     parameters.mixture_model = UNSET;
+    if (vm.count("bins")) {
+      parameters.update_bins = SET;
+      if (!vm.count("res")) {
+        parameters.res = DEFAULT_RESOLUTION;
+      }
+    } else {
+      parameters.update_bins = UNSET;
+    }
   }
 
   if (noargs) {
@@ -383,12 +400,26 @@ ProteinStructure *parsePDBFile(string &pdb_file)
  */
 void computeEstimators(struct Parameters &parameters)
 {
-  pair<array<double,3>,double> data = readProfiles(parameters);
-  array<double,3> direction = data.first;
-  double num_samples = data.second;
-  //vonMisesDistribution_2DPlot(direction,parameters.res);
-  Component component(direction,num_samples);
-  component.minimizeMessageLength();
+  if (parameters.mixture_model == UNSET) {
+    pair<array<double,3>,double> data = readProfiles(parameters);
+    array<double,3> direction = data.first;
+    double num_samples = data.second;
+    //vonMisesDistribution_2DPlot(direction,parameters.res);
+    Component component(direction,num_samples);
+    component.minimizeMessageLength();
+  } else {
+    vector<array<double,2>> data = gatherData(parameters);
+    if (parameters.infer_num_components == SET) {
+      for (int k=1; k<=MAX_COMPONENTS; k++) {
+        Mixture mixture(k,data,parameters.update_weights_new);
+        mixture.estimateParameters();
+      }
+    } else if (parameters.infer_num_components == UNSET) {
+      Mixture mixture(parameters.num_components,data,
+                      parameters.update_weights_new);
+      mixture.estimateParameters();
+    }
+  }
 }
 
 /*!
@@ -441,6 +472,41 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
         outputBins(bins,parameters.res);
       }
       return pair<array<double,3>,double>(direction,n);
+    } else {
+      cout << p << " exists, but is neither a regular file nor a directory\n";
+    }
+  } else {
+    cout << p << " does not exist\n";
+  }
+  exit(1);
+}
+
+/*!
+ *  \brief This function reads through the profiles from a given directory
+ *  and collects the data to do mixture modelling.
+ *  \param parameters a reference to a struct Parameters
+ *  \return a pair of mean direction and the sample size
+ */
+vector<array<double,2>> gatherData(struct Parameters &parameters)
+{
+  path p(parameters.profiles_dir);
+  cout << "path: " << p.string() << endl;
+  if (exists(p)) { 
+    if (is_directory(p)) { 
+      vector<path> files; // store paths,
+      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
+      cout << "# of profiles: " << files.size() << endl;
+      vector<array<double,2>> angles;
+      for (int i=0; i<files.size(); i++) {
+        Protein protein;
+        protein.load(files[i]);
+        vector<array<double,3>> coords = protein.getSphericalCoordinatesList();
+        for (int j=0; j<coords.size(); j++) {
+          array<double,2> theta_phi({coords[j][1],coords[j][2]});
+          angles.push_back(theta_phi);
+        }
+      }
+      return angles;
     } else {
       cout << p << " exists, but is neither a regular file nor a directory\n";
     }
