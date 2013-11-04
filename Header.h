@@ -19,6 +19,7 @@
 #include <omp.h>
 #include <liblcb/liblcb.h>
 #include <boost/math/constants/constants.hpp>
+#include <boost/math/special_functions/factorials.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/foreach.hpp>

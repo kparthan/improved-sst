@@ -27,6 +27,7 @@ class Component
 
     //! Constructor
     Component(array<double,3> &, double);
+    Component(array<double,2> &, double);
 
     //! Minimize message length
     void minimizeMessageLength();
@@ -54,6 +55,33 @@ class Component
 
     //! Computes the second derivative of message length
     double computeSecondDerivative(double);
+
+    //! Computes the likelihood value
+    double likelihood(array<double,2> &);
+
+    //! Computes the likelihood value
+    double likelihood(array<double,2> &, double);
+
+    //! Computes the probability of the component parameters
+    double computeParametersProbability();
+
+    //! Computes the prior density on the parameters
+    double  computePriorDensity();
+
+    //! Computes the expected Fisher information associated with the parameters
+    double computeFisherInformation();
+
+    //! Prints the component parameters 
+    void printParameters(ostream &);
+
+    //! Return theta
+    double getTheta();
+
+    //! Return phi 
+    double getPhi();
+
+    //! Return kappa 
+    double getKappa();
 };
 
 #endif

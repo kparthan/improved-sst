@@ -32,6 +32,8 @@ double ratioBesselFunction(double);
 double ratioBesselFunction_firstDerivative(double);
 double ratioBesselFunction_secondDerivative(double);
 double ratioBesselFunction_thirdDerivative(double);
+double computeConstantTerm(int);
+double getLatticeConstant(int);
 
 // Protein functions
 string getPDBFilePath(string &);

@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "Support.h"
+#include "VonMises3D.h"
 
 /*!
  *  \brief The null constructor module.
@@ -10,16 +11,24 @@ Component::Component()
 /*!
  *  \brief This is a constructor function.
  *  \param direction a reference to an array<double,3>
- *  \param N an integer
+ *  \param N a double
  */
 Component::Component(array<double,3> &mean_direction, double N) :
                  mean_direction(mean_direction), N(N)
 {
-  //double lattice_constant = 0.08;
-  //constant = 1.5 * (1 + log(lattice_constant) + log(N)) + (N+2) * log(PI)
-  //           + N * log(4);
+  //estimateVonMisesMean();
+  //kappa_ml = estimateKappa_ML();
 }
 
+Component::Component(array<double,2> &mean_direction, double kappa) :
+                 kappa_mml(kappa_mml),
+mu(mean_direction)
+{
+  /*Point<double> p(mean_direction);
+  array<double,3> sp = convertToSpherical(p);
+  mu[0] = sp[1];
+  mu[1] = sp[2];*/
+}
 /*!
  *  \brief This function is used to minimize the message length expression
  *  by finding the suitable model parameters.
@@ -91,6 +100,7 @@ double Component::estimateKappa_ML()
  */
 double Component::estimateKappa_MML(double initial)
 {
+  double TOLERANCE = 1e-5;
   double prev = initial;
   double current;
   int num_iterations = 0;
@@ -101,11 +111,11 @@ double Component::estimateKappa_MML(double initial)
     }
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
-    if (fabs(fx_der) > 1e-10) {
+    if (fabs(fx_der) > TOLERANCE) {
       current = prev - (fx/(double)fx_der);
       cout << "Iteration " << num_iterations << ": [" << prev << ", " 
            << current <<  ", " << fx << ", " << fx_der << "]" << endl;
-      if (fabs(current - prev) > 1e-10) {
+      if (fabs(current - prev) > TOLERANCE) {
         prev = current;
       } else {
         cout << "No significant change ..." << endl;
@@ -206,5 +216,104 @@ double Component::computeSecondDerivative(double kappa)
   second_derivative_msglen += tmp;
 
   return second_derivative_msglen;
+}
+
+/*!
+ *  \brief This function computes the likelihood of a datum.
+ *  \param x a reference to an array<double,2>
+ *  \return the likelihood value
+ */
+double Component::likelihood(array<double,2> &x)
+{
+  VonMises3D distribution(mu,kappa_ml);
+  return distribution.density(x[0],x[1]);
+}
+
+/*!
+ *  \brief This function computes the likelihood of a datum for a given kappa.
+ *  \param x a reference to an array<double,2>
+ *  \param kappa a double
+ *  \return the likelihood value
+ */
+double Component::likelihood(array<double,2> &x, double kappa)
+{
+  VonMises3D distribution(mu,kappa);
+  return distribution.density(x[0],x[1]);
+}
+
+/*!
+ *  \brief This function computes the probability of the component parameters
+ *  by discretizing the parameter space using the Fisher information.
+ *  \return the probability value
+ */
+double Component::computeParametersProbability()
+{
+  double prior_density = computePriorDensity();
+  double expected_fisher = computeFisherInformation();
+  return prior_density/sqrt(expected_fisher);
+}
+
+/*!
+ *  \brief This function computes the prior density on the parameters.
+ *  \return the joint prior density value
+ */
+double Component::computePriorDensity()
+{
+  double kappa_sq = kappa_mml * kappa_mml;
+  double num = kappa_sq * fabs(sin(mu[0]));
+  double denom = PI * PI * (1+kappa_sq) * (1+kappa_sq);
+  return num/denom; 
+}
+
+/*!
+ *  \brief This function computes the expected Fisher information using the
+ *  component parameters.
+ *  \return the expected Fisher value
+ */
+double Component::computeFisherInformation()
+{
+  double log_fisher = 0;
+  log_fisher += 3 * log(N);
+  log_fisher += 2 * log(kappa_mml);
+  log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
+  log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
+  log_fisher += 2 * log(fabs(sin(mu[0])));
+  return exp(log_fisher);
+}
+
+/*!
+ *  \brief This function prints the optimal parameters of the component.
+ *  \param os a reference to a ostream
+ */
+void Component::printParameters(ostream &os)
+{
+  os << "[mu,kappa]: [(" << mu[0] << "," << mu[1]<< ")," << kappa_mml << "]\n";
+}
+
+/*!
+ *  \brief This function returns the optimum theta.
+ *  \return theta that corresponds to the minimum message length
+ */
+double Component::getTheta()
+{
+  return mu[0];
+}
+
+/*!
+ *  \brief This function returns the optimum phi.
+ *  \return phi that corresponds to the minimum message length
+ */
+double Component::getPhi()
+{
+  return mu[1];
+}
+
+/*!
+ *  \brief This function returns the optimum kappa.
+ *  \return kappa that corresponds to the minimum message length
+ */
+double Component::getKappa()
+{
+  return kappa_mml;
 }
 

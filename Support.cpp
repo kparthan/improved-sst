@@ -297,6 +297,32 @@ double ratioBesselFunction_thirdDerivative(double k)
   return value ;
 }
 
+/*!
+ *  \brief This function computes the approximation of the constant term for
+ *  the constant term in the message length expression (pg. 257 Wallace)
+ *  \param d an integer
+ *  \return the constant term
+ */
+double computeConstantTerm(int d)
+{
+  double ad = 0;
+  ad -= 0.5 * d * log(2 * PI);
+  ad += 0.5 * log(d * PI);
+  return ad;
+}
+
+/*!
+ *  \brief This function computes the lattice constant for higher dimensions.
+ *  \param d an integer
+ *  \return the d-dimensional lattice constant
+ */
+double getLatticeConstant(int d)
+{
+  double ad = computeConstantTerm(d);
+  double tmp = ((2.0/d) * ad) - 1;
+  return exp(tmp);
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!

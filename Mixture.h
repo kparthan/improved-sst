@@ -12,8 +12,11 @@ class Mixture
     //! List of components
     vector<Component> components;
     
-    //! Sample (x_i)
+    //! Sample (x_i) -- spherical coordinates with unit radius
     vector<array<double,2>> angles;
+
+    //! Sample (x_i) -- Cartesian coordinates
+    vector<array<double,3>> data;
 
     //! Sample size
     int N;
@@ -42,12 +45,37 @@ class Mixture
 
     //! Initialize parameters
     void initialize();
+    void initialize2();
+
+    //! Initializes the parameters of the components
+    void initializeComponentParameters();
 
     //! Updates the effective sample size
     void updateEffectiveSampleSize();
 
+    //! Update alphas
+    void updateAlphas();
+
+    //! Update the component weights
+    void updateWeights();
+
+    //! Update components
+    void updateComponents();
+
+    //! Update the responsibility matrix
+    void updateResponsibilityMatrix();
+
+    //! Probability of a datum
+    double probability(array<double,2> &);
+
+    //! Computes the minimum message length
+    double computeMinimumMessageLength();
+
     //! Estimate mixture parameters
     void estimateParameters();
+
+    //! Prints the model parameters
+    void printParameters(ostream &, int, double);
 };
 
 #endif

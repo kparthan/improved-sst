@@ -1,4 +1,5 @@
 #include "Mixture.h"
+#include "Support.h"
 
 /*!
  *  \brief Null constructor module
@@ -15,7 +16,12 @@ Mixture::Mixture()
 Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
                  int update_weights_new) : K(num_components), angles(angles),
                  update_weights_new(update_weights_new)
-{}
+{
+  for (int i=0; i<angles.size(); i++) {
+    array<double,3> x = convertToCartesian(1,angles[i][0],angles[i][1]);
+    data.push_back(x);
+  }
+}
 
 /*!
  *  \brief This function initializes the parameters of the model.
@@ -46,16 +52,54 @@ void Mixture::initialize()
   updateWeights();
 
   // initialize parameters of each component
-  double theta,phi,kappa;
+  initializeComponentParameters();
+  updateResponsibilityMatrix();
+}
+
+/*!
+ *  \brief This function initializes the parameters of the model.
+ */
+void Mixture::initialize2()
+{
+  N = angles.size();
+  cout << "sample size: " << N << endl;
+  // initialize weights of components
+  srand(time(NULL));
+  double w = 1 / (double) K;
   for (int i=0; i<K; i++) {
-    // generate theta
-    theta = (rand() / (double) RAND_MAX) * PI;
-    // generate phi
-    phi = (rand() / (double) RAND_MAX) * 2 * PI;
-    // generate kappa
-    kappa = tan((rand() / (double) RAND_MAX) * (PI/2));
-    array<double,3> coords = convertToCartesian(1,theta,phi);
-    Component component(coords);
+    weights.push_back(w);
+    array<double,2> mu;
+    mu[0] = (rand()/(double)RAND_MAX)*180;
+    mu[1] = (rand()/(double)RAND_MAX)*360;
+    double kappa = (rand() / (double) RAND_MAX) * 100;
+    Component component(mu,kappa);
+    components.push_back(component);
+  }
+  updateResponsibilityMatrix();
+  sample_size = vector<double>(K,0);
+  updateEffectiveSampleSize();
+  alphas = vector<double>(K,0);
+}
+
+/*!
+ *  \brief This function initializes the mean direction and the kappa values
+ *  of the individual components.
+ */
+void Mixture::initializeComponentParameters()
+{
+  for (int i=0; i<K; i++) {
+    array<double,3> mean({0,0,0});
+    for (int j=0; j<N; j++) {
+      if (responsibility[j][i] == 1) {
+        array<double,3> x = data[j]; 
+        for (int k=0; k<3; k++) {
+          mean[k] += x[k];
+        }
+      }
+    }
+    Component component(mean,sample_size[i]);
+    component.minimizeMessageLength();
+    components.push_back(component);
   }
 }
 
@@ -108,10 +152,112 @@ void Mixture::updateAlphas()
   for (int i=0; i<K; i++) {
     double count = 0;
     for (int j=0; j<N; j++) {
-      count += responsibility[j][i] * responsibility[j][i]
+      count += responsibility[j][i] * responsibility[j][i];
     }
     alphas[i] = count / (double) sample_size[i];
   }
+}
+
+/*!
+ *  \brief This function is used to update the components.
+ */
+void Mixture::updateComponents()
+{
+  components.clear();
+  for (int i=0; i<K; i++) {
+    array<double,3> sum({0,0,0});
+    for (int j=0; j<N; j++) {
+      for (int k=0; k<3; k++) {
+        sum[k] += responsibility[j][i] * data[j][k];
+      }
+    }
+    for (int k=0; k<3; k++) {
+      sum[k] /= sample_size[i];
+    }
+    Component component(sum,sample_size[i]);
+    component.minimizeMessageLength();
+    components.push_back(component);
+  }
+}
+
+/*!
+ *  \brief This function updates the terms in the responsibility matrix.
+ */
+void Mixture::updateResponsibilityMatrix()
+{
+  double px;
+  vector<double> density(K,0);
+  for (int i=0; i<N; i++) {
+    px = 0;
+    for (int j=0; j<K; j++) {
+      density[j] = components[j].likelihood(angles[i]);
+      px += weights[j] * density[j]; 
+    }
+    for (int j=0; j<K; j++) {
+      responsibility[i][j] = weights[j] * density[j] / px;
+    }
+  }
+}
+
+/*!
+ *  \brief This function computes the probability of a datum from the mixture
+ *  model.
+ *  \param x a reference to an array<double,2>
+ *  \return the probability value
+ */
+double Mixture::probability(array<double,2> &x)
+{
+  double px = 0,density;
+  for (int i=0; i<K; i++) {
+    density = components[i].likelihood(x);
+    px += weights[i] * density;
+  }
+  return px;
+}
+
+/*!
+ *  \brief This function computes the minimum message length using the current
+ *  model parameters.
+ *  \return the minimum message length
+ */
+double Mixture::computeMinimumMessageLength()
+{
+  // encode the number of components
+  // assume uniform priors
+  double Ik = log(MAX_COMPONENTS);
+  cout << "Ik: " << Ik << endl;
+
+  // enocde the weights
+  double Iw = ((K-1)/2.0) * log(N);
+  Iw -= log(boost::math::factorial<double>(K-1));
+  for (int i=0; i<K; i++) {
+    Iw -= 0.5 * log(weights[i]);
+  }
+  cout << "Iw: " << Iw << endl;
+
+  // encode the likelihood of the sample
+  double Il = 0;
+  for (int i=0; i<N; i++) {
+    double px = probability(angles[i]);
+    Il -= log(px);
+  }
+  Il -= 2 * N * log(AOM);
+  cout << "Il: " << Il << endl;
+
+  // encode the parameters of the components
+  double It = 0,p;
+  for (int i=0; i<K; i++) {
+    p = components[i].computeParametersProbability();
+    It -= log(p);
+  }
+  cout << "It: " << It << endl;
+
+  // the constant term
+  // # of continuous parameters d = 4K-1
+  double cd = computeConstantTerm(4*K-1);
+  cout << "cd: " << cd << endl;
+
+  return (Ik + Iw + Il + It + cd)/(log(2));
 }
 
 /*!
@@ -119,8 +265,40 @@ void Mixture::updateAlphas()
  */
 void Mixture::estimateParameters()
 {
-  initialize();
-  //while (1) {
-  //}
+  initialize2();
+  double prev,current;
+  prev = computeMinimumMessageLength();
+  int iter = 1;
+  ofstream log("components");
+  printParameters(log,0,current);
+  while (1) {
+    updateWeights();
+    updateComponents();
+    current = computeMinimumMessageLength();
+    printParameters(log,iter,current);
+    prev = current;
+    if (iter++ == 10) break;
+    updateResponsibilityMatrix();
+    updateEffectiveSampleSize();
+  }
+  log.close();
+}
+
+/*!
+ *  \brief This function prints the parameters to a log file.
+ *  \param os a reference to a ostream
+ *  \param iter an integer
+ *  \param msglen a double
+ */
+void Mixture::printParameters(ostream &os, int iter, double msglen)
+{
+  os << "Iteration #: " << iter << endl;
+  for (int k=0; k<K; k++) {
+    os << "\t" << fixed << setw(10) << setprecision(3) << sample_size[k];
+    os << "\t" << fixed << setw(10) << setprecision(3) << weights[k];
+    os << "\t";
+    components[k].printParameters(os);
+  }
+  os << "\t\t\tmsglen: " << msglen << " bits." << endl;
 }
 
