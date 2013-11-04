@@ -1,0 +1,55 @@
+Iteration #: 0
+	     0.000	     0.333	[mu,kappa]: [(162.394,302.278),2.442]
+	     0.000	     0.333	[mu,kappa]: [(176.990,344.021),30.800]
+	     0.000	     0.333	[mu,kappa]: [(92.030,178.818),91.127]
+			msglen: 0.000 bits.
+Iteration #: 1
+	234625.745	     0.933	[mu,kappa]: [(92.444,327.662),1.676]
+	 16720.255	     0.067	[mu,kappa]: [(165.622,335.793),22.183]
+	     0.000	     0.000	[mu,kappa]: [(82.346,162.847),687.499]
+			msglen: 2453720.682 bits.
+Iteration #: 2
+	234835.488	     0.934	[mu,kappa]: [(92.775,327.828),1.649]
+	 16510.512	     0.066	[mu,kappa]: [(160.957,330.338),21.409]
+	     0.000	     0.000	[mu,kappa]: [(34.150,144.099),2171455943765.909]
+			msglen: -nan bits.
+Iteration #: 3
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 4
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 5
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 6
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 7
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 8
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 9
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.
+Iteration #: 10
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+	      -nan	      -nan	[mu,kappa]: [(-nan,0.000),-nan]
+			msglen: -nan bits.

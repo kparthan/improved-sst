@@ -36,6 +36,9 @@ class Mixture
     //! Alphas (alpha_k)
     vector<double> alphas;
 
+    //! List of message lengths over several iterations
+    vector<double> msglens;
+
   public:
     //! Null constructor
     Mixture();
@@ -45,6 +48,8 @@ class Mixture
 
     //! Initialize parameters
     void initialize();
+
+    //! Initialize parameters
     void initialize2();
 
     //! Initializes the parameters of the components
@@ -76,6 +81,9 @@ class Mixture
 
     //! Prints the model parameters
     void printParameters(ostream &, int, double);
+
+    //! Plot the variation in message length
+    void plotMessageLength();
 };
 
 #endif

@@ -10,25 +10,22 @@ Component::Component()
 
 /*!
  *  \brief This is a constructor function.
- *  \param direction a reference to an array<double,3>
+ *  \param mean_direction a reference to an array<double,3>
  *  \param N a double
  */
 Component::Component(array<double,3> &mean_direction, double N) :
-                 mean_direction(mean_direction), N(N)
-{
-  //estimateVonMisesMean();
-  //kappa_ml = estimateKappa_ML();
-}
+                     mean_direction(mean_direction), N(N)
+{}
 
+/*!
+ *  \brief This is a constructor function.
+ *  \param mean_direction a reference to an array<double,2>
+ *  \param kappa a double
+ */
 Component::Component(array<double,2> &mean_direction, double kappa) :
-                 kappa_mml(kappa_mml),
-mu(mean_direction)
-{
-  /*Point<double> p(mean_direction);
-  array<double,3> sp = convertToSpherical(p);
-  mu[0] = sp[1];
-  mu[1] = sp[2];*/
-}
+                     mu(mean_direction), kappa_mml(kappa)
+{}
+
 /*!
  *  \brief This function is used to minimize the message length expression
  *  by finding the suitable model parameters.
@@ -225,7 +222,7 @@ double Component::computeSecondDerivative(double kappa)
  */
 double Component::likelihood(array<double,2> &x)
 {
-  VonMises3D distribution(mu,kappa_ml);
+  VonMises3D distribution(mu,kappa_mml);
   return distribution.density(x[0],x[1]);
 }
 

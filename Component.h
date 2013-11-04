@@ -27,6 +27,8 @@ class Component
 
     //! Constructor
     Component(array<double,3> &, double);
+
+    //! Constructor
     Component(array<double,2> &, double);
 
     //! Minimize message length

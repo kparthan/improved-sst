@@ -63,11 +63,12 @@ void Mixture::initialize2()
 {
   N = angles.size();
   cout << "sample size: " << N << endl;
-  // initialize weights of components
   srand(time(NULL));
   double w = 1 / (double) K;
   for (int i=0; i<K; i++) {
+    // initialize weights of components
     weights.push_back(w);
+    // initialize component parameters
     array<double,2> mu;
     mu[0] = (rand()/(double)RAND_MAX)*180;
     mu[1] = (rand()/(double)RAND_MAX)*360;
@@ -75,9 +76,13 @@ void Mixture::initialize2()
     Component component(mu,kappa);
     components.push_back(component);
   }
-  updateResponsibilityMatrix();
+
+  // set the dimensions of r_{ik}, n_k and alpha_k matrices
+  for (int i=0; i<N; i++) {
+    vector<double> tmp(K,0);
+    responsibility.push_back(tmp);
+  }
   sample_size = vector<double>(K,0);
-  updateEffectiveSampleSize();
   alphas = vector<double>(K,0);
 }
 
@@ -171,9 +176,9 @@ void Mixture::updateComponents()
         sum[k] += responsibility[j][i] * data[j][k];
       }
     }
-    for (int k=0; k<3; k++) {
+    /*for (int k=0; k<3; k++) {
       sum[k] /= sample_size[i];
-    }
+    }*/
     Component component(sum,sample_size[i]);
     component.minimizeMessageLength();
     components.push_back(component);
@@ -261,27 +266,32 @@ double Mixture::computeMinimumMessageLength()
 }
 
 /*!
- *  \brief This function is used to estimate the model .parameters.
+ *  \brief This function is used to estimate the model parameters by running
+ *  an EM algorithm.
  */
 void Mixture::estimateParameters()
 {
   initialize2();
-  double prev,current;
-  prev = computeMinimumMessageLength();
+  double current;
   int iter = 1;
-  ofstream log("components");
+  string file_name = string(CURRENT_DIRECTORY) + "mixture/logs/";
+  file_name += boost::lexical_cast<string>(K) + ".log";
+  ofstream log(file_name.c_str());
   printParameters(log,0,current);
   while (1) {
+    // Expectation (E-step)
+    updateResponsibilityMatrix();
+    updateEffectiveSampleSize();
+    // Maximization (M-step)
     updateWeights();
     updateComponents();
     current = computeMinimumMessageLength();
+    msglens.push_back(current);
     printParameters(log,iter,current);
-    prev = current;
-    if (iter++ == 10) break;
-    updateResponsibilityMatrix();
-    updateEffectiveSampleSize();
+    if (iter++ == 3) break;
   }
   log.close();
+  //plotMessageLength();
 }
 
 /*!
@@ -300,5 +310,40 @@ void Mixture::printParameters(ostream &os, int iter, double msglen)
     components[k].printParameters(os);
   }
   os << "\t\t\tmsglen: " << msglen << " bits." << endl;
+}
+
+/*!
+ *  \brief This function is used to plot the variation in message length
+ *  with each iteration.
+ */
+void Mixture::plotMessageLength()
+{
+  // output the data to a file
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/";
+  data_file += boost::lexical_cast<string>(K) + ".dat";
+  ofstream file(data_file.c_str());
+  for (int i=0; i<msglens.size(); i++) {
+    file << i << "\t" << msglens[i] << endl;
+  }
+  file.close();
+
+  // prepare gnuplot script file
+  ofstream script("script.p");
+	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
+	script << "set terminal post eps" << endl ;
+	script << "set autoscale\t" ;
+	script << "# scale axes automatically" << endl ;
+	script << "set xtic auto\t" ;
+	script << "# set xtics automatically" << endl ;
+	script << "set ytic auto\t" ;
+	script << "# set ytics automatically" << endl ;
+	script << "set title \"# of components: " << K << "\"" << endl ;
+	script << "set xlabel \"# of iterations\"" << endl ;
+	script << "set ylabel \"message length (in bits)\"" << endl ;
+	script << "set output \"mixture/plots/" << K << ".eps\"" << endl ;
+	script << "plot \"mixture/msglens/" << K << ".dat\" using 1:2 notitle " 
+         << "with linespoints lc rgb \"red\"" << endl ;
+  script.close();
+  system("gnuplot -persist script.p") ;	
 }
 
