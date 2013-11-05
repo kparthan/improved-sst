@@ -43,6 +43,7 @@ bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
 
 void computeEstimators(struct Parameters &);
+void plotMessageLengthAgainstComponents(vector<double> &);
 pair<array<double,3>,double> readProfiles(struct Parameters &);
 vector<array<double,2>> gatherData(struct Parameters &);
 void updateLogFile(string &, double, int);

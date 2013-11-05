@@ -239,9 +239,13 @@ void vonMisesDistribution_2DPlot(array<double,3> &estimates, double res)
  */
 double ratioBesselFunction(double k)
 {
-  double k_inv = 1 / (double)k;
-  double cothk = 1 / (double) tanh(k);
-  return cothk - k_inv;
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double k_inv = 1 / (double)k;
+    double cothk = 1 / (double) tanh(k);
+    return cothk - k_inv;
+  }
 }
 
 /*!
@@ -252,12 +256,16 @@ double ratioBesselFunction(double k)
  */
 double ratioBesselFunction_firstDerivative(double k)
 {
-  double value = 0;
-  double cschk = 1 / (double) sinh(k);
-  value -= cschk * cschk;
-  double k_inv = 1 / (double)k;
-  value += k_inv * k_inv; 
-  return value ;
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double value = 0;
+    double cschk = 1 / (double) sinh(k);
+    value -= cschk * cschk;
+    double k_inv = 1 / (double)k;
+    value += k_inv * k_inv; 
+    return value ;
+  }
 }
 
 /*!
@@ -268,13 +276,17 @@ double ratioBesselFunction_firstDerivative(double k)
  */
 double ratioBesselFunction_secondDerivative(double k)
 {
-  double value = 0;
-  double cothk = 1 / (double) tanh(k);
-  double cschk = 1 / (double) sinh(k);
-  value += cothk * cschk * cschk;
-  double k_inv = 1 / (double)k;
-  value -= k_inv * k_inv * k_inv;
-  return 2 * value ;
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double value = 0;
+    double cothk = 1 / (double) tanh(k);
+    double cschk = 1 / (double) sinh(k);
+    value += cothk * cschk * cschk;
+    double k_inv = 1 / (double)k;
+    value -= k_inv * k_inv * k_inv;
+    return 2 * value ;
+  }
 }
 
 /*!
@@ -436,16 +448,55 @@ void computeEstimators(struct Parameters &parameters)
   } else {
     vector<array<double,2>> data = gatherData(parameters);
     if (parameters.infer_num_components == SET) {
-      for (int k=1; k<=MAX_COMPONENTS; k++) {
+      vector<double> msglens;
+      for (int k=16; k<=20; k++) {
+        cout << "Running for K: " << k << endl;
         Mixture mixture(k,data,parameters.update_weights_new);
-        mixture.estimateParameters();
+        double msg = mixture.estimateParameters();
+        msglens.push_back(msg);
       }
+      plotMessageLengthAgainstComponents(msglens);
     } else if (parameters.infer_num_components == UNSET) {
       Mixture mixture(parameters.num_components,data,
                       parameters.update_weights_new);
       mixture.estimateParameters();
     }
   }
+}
+
+/*!
+ *  \brief This function is used to plot the message lengths for different
+ *  number of components.
+ *  \param msglens a reference to a vector<double>
+ */
+void plotMessageLengthAgainstComponents(vector<double> &msglens)
+{
+  // output the data to a file
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/msglens2.dat";
+  ofstream file(data_file.c_str());
+  for (int i=0; i<msglens.size(); i++) {
+    file << i+2 << "\t" << msglens[i] << endl;
+  }
+  file.close();
+
+  // prepare gnuplot script file
+  ofstream script("script.p");
+	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
+	script << "set terminal post eps" << endl ;
+	script << "set autoscale\t" ;
+	script << "# scale axes automatically" << endl ;
+	script << "set xtic auto\t" ;
+	script << "# set xtics automatically" << endl ;
+	script << "set ytic auto\t" ;
+	script << "# set ytics automatically" << endl ;
+	//script << "set title \"# of components: " << K << "\"" << endl ;
+	script << "set xlabel \"# of components\"" << endl ;
+	script << "set ylabel \"message length (in bits)\"" << endl ;
+	script << "set output \"mixture/plots/msglens2.eps\"" << endl ;
+	script << "plot \"mixture/msglens/msglens.dat\" using 1:2 notitle " 
+         << "with linespoints lc rgb \"red\"" << endl ;
+  script.close();
+  system("gnuplot -persist script.p") ;	
 }
 
 /*!

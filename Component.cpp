@@ -1,6 +1,5 @@
 #include "Component.h"
 #include "Support.h"
-#include "VonMises3D.h"
 
 /*!
  *  \brief The null constructor module.
@@ -35,6 +34,7 @@ void Component::minimizeMessageLength()
   estimateVonMisesMean();
   kappa_ml = estimateKappa_ML();
   kappa_mml = estimateKappa_MML(kappa_ml);
+  von_mises = VonMises3D(mu,kappa_mml);
 }
 
 /*!
@@ -97,7 +97,6 @@ double Component::estimateKappa_ML()
  */
 double Component::estimateKappa_MML(double initial)
 {
-  double TOLERANCE = 1e-5;
   double prev = initial;
   double current;
   int num_iterations = 0;
@@ -222,8 +221,7 @@ double Component::computeSecondDerivative(double kappa)
  */
 double Component::likelihood(array<double,2> &x)
 {
-  VonMises3D distribution(mu,kappa_mml);
-  return distribution.density(x[0],x[1]);
+  return von_mises.density(x[0],x[1]);
 }
 
 /*!
@@ -234,8 +232,7 @@ double Component::likelihood(array<double,2> &x)
  */
 double Component::likelihood(array<double,2> &x, double kappa)
 {
-  VonMises3D distribution(mu,kappa);
-  return distribution.density(x[0],x[1]);
+  return von_mises.density(x[0],x[1]);
 }
 
 /*!
@@ -247,7 +244,11 @@ double Component::computeParametersProbability()
 {
   double prior_density = computePriorDensity();
   double expected_fisher = computeFisherInformation();
-  return prior_density/sqrt(expected_fisher);
+  if (expected_fisher <= TOLERANCE) {
+    return LARGE_NUMBER;
+  } else {
+    return prior_density/sqrt(expected_fisher);
+  }
 }
 
 /*!
@@ -269,13 +270,17 @@ double Component::computePriorDensity()
  */
 double Component::computeFisherInformation()
 {
-  double log_fisher = 0;
-  log_fisher += 3 * log(N);
-  log_fisher += 2 * log(kappa_mml);
-  log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
-  log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
-  log_fisher += 2 * log(fabs(sin(mu[0])));
-  return exp(log_fisher);
+  if (kappa_mml <= TOLERANCE) {
+    return 0;
+  } else {
+    double log_fisher = 0;
+    log_fisher += 3 * log(N);
+    log_fisher += 2 * log(kappa_mml);
+    log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
+    log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
+    log_fisher += 2 * log(fabs(sin(mu[0])));
+    return exp(log_fisher);
+  }
 }
 
 /*!

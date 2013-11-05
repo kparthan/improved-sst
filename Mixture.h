@@ -77,13 +77,13 @@ class Mixture
     double computeMinimumMessageLength();
 
     //! Estimate mixture parameters
-    void estimateParameters();
+    double estimateParameters();
 
     //! Prints the model parameters
     void printParameters(ostream &, int, double);
 
     //! Plot the variation in message length
-    void plotMessageLength();
+    void plotMessageLengthEM();
 };
 
 #endif

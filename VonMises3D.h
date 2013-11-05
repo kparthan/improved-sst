@@ -9,12 +9,14 @@ class VonMises3D
     //! Mean of the distribution
 		array<double,2> mu;
 
+    //! Cartesian mean of the distribution
+    array<double,3> unit_mean;
+
     //! Scale parameter of the distribution
 		double kappa;
 
-    //! Precomputed constants
-    double c3k;
-		array<double,3> kmu;
+    //! Precomputed constant
+    double constant;
 
     //! Precompute normalization constant
     void computeConstants();

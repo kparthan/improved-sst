@@ -53,7 +53,6 @@ void Mixture::initialize()
 
   // initialize parameters of each component
   initializeComponentParameters();
-  updateResponsibilityMatrix();
 }
 
 /*!
@@ -268,11 +267,12 @@ double Mixture::computeMinimumMessageLength()
 /*!
  *  \brief This function is used to estimate the model parameters by running
  *  an EM algorithm.
+ *  \return the stable message length
  */
-void Mixture::estimateParameters()
+double Mixture::estimateParameters()
 {
-  initialize2();
-  double current;
+  initialize();
+  double prev=0,current;
   int iter = 1;
   string file_name = string(CURRENT_DIRECTORY) + "mixture/logs/";
   file_name += boost::lexical_cast<string>(K) + ".log";
@@ -288,10 +288,18 @@ void Mixture::estimateParameters()
     current = computeMinimumMessageLength();
     msglens.push_back(current);
     printParameters(log,iter,current);
-    if (iter++ == 3) break;
+    //if (iter++ == 100) break;
+    if (iter != 1) {
+      if (prev - current < 10) {
+        break;
+      }
+    }
+    prev = current;
+    iter++;
   }
   log.close();
-  //plotMessageLength();
+  plotMessageLengthEM();
+  return current;
 }
 
 /*!
@@ -316,7 +324,7 @@ void Mixture::printParameters(ostream &os, int iter, double msglen)
  *  \brief This function is used to plot the variation in message length
  *  with each iteration.
  */
-void Mixture::plotMessageLength()
+void Mixture::plotMessageLengthEM()
 {
   // output the data to a file
   string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/";

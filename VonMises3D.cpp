@@ -27,11 +27,10 @@ VonMises3D::VonMises3D(array<double,2> &mu, double kappa) :
  */
 void VonMises3D::computeConstants()
 {
-  c3k = kappa / (4 * PI * sinh(kappa));
-  array<double,3> x = convertToCartesian(1,mu[0],mu[1]);
-  for (int i=0; i<3; i++) {
-    kmu[i] = kappa * x[i];
-  }
+  double tmp = exp(-2 * kappa);
+  double denom = 2 * PI * (1-tmp);
+  constant = kappa / denom;
+  unit_mean = convertToCartesian(1,mu[0],mu[1]);
 }
 
 /*!
@@ -42,9 +41,9 @@ VonMises3D VonMises3D::operator=(const VonMises3D &source)
 {
   if (this != &source) {
     mu = source.mu;
+    unit_mean = source.unit_mean;
     kappa = source.kappa;
-    c3k = source.c3k;
-    kmu = source.kmu;
+    constant = source.constant;
   }
   return *this;
 }
@@ -75,11 +74,16 @@ const double VonMises3D::scale(void)
  */
 double VonMises3D::density(double theta, double phi)
 {
-  array<double,3> x = convertToCartesian(1,theta,phi);
-  double exponent = 0;
-  for (int i=0; i<3; i++) {
-    exponent += kmu[i] * x[i];
+  if (kappa <= TOLERANCE) {
+    return 1.0/(4*PI);
+  } else {
+    array<double,3> x = convertToCartesian(1,theta,phi);
+    double tmp = 0;
+    for (int i=0; i<3; i++) {
+      tmp += unit_mean[i] * x[i];
+    }
+    double exponent = kappa * (tmp - 1);
+    return constant * exp(exponent);
   }
-  return c3k * exp(exponent);
 }
 

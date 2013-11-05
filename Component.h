@@ -2,6 +2,7 @@
 #define COMPONENT_H
 
 #include "Header.h"
+#include "VonMises3D.h"
 
 class Component
 {
@@ -20,6 +21,9 @@ class Component
 
     //! ML and MML estimates of kappa
     double kappa_ml,kappa_mml;
+
+    //! Representative von mises distribution
+    VonMises3D von_mises;
 
   public:
     //! Null constructor
