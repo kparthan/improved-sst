@@ -71,7 +71,7 @@ void Mixture::initialize2()
     array<double,2> mu;
     mu[0] = (rand()/(double)RAND_MAX)*180;
     mu[1] = (rand()/(double)RAND_MAX)*360;
-    double kappa = (rand() / (double) RAND_MAX) * 100;
+    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
     Component component(mu,kappa);
     components.push_back(component);
   }
@@ -142,7 +142,7 @@ void Mixture::updateWeights()
     }
     double normalization_constant = N + A - (K/2.0);
     for (int i=0; i<K; i++) {
-      weights[i] = alphas[i] / normalization_constant;
+      weights[i] = (sample_size[i] + alphas[i] - 0.5) / normalization_constant;
     }
   }
 }
@@ -233,7 +233,7 @@ double Mixture::computeMinimumMessageLength()
 
   // enocde the weights
   double Iw = ((K-1)/2.0) * log(N);
-  Iw -= log(boost::math::factorial<double>(K-1));
+  Iw -= log(boost::math::factorial<long double>(K-1));
   for (int i=0; i<K; i++) {
     Iw -= 0.5 * log(weights[i]);
   }
@@ -271,10 +271,18 @@ double Mixture::computeMinimumMessageLength()
  */
 double Mixture::estimateParameters()
 {
+  clock_t c_start = clock();
+  auto t_start = high_resolution_clock::now();
+
   initialize();
   double prev=0,current;
   int iter = 1;
   string file_name = string(CURRENT_DIRECTORY) + "mixture/logs/";
+  if (update_weights_new == UNSET) {
+    file_name += "normal_weights_update/";
+  } else if (update_weights_new == SET){
+    file_name += "new_weights_update/";
+  }
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
   printParameters(log,0,current);
@@ -299,6 +307,19 @@ double Mixture::estimateParameters()
   }
   log.close();
   plotMessageLengthEM();
+
+  clock_t c_end = clock();
+  auto t_end = high_resolution_clock::now();
+  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
+  double wall_time = duration_cast<seconds>(t_end-t_start).count();
+  // update summary file
+  ofstream summary("summary-part3",ios::app);
+  summary << fixed << setw(5) << K;
+  summary << fixed << setw(10) << iter;
+  summary << fixed << setw(20) << setprecision(3) << cpu_time/60; // in mins
+  summary << fixed << setw(20) << setprecision(3) << wall_time/60; // in mins
+  summary << fixed << setw(20) << setprecision(3) << current << endl;
+  summary.close();
   return current;
 }
 
@@ -328,7 +349,21 @@ void Mixture::plotMessageLengthEM()
 {
   // output the data to a file
   string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/";
-  data_file += boost::lexical_cast<string>(K) + ".dat";
+  string output_file = string(CURRENT_DIRECTORY) + "mixture/plots/";
+  string script_file = string(CURRENT_DIRECTORY) + "mixture/plots/";
+  if (update_weights_new == UNSET) {
+    data_file += "normal_weights_update/";
+    output_file += "normal_weights_update/";
+    script_file += "normal_weights_update/";
+  } else if (update_weights_new == SET){
+    data_file += "new_weights_update/";
+    output_file += "new_weights_update/";
+    script_file += "new_weights_update/";
+  }
+  string num_comp = boost::lexical_cast<string>(K);
+  data_file += num_comp + ".dat";
+  output_file += num_comp + ".eps";
+  script_file += num_comp + "_script.p";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
     file << i << "\t" << msglens[i] << endl;
@@ -336,7 +371,7 @@ void Mixture::plotMessageLengthEM()
   file.close();
 
   // prepare gnuplot script file
-  ofstream script("script.p");
+  ofstream script(script_file.c_str());
 	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
 	script << "set terminal post eps" << endl ;
 	script << "set autoscale\t" ;
@@ -348,10 +383,13 @@ void Mixture::plotMessageLengthEM()
 	script << "set title \"# of components: " << K << "\"" << endl ;
 	script << "set xlabel \"# of iterations\"" << endl ;
 	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"mixture/plots/" << K << ".eps\"" << endl ;
-	script << "plot \"mixture/msglens/" << K << ".dat\" using 1:2 notitle " 
+	script << "set output \"" << output_file << "\"" << endl ;
+	script << "plot \"" << data_file << "\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();
-  system("gnuplot -persist script.p") ;	
+  string cmd = "gnuplot -persist " + script_file;
+  system(cmd.c_str());
+  cmd = "rm " + script_file;
+  system(cmd.c_str());
 }
 

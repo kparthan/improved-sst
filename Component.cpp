@@ -86,6 +86,9 @@ void Component::estimateVonMisesMean()
 double Component::estimateKappa_ML()
 {
   double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
+  if (kappa >= MAX_KAPPA) {
+    kappa = MAX_KAPPA;
+  }
   cout << "Kappa (ML): " << kappa << endl;
   return kappa;
 }
@@ -116,11 +119,19 @@ double Component::estimateKappa_MML(double initial)
       } else {
         cout << "No significant change ..." << endl;
         cout << "current: " << current << endl;
-        return current;
+        if (current >= MAX_KAPPA) {
+          return MAX_KAPPA;
+        } else {
+          return current;
+        }
       }
     } else {
       cout << "Derivative is zero ..." << endl;
-      return prev;
+      if (prev >= MAX_KAPPA) {
+        return MAX_KAPPA;
+      } else {
+        return prev;
+      }
     }
   }
 }

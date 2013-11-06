@@ -40,6 +40,14 @@ class VonMises3D
 		//! Function value
 		double density(double, double);
 
+    //! Generate random samples
+    vector<array<double,3>> generateCanonical(int);
+
+    //! Generate random samples
+    vector<array<double,2>> generateAngles(int);
+
+    //! Generate random samples
+    vector<array<double,3>> generateCoordinates(int);
 };
 
 #endif

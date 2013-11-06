@@ -13,7 +13,7 @@ all: main
 main: $(OBJECTS)
 	g++ $(OBJECTS) -o $@ $(LDFLAGS) 
 
-main.o: main.cpp Support.h 
+main.o: main.cpp Support.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Support.o: Support.cpp Support.h Header.h
@@ -25,10 +25,10 @@ Protein.o: Protein.cpp Protein.h Support.h
 VonMises3D.o: VonMises3D.cpp VonMises3D.h 
 	g++ -c $(CFLAGS) $< -o $@
 
-Component.o: Component.cpp Component.h 
+Component.o: Component.cpp Component.h Header.h 
 	g++ -c $(CFLAGS) $< -o $@
 
-Mixture.o: Mixture.cpp Mixture.h 
+Mixture.o: Mixture.cpp Mixture.h Header.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:

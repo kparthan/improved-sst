@@ -28,7 +28,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("pdbid",value<string>(&pdb_id),"PDB ID")
        ("scopid",value<string>(&scop_id),"SCOP ID")
        ("force","force build the profile")
-       ("profiles_dir",value<string>(&parameters.profiles_dir),
+       ("directory",value<string>(&parameters.profiles_dir),
                                       "path to all profiles")
        ("bins","to compute the frequencies of angles")
        ("res",value<double>(&parameters.res),"heat map resolution")
@@ -52,7 +52,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.force = UNSET;
   }
   
-  if (vm.count("profiles_dir")) {
+  if (vm.count("directory")) {
     parameters.read_profiles = SET;
   } else {
     parameters.read_profiles = UNSET;
@@ -165,7 +165,8 @@ string extractName(string &file)
 /*!
  *  \brief This function computes the spherical coordinate values
  *  \param point a reference to a Point<double>
- *  \return the spherical coordinates at a given index
+ *  \return the theta-phi values (in degrees) corresponding to a point on the
+ *  sphere
  */
 array<double,3> convertToSpherical(Point<double> &point)
 {
@@ -449,54 +450,21 @@ void computeEstimators(struct Parameters &parameters)
     vector<array<double,2>> data = gatherData(parameters);
     if (parameters.infer_num_components == SET) {
       vector<double> msglens;
-      for (int k=16; k<=20; k++) {
-        cout << "Running for K: " << k << endl;
-        Mixture mixture(k,data,parameters.update_weights_new);
-        double msg = mixture.estimateParameters();
-        msglens.push_back(msg);
+      for (int k=2; k<=500; k++) {
+        if (k % 4 == 3) {
+          cout << "Running for K: " << k << endl;
+          Mixture mixture(k,data,parameters.update_weights_new);
+          double msg = mixture.estimateParameters();
+          //msglens.push_back(msg);
+        }
       }
-      plotMessageLengthAgainstComponents(msglens);
+      //plotMessageLengthAgainstComponents(msglens);
     } else if (parameters.infer_num_components == UNSET) {
       Mixture mixture(parameters.num_components,data,
                       parameters.update_weights_new);
       mixture.estimateParameters();
     }
   }
-}
-
-/*!
- *  \brief This function is used to plot the message lengths for different
- *  number of components.
- *  \param msglens a reference to a vector<double>
- */
-void plotMessageLengthAgainstComponents(vector<double> &msglens)
-{
-  // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/msglens2.dat";
-  ofstream file(data_file.c_str());
-  for (int i=0; i<msglens.size(); i++) {
-    file << i+2 << "\t" << msglens[i] << endl;
-  }
-  file.close();
-
-  // prepare gnuplot script file
-  ofstream script("script.p");
-	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
-	script << "set terminal post eps" << endl ;
-	script << "set autoscale\t" ;
-	script << "# scale axes automatically" << endl ;
-	script << "set xtic auto\t" ;
-	script << "# set xtics automatically" << endl ;
-	script << "set ytic auto\t" ;
-	script << "# set ytics automatically" << endl ;
-	//script << "set title \"# of components: " << K << "\"" << endl ;
-	script << "set xlabel \"# of components\"" << endl ;
-	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"mixture/plots/msglens2.eps\"" << endl ;
-	script << "plot \"mixture/msglens/msglens.dat\" using 1:2 notitle " 
-         << "with linespoints lc rgb \"red\"" << endl ;
-  script.close();
-  system("gnuplot -persist script.p") ;	
 }
 
 /*!
@@ -686,4 +654,44 @@ void outputBins(vector<vector<int>> &bins, double res)
   fbins.close();
   fbins3D.close();
 }
+
+/*!
+ *  \brief This function is used to plot the message lengths for different
+ *  number of components.
+ *  \param msglens a reference to a vector<double>
+ */
+void plotMessageLengthAgainstComponents(vector<double> &msglens)
+{
+  // output the data to a file
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/msglens2.dat";
+  ofstream file(data_file.c_str());
+  for (int i=0; i<msglens.size(); i++) {
+    file << i+2 << "\t" << msglens[i] << endl;
+  }
+  file.close();
+
+  // prepare gnuplot script file
+  ofstream script("script.p");
+	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
+	script << "set terminal post eps" << endl ;
+	script << "set autoscale\t" ;
+	script << "# scale axes automatically" << endl ;
+	script << "set xtic auto\t" ;
+	script << "# set xtics automatically" << endl ;
+	script << "set ytic auto\t" ;
+	script << "# set ytics automatically" << endl ;
+	//script << "set title \"# of components: " << K << "\"" << endl ;
+	script << "set xlabel \"# of components\"" << endl ;
+	script << "set ylabel \"message length (in bits)\"" << endl ;
+	script << "set output \"mixture/plots/msglens2.eps\"" << endl ;
+	script << "plot \"mixture/msglens/msglens.dat\" using 1:2 notitle " 
+         << "with linespoints lc rgb \"red\"" << endl ;
+  script.close();
+  system("gnuplot -persist script.p") ;	
+}
+
+/*!
+ *  \brief This function plots the mixture of Von Mises distributions on
+ *  a sphere.
+ */
 

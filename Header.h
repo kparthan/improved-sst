@@ -30,7 +30,7 @@
 #define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
-#define AOM 0.1
+#define AOM 0.2
 #define LARGE_NUMBER 1000000000
 #define PI boost::math::constants::pi<double>()
 #define LOG_PI log(PI)
@@ -46,8 +46,7 @@
 #define DEFAULT_RESOLUTION 0.1
 #define DEFAULT_COMPONENTS 2
 #define MAX_COMPONENTS 10
-#define MIN_SIGMA (3 * AOM)
-#define MAX_SIGMA 4.0
+#define MAX_KAPPA ceil(1/(0.09*AOM*AOM))
 
 using namespace std;
 using namespace std::chrono;
