@@ -84,6 +84,9 @@ class Mixture
 
     //! Plot the variation in message length
     void plotMessageLengthEM();
+
+    //! Loads the mixture file
+    void load(string &);
 };
 
 #endif

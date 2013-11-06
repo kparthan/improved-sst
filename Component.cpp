@@ -22,7 +22,7 @@ Component::Component(array<double,3> &mean_direction, double N) :
  *  \param kappa a double
  */
 Component::Component(array<double,2> &mean_direction, double kappa) :
-                     mu(mean_direction), kappa_mml(kappa)
+                     mu(mean_direction), kappa_mml(kappa), kappa_ml(kappa)
 {}
 
 /*!
@@ -330,3 +330,13 @@ double Component::getKappa()
   return kappa_mml;
 }
 
+/*!
+ *  \brief This function is used to generate random samples.
+ *  \param num_points an integer
+ *  \return the list of generated points
+ */
+vector<array<double,3>> Component::generate(int num_points)
+{
+  von_mises = VonMises3D(mu,kappa_mml);
+  return von_mises.generateCoordinates(num_points);
+}

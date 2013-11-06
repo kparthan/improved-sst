@@ -36,7 +36,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("infer_components","flag to infer the number of components")
        ("k",value<int>(&parameters.num_components),"number of components")
        ("update_weights_new","flag to update weights using modified rule")
-
+       ("load",value<string>(&parameters.mixture_file),"mixture file")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -53,53 +53,61 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   }
   
   if (vm.count("directory")) {
+    if (vm.count("file") || vm.count("pdbid") || vm.count("scopid")) {
+      cout << "conflicting options: directory/file type ..." << endl;
+      Usage(argv[0],desc);
+    }
     parameters.read_profiles = SET;
   } else {
     parameters.read_profiles = UNSET;
-    if (vm.count("file") && vm.count("pdbid")) {
-      cout << "Please use one of --file or --pdbid ..." << endl;
-      Usage(argv[0],desc);
-    } else if (vm.count("file")) {
-      cout << "Using protein file: " << parameters.file << endl;
-    } else if (vm.count("pdbid")) {
-      cout << "Using PDB ID: " << pdb_id << endl;
-      parameters.file = getPDBFilePath(pdb_id);
-    } else if (vm.count("scopid")) {
-      cout << "Using SCOP ID: " << scop_id << endl;
-      parameters.file = getSCOPFilePath(scop_id);
-    } else {
-      cout << "Input protein structure file not provided ..." << endl;
-      Usage(argv[0],desc);
-    }
   }
+
+  if (vm.count("file") && vm.count("pdbid")) {
+    cout << "Please use one of --file or --pdbid ..." << endl;
+    Usage(argv[0],desc);
+  } else if (vm.count("file")) {
+    cout << "Using protein file: " << parameters.file << endl;
+  } else if (vm.count("pdbid")) {
+    cout << "Using PDB ID: " << pdb_id << endl;
+    parameters.file = getPDBFilePath(pdb_id);
+  } else if (vm.count("scopid")) {
+    cout << "Using SCOP ID: " << scop_id << endl;
+    parameters.file = getSCOPFilePath(scop_id);
+  } 
   noargs = 0;
 
   if (vm.count("mixture")) {
     parameters.mixture_model = SET;
-    if (vm.count("infer_components")) {
-      parameters.infer_num_components = SET;
-    } else {
-      parameters.infer_num_components = UNSET;
-      if (!vm.count("k")) {
-        parameters.num_components = DEFAULT_COMPONENTS; 
+    if (!vm.count("load")) {
+      parameters.load_mixture = UNSET;
+      if (vm.count("infer_components")) {
+        parameters.infer_num_components = SET;
+      } else {
+        parameters.infer_num_components = UNSET;
+        if (!vm.count("k")) {
+          parameters.num_components = DEFAULT_COMPONENTS; 
+        }
+        cout << "# of components: " << parameters.num_components << endl;
       }
-      cout << "# of components: " << parameters.num_components << endl;
-    }
-    if (vm.count("update_weights_new")) {
-      parameters.update_weights_new = SET;
-    } else {
-      parameters.update_weights_new = UNSET;
+      if (vm.count("update_weights_new")) {
+        parameters.update_weights_new = SET;
+      } else {
+        parameters.update_weights_new = UNSET;
+      }
+    } else if (vm.count("load")) {
+      parameters.load_mixture = SET;
     }
   } else {
     parameters.mixture_model = UNSET;
-    if (vm.count("bins")) {
-      parameters.update_bins = SET;
-      if (!vm.count("res")) {
-        parameters.res = DEFAULT_RESOLUTION;
-      }
-    } else {
-      parameters.update_bins = UNSET;
+  }
+
+  if (vm.count("bins")) {
+    parameters.update_bins = SET;
+    if (!vm.count("res")) {
+      parameters.res = DEFAULT_RESOLUTION;
     }
+  } else {
+    parameters.update_bins = UNSET;
   }
 
   if (noargs) {
@@ -691,7 +699,12 @@ void plotMessageLengthAgainstComponents(vector<double> &msglens)
 }
 
 /*!
- *  \brief This function plots the mixture of Von Mises distributions on
- *  a sphere.
+ *  \brief This function generates the data to visualize the mixture components.
+ *  \param parameters a reference to a struct Parameters
  */
+void visualizeMixtureComponents(struct Parameters &parameters)
+{
+  Mixture mixture;
+  mixture.load(parameters.mixture_file);
+}
 

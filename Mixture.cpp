@@ -393,3 +393,77 @@ void Mixture::plotMessageLengthEM()
   system(cmd.c_str());
 }
 
+/*!
+ *  \brief This function is used to read the mixture details to aid in
+ *  visualization.
+ *  \param file_name a reference to a string
+ */
+void Mixture::load(string &file_name)
+{
+  sample_size.clear();
+  weights.clear();
+  components.clear();
+  K = 0;
+  ifstream file(file_name.c_str());
+  string line;
+  vector<double> numbers;
+  while (getline(file,line)) {
+    K++;
+    boost::char_separator<char> sep(",()[] \t");
+    boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
+    BOOST_FOREACH (const string& t, tokens) {
+      istringstream iss(t);
+      double x;
+      iss >> x;
+      numbers.push_back(x);
+    }
+    sample_size.push_back(numbers[0]);
+    weights.push_back(numbers[1]);
+    array<double,2> mu({numbers[2],numbers[3]});
+    double kappa = numbers[4];
+    Component component(mu,kappa);
+    components.push_back(component);
+    numbers.clear();
+  }
+  file.close();
+
+  string common = string(CURRENT_DIRECTORY) + "mixture/visualize/comp";
+  string data_file;
+  for (int i=0; i<K; i++) {
+    vector<array<double,3>> sample = components[i].generate((int)sample_size[i]);
+    // write the data to a file
+    data_file = common + boost::lexical_cast<string>(i+1) + ".dat";
+    ofstream data(data_file.c_str());
+    for (int j=0; j<sample.size(); j++) {
+      for (int k=0; k<3; k++) {
+        data << fixed << setw(10) << setprecision(3) << sample[j][k];
+      }
+      data << endl;
+    }
+    data.close();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

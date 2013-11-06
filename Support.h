@@ -16,6 +16,8 @@ struct Parameters
   int infer_num_components; // flag to infer the number of components
   int num_components;       // the number of mixture components
   int update_weights_new;   // flag to update weights using modified rule
+  int load_mixture;         // flag to load mixture details
+  string mixture_file;      // path to the mixture file
 };
 
 // general functions
@@ -50,6 +52,7 @@ void updateMeanDirection(array<double,3> &, double *, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
 void outputBins(vector<vector<int>> &, double);
 void plotMessageLengthAgainstComponents(vector<double> &);
+void visualizeMixtureComponents(struct Parameters &);
 
 #endif
 

@@ -10,3 +10,5 @@ density = M(:,4);
 
 
 h=scatter3(x,y,z,'cdata',density);
+
+end

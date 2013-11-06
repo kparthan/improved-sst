@@ -131,18 +131,18 @@ vector<array<double,3>> VonMises3D::generateCoordinates(int N)
 {
   vector<array<double,3>> canonical = generateCanonical(N);
   vector<array<double,3>> coordinates;
-  array<double,3> r;
+  array<double,3> r,x;
   for (int i=0; i<N; i++) {
     r[0] = canonical[i][0];
     r[1] = canonical[i][1];
     r[2] = canonical[i][2] - 1;
 
-    array<double,3> x;
     for (int j=0; j<3; j++) {
       x[j] = r[j] + unit_mean[j];
     }
     coordinates.push_back(x);
   }
+  //coordinates = canonical;
   return coordinates;
 }
 

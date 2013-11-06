@@ -88,6 +88,9 @@ class Component
 
     //! Return kappa 
     double getKappa();
+
+    //! Generate random samples from this component
+    vector<array<double,3>> generate(int);
 };
 
 #endif
