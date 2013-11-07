@@ -15,6 +15,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
 {
   struct Parameters parameters;
   string pdb_id,scop_id;
+  string visualization,generation;
 
   bool noargs = 1;
 
@@ -36,7 +37,11 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("infer_components","flag to infer the number of components")
        ("k",value<int>(&parameters.num_components),"number of components")
        ("update_weights_new","flag to update weights using modified rule")
+       // parameters to aid in visualization of mixture components
        ("load",value<string>(&parameters.mixture_file),"mixture file")
+       ("visualize",value<string>(&visualization),"type of visualization (2D/3D)")
+       ("generate",value<string>(&generation),"method to generate samples")
+       ("samples",value<int>(&parameters.num_samples),"sample size")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -76,9 +81,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   } 
   noargs = 0;
 
-  if (vm.count("mixture")) {
+  if (vm.count("mixture")) {  // run mixture modelling
     parameters.mixture_model = SET;
-    if (!vm.count("load")) {
+    if (!vm.count("load")) {  // for parameter inference
       parameters.load_mixture = UNSET;
       if (vm.count("infer_components")) {
         parameters.infer_num_components = SET;
@@ -94,20 +99,39 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
       } else {
         parameters.update_weights_new = UNSET;
       }
-    } else if (vm.count("load")) {
+    } else if (vm.count("load")) {  // for visualization
       parameters.load_mixture = SET;
+      if (visualization.compare("plane") == 0) {
+        parameters.visualize = VISUALIZE_2D;
+      } else if (visualization.compare("sphere") == 0) {
+        parameters.visualize = VISUALIZE_3D;
+      } else {
+        cout << "Unrecognized visualization flag ..." << endl;
+        Usage(argv[0],desc);
+      }
+      if (generation.compare("using_mixture_weights") == 0) {
+        parameters.sample_generation = USING_MIXTURE_WEIGHTS;
+        if (!vm.count("samples")) {
+          parameters.num_samples = DEFAULT_SAMPLE_SIZE; 
+        }
+      } else if (generation.compare("random_sample_size") == 0) {
+        parameters.sample_generation = RANDOM_SAMPLE_SIZE;
+      } else {
+        cout << "Unrecognized generation flag ..." << endl;
+        Usage(argv[0],desc);
+      }
     }
-  } else {
+  } else {  // run for single von mises
     parameters.mixture_model = UNSET;
   }
 
   if (vm.count("bins")) {
-    parameters.update_bins = SET;
+    parameters.heat_map = SET;
     if (!vm.count("res")) {
       parameters.res = DEFAULT_RESOLUTION;
     }
   } else {
-    parameters.update_bins = UNSET;
+    parameters.heat_map = UNSET;
   }
 
   if (noargs) {
@@ -490,7 +514,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
       copy(directory_iterator(p), directory_iterator(), back_inserter(files));
       cout << "# of profiles: " << files.size() << endl;
       vector<vector<int>> bins;
-      if (parameters.update_bins == SET) {
+      if (parameters.heat_map == SET) {
         int num_rows = 180 / parameters.res;
         int num_cols = 360 / parameters.res;
         cout << "rows: " << num_rows << endl;
@@ -511,7 +535,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
         Protein protein;
         protein.load(files[i]);
         updateMeanDirection(direction,&n,protein);
-        if (parameters.update_bins == SET) {
+        if (parameters.heat_map == SET) {
           updateBins(bins,parameters.res,protein);
         }
         /*log << files[i].string() << "\t";
@@ -521,7 +545,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
         log << endl;*/
       }
       //log.close();
-      if (parameters.update_bins == SET) {
+      if (parameters.heat_map == SET) {
         outputBins(bins,parameters.res);
       }
       return pair<array<double,3>,double>(direction,n);
@@ -706,5 +730,19 @@ void visualizeMixtureComponents(struct Parameters &parameters)
 {
   Mixture mixture;
   mixture.load(parameters.mixture_file);
+  if (parameters.visualize == VISUALIZE_2D) {
+    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+    }
+  } else if (parameters.visualize == VISUALIZE_3D) {
+    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+      mixture.generateProportionally(parameters.num_samples);
+    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+      mixture.generateRandomSampleSize();
+    }
+    if (parameters.heat_map == SET) {
+      mixture.generate3DHeatmapData(parameters.res);
+    }
+  }
 }
 

@@ -87,6 +87,24 @@ class Mixture
 
     //! Loads the mixture file
     void load(string &);
+
+    //! Randomly choose a component
+    int randomComponent();
+
+    //! Saves the data generated from a component
+    void saveComponentData(int, vector<array<double,3>> &);
+
+    //! Generate random data using arbitrary sample size
+    void generateRandomSampleSize();
+
+    //! Generate random data from the distribution using mixture proportions
+    vector<array<double,3>> generateProportionally(int);
+
+    //! Generate 2D heat map data
+    void generate2DHeatmapData(double);
+
+    //! Generate 3D heat map data
+    void generate3DHeatmapData(double);
 };
 
 #endif

@@ -122,6 +122,32 @@ vector<array<double,3>> VonMises3D::generateCanonical(int N)
 }
 
 /*!
+ *  \brief This function constructs the rotation matrix to transform points
+ *  from the canonical representation to the current form.
+ *  \return the rotation matrix
+ */
+Matrix<double> VonMises3D::constructRotationMatrix()
+{
+  vector<double> axis(3,0);
+  // rotation by theta degrees
+  double theta_rad = mu[0] * (PI/180.0);
+  axis[1] = 1;  // rotation around Y-axis
+  Vector<double> rot_axis1(axis);
+  Matrix<double> m1 = rotationMatrix(rot_axis1,theta_rad); 
+
+  // rotation by phi degrees
+  axis = vector<double>(3,0);
+  axis[2] = 1;  // rotation around Z-axis
+  double phi_rad = mu[1] * (PI/180.0);
+  Vector<double> rot_axis2(axis);
+  Matrix<double> m2 = rotationMatrix(rot_axis2,phi_rad);
+  
+  // final rotation matrix
+  Matrix<double> m = m2 * m1;
+  return m;
+}
+
+/*!
  *  \brief This function is used to generate random samples (coordinates) from 
  *  the distribution.
  *  \param N an integer
@@ -129,20 +155,18 @@ vector<array<double,3>> VonMises3D::generateCanonical(int N)
  */
 vector<array<double,3>> VonMises3D::generateCoordinates(int N)
 {
+  Matrix<double> rotate = constructRotationMatrix();
   vector<array<double,3>> canonical = generateCanonical(N);
   vector<array<double,3>> coordinates;
   array<double,3> r,x;
   for (int i=0; i<N; i++) {
-    r[0] = canonical[i][0];
-    r[1] = canonical[i][1];
-    r[2] = canonical[i][2] - 1;
-
-    for (int j=0; j<3; j++) {
-      x[j] = r[j] + unit_mean[j];
-    }
+    Point<double> p(canonical[i]);
+    Point<double> pr = lcb::geometry::transform<double>(p,rotate);
+    x[0] = pr.x();
+    x[1] = pr.y();
+    x[2] = pr.z();
     coordinates.push_back(x);
   }
-  //coordinates = canonical;
   return coordinates;
 }
 

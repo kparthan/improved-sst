@@ -26,8 +26,8 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/parthan/"
-#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/pkas7/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.2
@@ -47,6 +47,13 @@
 #define DEFAULT_COMPONENTS 2
 #define MAX_COMPONENTS 10
 #define MAX_KAPPA ceil(1/(0.09*AOM*AOM))
+
+// for mixture components visualization
+#define VISUALIZE_2D 0
+#define VISUALIZE_3D 1
+#define USING_MIXTURE_WEIGHTS 0
+#define RANDOM_SAMPLE_SIZE 1
+#define DEFAULT_SAMPLE_SIZE 2000
 
 using namespace std;
 using namespace std::chrono;

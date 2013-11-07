@@ -426,44 +426,132 @@ void Mixture::load(string &file_name)
     numbers.clear();
   }
   file.close();
+}
 
-  string common = string(CURRENT_DIRECTORY) + "mixture/visualize/comp";
-  string data_file;
-  for (int i=0; i<K; i++) {
-    vector<array<double,3>> sample = components[i].generate((int)sample_size[i]);
-    // write the data to a file
-    data_file = common + boost::lexical_cast<string>(i+1) + ".dat";
-    ofstream data(data_file.c_str());
-    for (int j=0; j<sample.size(); j++) {
-      for (int k=0; k<3; k++) {
-        data << fixed << setw(10) << setprecision(3) << sample[j][k];
-      }
-      data << endl;
+/*!
+ *  \brief This function is used to randomly choose a component.
+ *  \return the component index
+ */
+int Mixture::randomComponent()
+{
+  auto ts = high_resolution_clock::now();
+  usleep(1000);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
+  double random = rand() / (double) RAND_MAX;
+  //cout << random << endl;
+  double previous = 0;
+  for (int i=0; i<weights.size(); i++) {
+    if (random <= weights[i] + previous) {
+      return i;
     }
-    data.close();
+    previous += weights[i];
   }
 }
 
+/*!
+ *  \brief This function saves the data generated from a component to a file.
+ *  \param index an integer
+ *  \param data a reference to a vector<array<double,3>>
+ */
+void Mixture::saveComponentData(int index, vector<array<double,3>> &data)
+{
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/comp";
+  data_file += boost::lexical_cast<string>(index+1) + ".dat";
+  components[index].printParameters(cout);
+  ofstream file(data_file.c_str());
+  for (int j=0; j<data.size(); j++) {
+    for (int k=0; k<3; k++) {
+      file << fixed << setw(10) << setprecision(3) << data[j][k];
+    }
+    file << endl;
+  }
+  file.close();
+}
 
+/*!
+ *  \brief This function is used to generate samples of arbitrary size from 
+ *  each component.
+ */
+void Mixture::generateRandomSampleSize()
+{
+  for (int i=0; i<K; i++) {
+    vector<array<double,3>> sample = components[i].generate((int)sample_size[i]);
+    saveComponentData(i,sample);
+  }
+}
 
+/*!
+ *  \brief This function is used to randomly sample from the mixture
+ *  distribution.
+ *  \param num_samples an integer
+ *  \return the random sample
+ */
+vector<array<double,3>> Mixture::generateProportionally(int num_samples)
+{
+  sample_size = vector<double>(K,0);
+  for (int i=0; i<num_samples; i++) {
+    // randomly choose a component
+    int k = randomComponent();
+    sample_size[k]++;
+  }
+  for (int i=0; i<sample_size.size(); i++) {
+    cout << sample_size[i] << endl;
+  }
+  vector<array<double,3>> sample;
+  for (int i=0; i<K; i++) {
+    vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
+    saveComponentData(i,x);
+    for (int j=0; j<x.size(); j++) {
+      sample.push_back(x[i]);
+    }
+  }
+  return sample;
+}
 
+/*!
+ *  \brief This function generates data to visualize the heat map in a plane.
+ *  \param res a double
+ */
+void Mixture::generate2DHeatmapData(double res)
+{
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_2D.dat";
+  ofstream file(data_file.c_str());
+  array<double,2> angles;
+  for (double theta=0; theta<180; theta+=res) {
+    angles[0] = theta;
+    for (double phi=0; phi<360; phi+=res) {
+      angles[1] = phi;
+      double pr = probability(angles);
+      file << fixed << setw(10) << setprecision(4) << pr;
+    }
+    file << endl;
+  }
+  file.close();
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*!
+ *  \brief This function generates data to visualize the heat map on a sphere.
+ *  \param res a double
+ */
+void Mixture::generate3DHeatmapData(double res)
+{
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_3D.dat";
+  ofstream file(data_file.c_str());
+  array<double,2> angles;
+  for (double theta=0; theta<180; theta+=res) {
+    angles[0] = theta;
+    for (double phi=0; phi<360; phi+=res) {
+      angles[1] = phi;
+      double pr = probability(angles);
+      array<double,3> point = convertToCartesian(1,theta,phi);
+      for (int k=0; k<3; k++) {
+        file << fixed << setw(10) << setprecision(4) << point[k];
+      }
+      file << fixed << setw(10) << setprecision(4) << pr << endl;
+    }
+  }
+  file.close();
+}
 

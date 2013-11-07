@@ -48,6 +48,9 @@ class VonMises3D
 
     //! Generate random samples
     vector<array<double,3>> generateCoordinates(int);
+
+    //! Generate transformation matrix
+    Matrix<double> constructRotationMatrix();
 };
 
 #endif
