@@ -14,8 +14,7 @@
 struct Parameters parseCommandLineInput(int argc, char **argv)
 {
   struct Parameters parameters;
-  string pdb_id,scop_id;
-  string visualization,generation;
+  string pdb_id,scop_id,generation;
 
   bool noargs = 1;
 
@@ -35,13 +34,15 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("res",value<double>(&parameters.res),"heat map resolution")
        ("mixture","flag to do mixture modelling")
        ("infer_components","flag to infer the number of components")
-       ("k",value<int>(&parameters.num_components),"number of components")
+       ("k",value<int>(&parameters.fit_num_components),"number of components")
        ("update_weights_new","flag to update weights using modified rule")
        // parameters to aid in visualization of mixture components
        ("load",value<string>(&parameters.mixture_file),"mixture file")
-       ("visualize",value<string>(&visualization),"type of visualization (2D/3D)")
        ("generate",value<string>(&generation),"method to generate samples")
        ("samples",value<int>(&parameters.num_samples),"sample size")
+       // parameters that are associated with mixture model simulation
+       ("simulate",value<int>(&parameters.simulate_num_components),
+                              "flag to simulate the mixture model data")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -83,32 +84,8 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
 
   if (vm.count("mixture")) {  // run mixture modelling
     parameters.mixture_model = SET;
-    if (!vm.count("load")) {  // for parameter inference
-      parameters.load_mixture = UNSET;
-      if (vm.count("infer_components")) {
-        parameters.infer_num_components = SET;
-      } else {
-        parameters.infer_num_components = UNSET;
-        if (!vm.count("k")) {
-          parameters.num_components = DEFAULT_COMPONENTS; 
-        }
-        cout << "# of components: " << parameters.num_components << endl;
-      }
-      if (vm.count("update_weights_new")) {
-        parameters.update_weights_new = SET;
-      } else {
-        parameters.update_weights_new = UNSET;
-      }
-    } else if (vm.count("load")) {  // for visualization
+    if (vm.count("load")) {  // for visualization
       parameters.load_mixture = SET;
-      if (visualization.compare("plane") == 0) {
-        parameters.visualize = VISUALIZE_2D;
-      } else if (visualization.compare("sphere") == 0) {
-        parameters.visualize = VISUALIZE_3D;
-      } else {
-        cout << "Unrecognized visualization flag ..." << endl;
-        Usage(argv[0],desc);
-      }
       if (generation.compare("using_mixture_weights") == 0) {
         parameters.sample_generation = USING_MIXTURE_WEIGHTS;
         if (!vm.count("samples")) {
@@ -121,6 +98,41 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
         Usage(argv[0],desc);
       }
     }
+    if (vm.count("simulate")) {
+      parameters.simulation = SET;
+      if (parameters.simulate_num_components == 0) {
+        cout << "# of simulated components should be non-zero ..." << endl;
+        Usage(argv[0],desc);
+      }
+      cout << "# of simulated components: " 
+           << parameters.simulate_num_components << endl;
+      if (!vm.count("samples")) {
+        parameters.num_samples = DEFAULT_SAMPLE_SIZE; 
+      }
+    } else {
+      parameters.simulation = UNSET;
+    }
+    if (!vm.count("load")) {  // for parameter inference
+      parameters.load_mixture = UNSET;
+      if (vm.count("infer_components")) {
+        parameters.infer_num_components = SET;
+      } else {
+        parameters.infer_num_components = UNSET;
+        if (!vm.count("k")) {
+          parameters.fit_num_components = DEFAULT_COMPONENTS; 
+        } else if (parameters.fit_num_components == 0) {
+          cout << "# of inferred components should be non-zero ..." << endl;
+          Usage(argv[0],desc);
+        }
+        cout << "# of inferred components: " << parameters.fit_num_components 
+             << endl;
+      }
+      if (vm.count("update_weights_new")) {
+        parameters.update_weights_new = SET;
+      } else {
+        parameters.update_weights_new = UNSET;
+      }
+    } 
   } else {  // run for single von mises
     parameters.mixture_model = UNSET;
   }
@@ -471,31 +483,52 @@ ProteinStructure *parsePDBFile(string &pdb_file)
  */
 void computeEstimators(struct Parameters &parameters)
 {
-  if (parameters.mixture_model == UNSET) {
+  if (parameters.mixture_model == UNSET) {  // no mixture modelling
     pair<array<double,3>,double> data = readProfiles(parameters);
-    array<double,3> direction = data.first;
-    double num_samples = data.second;
-    //vonMisesDistribution_2DPlot(direction,parameters.res);
-    Component component(direction,num_samples);
-    component.minimizeMessageLength();
-  } else {
-    vector<array<double,2>> data = gatherData(parameters);
-    if (parameters.infer_num_components == SET) {
-      vector<double> msglens;
-      for (int k=2; k<=500; k++) {
-        if (k % 4 == 3) {
-          cout << "Running for K: " << k << endl;
-          Mixture mixture(k,data,parameters.update_weights_new);
-          double msg = mixture.estimateParameters();
-          //msglens.push_back(msg);
-        }
+    modelOneComponent(parameters,data);
+  } else if (parameters.mixture_model == SET) { // mixture modelling
+    vector<array<double,3>> data = gatherData(parameters);
+    modelMixture(parameters,data);
+  }
+}
+
+/*!
+ *  \brief This function models a single component.
+ *  \param parameters a reference to a struct Parameters
+ *  \param data a reference to a pair<array<double,3>,double>
+ */
+void modelOneComponent(struct Parameters &parameters,
+                       pair<array<double,3>,double> &data)
+{
+  array<double,3> direction = data.first;
+  double num_samples = data.second;
+  //vonMisesDistribution_2DPlot(direction,parameters.res);
+  Component component(direction,num_samples);
+  component.minimizeMessageLength();
+}
+
+/*!
+ *  \brief This function models a mixture of several components.
+ *  \param parameters a reference to a struct Parameters
+ *  \param data a reference to a vector<array<double,3>>
+ */
+void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
+{
+  // if the optimal number of components need to be determined
+  if (parameters.infer_num_components == SET) {
+    for (int k=2; k<=500; k++) {
+      if (k % 4 == 3) {
+        cout << "Running for K: " << k << endl;
+        Mixture mixture(k,data,parameters.update_weights_new);
+        mixture.estimateParameters();
       }
-      //plotMessageLengthAgainstComponents(msglens);
-    } else if (parameters.infer_num_components == UNSET) {
-      Mixture mixture(parameters.num_components,data,
-                      parameters.update_weights_new);
-      mixture.estimateParameters();
     }
+  } else if (parameters.infer_num_components == UNSET) {
+    // for a given value of number of components
+    // do the mixture modelling
+    Mixture mixture(parameters.fit_num_components,data,
+                    parameters.update_weights_new);
+    mixture.estimateParameters();
   }
 }
 
@@ -564,7 +597,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
  *  \param parameters a reference to a struct Parameters
  *  \return a pair of mean direction and the sample size
  */
-vector<array<double,2>> gatherData(struct Parameters &parameters)
+vector<array<double,3>> gatherData(struct Parameters &parameters)
 {
   path p(parameters.profiles_dir);
   cout << "path: " << p.string() << endl;
@@ -573,17 +606,16 @@ vector<array<double,2>> gatherData(struct Parameters &parameters)
       vector<path> files; // store paths,
       copy(directory_iterator(p), directory_iterator(), back_inserter(files));
       cout << "# of profiles: " << files.size() << endl;
-      vector<array<double,2>> angles;
+      vector<array<double,3>> coordinates;
       for (int i=0; i<files.size(); i++) {
         Protein protein;
         protein.load(files[i]);
         vector<array<double,3>> coords = protein.getSphericalCoordinatesList();
         for (int j=0; j<coords.size(); j++) {
-          array<double,2> theta_phi({coords[j][1],coords[j][2]});
-          angles.push_back(theta_phi);
+          coordinates.push_back(coords[j]);
         }
       }
-      return angles;
+      return coordinates;
     } else {
       cout << p << " exists, but is neither a regular file nor a directory\n";
     }
@@ -688,41 +720,6 @@ void outputBins(vector<vector<int>> &bins, double res)
 }
 
 /*!
- *  \brief This function is used to plot the message lengths for different
- *  number of components.
- *  \param msglens a reference to a vector<double>
- */
-void plotMessageLengthAgainstComponents(vector<double> &msglens)
-{
-  // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/msglens2.dat";
-  ofstream file(data_file.c_str());
-  for (int i=0; i<msglens.size(); i++) {
-    file << i+2 << "\t" << msglens[i] << endl;
-  }
-  file.close();
-
-  // prepare gnuplot script file
-  ofstream script("script.p");
-	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
-	script << "set terminal post eps" << endl ;
-	script << "set autoscale\t" ;
-	script << "# scale axes automatically" << endl ;
-	script << "set xtic auto\t" ;
-	script << "# set xtics automatically" << endl ;
-	script << "set ytic auto\t" ;
-	script << "# set ytics automatically" << endl ;
-	//script << "set title \"# of components: " << K << "\"" << endl ;
-	script << "set xlabel \"# of components\"" << endl ;
-	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"mixture/plots/msglens2.eps\"" << endl ;
-	script << "plot \"mixture/msglens/msglens.dat\" using 1:2 notitle " 
-         << "with linespoints lc rgb \"red\"" << endl ;
-  script.close();
-  system("gnuplot -persist script.p") ;	
-}
-
-/*!
  *  \brief This function generates the data to visualize the mixture components.
  *  \param parameters a reference to a struct Parameters
  */
@@ -730,19 +727,87 @@ void visualizeMixtureComponents(struct Parameters &parameters)
 {
   Mixture mixture;
   mixture.load(parameters.mixture_file);
-  if (parameters.visualize == VISUALIZE_2D) {
-    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
-    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
-    }
-  } else if (parameters.visualize == VISUALIZE_3D) {
-    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
-      mixture.generateProportionally(parameters.num_samples);
-    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
-      mixture.generateRandomSampleSize();
-    }
-    if (parameters.heat_map == SET) {
-      mixture.generate3DHeatmapData(parameters.res);
-    }
+  bool save = 1;
+  if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+    mixture.generateProportionally(parameters.num_samples,save);
+  } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+    mixture.generateRandomSampleSize(save);
   }
+  if (parameters.heat_map == SET) {
+    mixture.generateHeatmapData(parameters.res);
+  }
+}
+
+/*!
+ *  \brief This function is used to simulate the mixture model.
+ *  \param parameters a reference to a struct Parameters
+ */
+void simulateMixtureModel(struct Parameters &parameters)
+{
+  // # of components
+  int K = parameters.simulate_num_components;
+
+  // generate random weights
+  vector<double> weights = generateRandomWeights(K);
+
+  // generate random components
+  vector<Component> components = generateRandomComponents(K);
+
+  // original mixture model
+  Mixture original(K,weights,components);
+  vector<array<double,3>> data = original.generateProportionally(num_samples,0);
+
+  // model a mixture using the original data
+  Mixture mixture(K,);
+}
+
+/*!
+ *  \brief This function is used to generate a list of random weights.
+ *  \param num_weights an integer
+ *  \return the list of weights
+ */
+vector<double> generateRandomWeights(int num_weights)
+{
+  auto ts = high_resolution_clock::now();
+  usleep(1000);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
+  vector<double> weights;
+  double range = 1;
+  for (int i=0; i<num_weights-1; i++) {
+    double w = (rand() / (double) RAND_MAX) * range;
+    assert(w > 0 && w < range);
+    range -= w;
+    weights.push_back(w);
+  }
+  weights.push_back(range);
+  /*for (int i=0; i<weights.size(); i++) {
+    cout << weights[i] << " ";
+  } 
+  cout << endl;*/
+  return weights;
+}
+
+/*!
+ *  \brief This function is used to generate random components.
+ *  \param num_components an integer
+ *  \return the list of components
+ */
+vector<Component> generateRandomComponents(int num_components)
+{
+  srand(time(NULL));
+  vector<Component> components;
+  for (int i=0; i<num_components; i++) {
+    // initialize component parameters
+    array<double,2> mu;
+    mu[0] = (rand()/(double)RAND_MAX)*180;
+    mu[1] = (rand()/(double)RAND_MAX)*360;
+    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
+    Component component(mu,kappa);
+    //component.printParameters(cout);
+    components.push_back(component);
+  }
+  return components;
 }
 

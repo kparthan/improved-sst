@@ -46,6 +46,12 @@ class Mixture
     //! Constructor
     Mixture(int, vector<array<double,2>> &, int);
 
+    //! Constructor
+    Mixture(int, vector<array<double,3>> &, int);
+
+    //! Constructor
+    Mixture(int , vector<double> &, vector<Component> &);
+
     //! Initialize parameters
     void initialize();
 
@@ -95,16 +101,13 @@ class Mixture
     void saveComponentData(int, vector<array<double,3>> &);
 
     //! Generate random data using arbitrary sample size
-    void generateRandomSampleSize();
+    void generateRandomSampleSize(bool);
 
     //! Generate random data from the distribution using mixture proportions
-    vector<array<double,3>> generateProportionally(int);
+    vector<array<double,3>> generateProportionally(int, bool);
 
-    //! Generate 2D heat map data
-    void generate2DHeatmapData(double);
-
-    //! Generate 3D heat map data
-    void generate3DHeatmapData(double);
+    //! Generate heat map data
+    void generateHeatmapData(double);
 };
 
 #endif

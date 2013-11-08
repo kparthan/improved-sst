@@ -24,6 +24,34 @@ Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
 }
 
 /*!
+ *  \brief This is a constructor function.
+ *  \param num_components an integer
+ *  \param data a reference to a vector<array<double,3>>
+ *  \param update_weights_new an integer
+ */
+Mixture::Mixture(int num_components, vector<array<double,3>> &data,
+                 int update_weights_new) : K(num_components), data(data),
+                 update_weights_new(update_weights_new)
+{
+  for (int i=0; i<data.size(); i++) {
+    Point<double> point(data[i]);
+    array<double,3> d = convertToSpherical(point);
+    array<double,2> a({d[1],d[2]});
+    angles.push_back(a);
+  }
+}
+
+/*!
+ *  \brief This is a constructor function.
+ *  \param k an integer
+ *  \param w a reference to a vector<double>
+ *  \param c a reference to a vector<Component>
+ */
+Mixture::Mixture(int k, vector<double> &w, vector<Component> &c):
+                K(k), weights(w), components(c)
+{}
+
+/*!
  *  \brief This function initializes the parameters of the model.
  */
 void Mixture::initialize()
@@ -62,19 +90,12 @@ void Mixture::initialize2()
 {
   N = angles.size();
   cout << "sample size: " << N << endl;
-  srand(time(NULL));
-  double w = 1 / (double) K;
-  for (int i=0; i<K; i++) {
-    // initialize weights of components
-    weights.push_back(w);
-    // initialize component parameters
-    array<double,2> mu;
-    mu[0] = (rand()/(double)RAND_MAX)*180;
-    mu[1] = (rand()/(double)RAND_MAX)*360;
-    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
-    Component component(mu,kappa);
-    components.push_back(component);
-  }
+
+  // initialize weights of components
+  weights = generateRandomWeights(K);
+
+  // initialize components
+  components = generateRandomComponents(K);
 
   // set the dimensions of r_{ik}, n_k and alpha_k matrices
   for (int i=0; i<N; i++) {
@@ -473,12 +494,15 @@ void Mixture::saveComponentData(int index, vector<array<double,3>> &data)
 /*!
  *  \brief This function is used to generate samples of arbitrary size from 
  *  each component.
+ *  \param save_data a boolean variable
  */
-void Mixture::generateRandomSampleSize()
+void Mixture::generateRandomSampleSize(bool save_data)
 {
   for (int i=0; i<K; i++) {
     vector<array<double,3>> sample = components[i].generate((int)sample_size[i]);
-    saveComponentData(i,sample);
+    if (save_data) {
+      saveComponentData(i,sample);
+    }
   }
 }
 
@@ -486,9 +510,11 @@ void Mixture::generateRandomSampleSize()
  *  \brief This function is used to randomly sample from the mixture
  *  distribution.
  *  \param num_samples an integer
+ *  \param save_data a boolean variable
  *  \return the random sample
  */
-vector<array<double,3>> Mixture::generateProportionally(int num_samples)
+vector<array<double,3>>
+Mixture::generateProportionally(int num_samples, bool save_data) 
 {
   sample_size = vector<double>(K,0);
   for (int i=0; i<num_samples; i++) {
@@ -502,7 +528,9 @@ vector<array<double,3>> Mixture::generateProportionally(int num_samples)
   vector<array<double,3>> sample;
   for (int i=0; i<K; i++) {
     vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
-    saveComponentData(i,x);
+    if (save_data) {
+      saveComponentData(i,x);
+    }
     for (int j=0; j<x.size(); j++) {
       sample.push_back(x[i]);
     }
@@ -510,48 +538,35 @@ vector<array<double,3>> Mixture::generateProportionally(int num_samples)
   return sample;
 }
 
-/*!
- *  \brief This function generates data to visualize the heat map in a plane.
- *  \param res a double
- */
-void Mixture::generate2DHeatmapData(double res)
-{
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_2D.dat";
-  ofstream file(data_file.c_str());
-  array<double,2> angles;
-  for (double theta=0; theta<180; theta+=res) {
-    angles[0] = theta;
-    for (double phi=0; phi<360; phi+=res) {
-      angles[1] = phi;
-      double pr = probability(angles);
-      file << fixed << setw(10) << setprecision(4) << pr;
-    }
-    file << endl;
-  }
-  file.close();
-}
 
 /*!
- *  \brief This function generates data to visualize the heat map on a sphere.
+ *  \brief This function generates data to visualize the 2D/3D heat maps.
  *  \param res a double
  */
-void Mixture::generate3DHeatmapData(double res)
+void Mixture::generateHeatmapData(double res)
 {
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_3D.dat";
-  ofstream file(data_file.c_str());
+  string data_fbins2D = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_2D.dat";
+  string data_fbins3D = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_3D.dat";
+  ofstream fbins2D(data_fbins2D.c_str());
+  ofstream fbins3D(data_fbins3D.c_str());
   array<double,2> angles;
   for (double theta=0; theta<180; theta+=res) {
     angles[0] = theta;
     for (double phi=0; phi<360; phi+=res) {
       angles[1] = phi;
       double pr = probability(angles);
+      // 2D bins
+      fbins2D << fixed << setw(10) << setprecision(4) << pr;
+      // 3D bins
       array<double,3> point = convertToCartesian(1,theta,phi);
       for (int k=0; k<3; k++) {
-        file << fixed << setw(10) << setprecision(4) << point[k];
+        fbins3D << fixed << setw(10) << setprecision(4) << point[k];
       }
-      file << fixed << setw(10) << setprecision(4) << pr << endl;
+      fbins3D << fixed << setw(10) << setprecision(4) << pr << endl;
     }
+    fbins2D << endl;
   }
-  file.close();
+  fbins2D.close();
+  fbins3D.close();
 }
 
