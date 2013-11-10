@@ -12,9 +12,11 @@ Mixture::Mixture()
  *  \param num_components an integer
  *  \param angles a reference to a vector<array<double,2>>
  *  \param update_weights_new an integer
+ *  \param simulation an integer
  */
 Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
-                 int update_weights_new) : K(num_components), angles(angles),
+                 int update_weights_new, int simulation) : 
+                 K(num_components), angles(angles), simulation(simulation),
                  update_weights_new(update_weights_new)
 {
   for (int i=0; i<angles.size(); i++) {
@@ -28,9 +30,11 @@ Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
  *  \param num_components an integer
  *  \param data a reference to a vector<array<double,3>>
  *  \param update_weights_new an integer
+ *  \param simulation an integer
  */
 Mixture::Mixture(int num_components, vector<array<double,3>> &data,
-                 int update_weights_new) : K(num_components), data(data),
+                 int update_weights_new, int simulation) : 
+                 K(num_components), data(data), simulation(simulation),
                  update_weights_new(update_weights_new)
 {
   for (int i=0; i<data.size(); i++) {
@@ -298,11 +302,17 @@ double Mixture::estimateParameters()
   initialize();
   double prev=0,current;
   int iter = 1;
-  string file_name = string(CURRENT_DIRECTORY) + "mixture/logs/";
-  if (update_weights_new == UNSET) {
-    file_name += "normal_weights_update/";
-  } else if (update_weights_new == SET){
-    file_name += "new_weights_update/";
+  string file_name = string(CURRENT_DIRECTORY) + "mixture/";
+  if (simulation == SET) {
+    file_name += "simulation/";
+  }
+  file_name += "logs/";
+  if (simulation == UNSET) {
+    if (update_weights_new == UNSET) {
+      file_name += "normal_weights_update/";
+    } else if (update_weights_new == SET){
+      file_name += "new_weights_update/";
+    }
   }
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
@@ -334,13 +344,13 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
-  ofstream summary("summary-part3",ios::app);
+  /*ofstream summary("summary-part3",ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;
   summary << fixed << setw(20) << setprecision(3) << cpu_time/60; // in mins
   summary << fixed << setw(20) << setprecision(3) << wall_time/60; // in mins
   summary << fixed << setw(20) << setprecision(3) << current << endl;
-  summary.close();
+  summary.close();*/
   return current;
 }
 
@@ -369,17 +379,27 @@ void Mixture::printParameters(ostream &os, int iter, double msglen)
 void Mixture::plotMessageLengthEM()
 {
   // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens/";
-  string output_file = string(CURRENT_DIRECTORY) + "mixture/plots/";
-  string script_file = string(CURRENT_DIRECTORY) + "mixture/plots/";
-  if (update_weights_new == UNSET) {
-    data_file += "normal_weights_update/";
-    output_file += "normal_weights_update/";
-    script_file += "normal_weights_update/";
-  } else if (update_weights_new == SET){
-    data_file += "new_weights_update/";
-    output_file += "new_weights_update/";
-    script_file += "new_weights_update/";
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/";
+  string output_file = string(CURRENT_DIRECTORY) + "mixture/";
+  string script_file = string(CURRENT_DIRECTORY) + "mixture/";
+  if (simulation == SET) {
+    data_file += "simulation/";
+    output_file += "simulation/";
+    script_file += "simulation/";
+  }
+  data_file += "msglens/";
+  output_file += "plots/";
+  script_file += "plots/";
+  if (simulation == UNSET) {
+    if (update_weights_new == UNSET) {
+      data_file += "normal_weights_update/";
+      output_file += "normal_weights_update/";
+      script_file += "normal_weights_update/";
+    } else if (update_weights_new == SET){
+      data_file += "new_weights_update/";
+      output_file += "new_weights_update/";
+      script_file += "new_weights_update/";
+    }
   }
   string num_comp = boost::lexical_cast<string>(K);
   data_file += num_comp + ".dat";

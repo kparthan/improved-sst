@@ -86,7 +86,7 @@ void Component::estimateVonMisesMean()
 double Component::estimateKappa_ML()
 {
   double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
-  if (kappa >= MAX_KAPPA) {
+  if (fabs(kappa) >= MAX_KAPPA) {
     kappa = MAX_KAPPA;
   }
   cout << "Kappa (ML): " << kappa << endl;

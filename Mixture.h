@@ -33,6 +33,9 @@ class Mixture
     //! Flag to use modified weight update rule
     int update_weights_new;
 
+    //! Simulation flag
+    int simulation;
+
     //! Alphas (alpha_k)
     vector<double> alphas;
 
@@ -44,10 +47,10 @@ class Mixture
     Mixture();
 
     //! Constructor
-    Mixture(int, vector<array<double,2>> &, int);
+    Mixture(int, vector<array<double,2>> &, int, int);
 
     //! Constructor
-    Mixture(int, vector<array<double,3>> &, int);
+    Mixture(int, vector<array<double,3>> &, int, int);
 
     //! Constructor
     Mixture(int , vector<double> &, vector<Component> &);

@@ -519,7 +519,7 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
     for (int k=2; k<=500; k++) {
       if (k % 4 == 3) {
         cout << "Running for K: " << k << endl;
-        Mixture mixture(k,data,parameters.update_weights_new);
+        Mixture mixture(k,data,parameters.update_weights_new,parameters.simulation);
         mixture.estimateParameters();
       }
     }
@@ -527,7 +527,7 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
     // for a given value of number of components
     // do the mixture modelling
     Mixture mixture(parameters.fit_num_components,data,
-                    parameters.update_weights_new);
+                    parameters.update_weights_new,parameters.simulation);
     mixture.estimateParameters();
   }
 }
@@ -755,10 +755,12 @@ void simulateMixtureModel(struct Parameters &parameters)
 
   // original mixture model
   Mixture original(K,weights,components);
-  vector<array<double,3>> data = original.generateProportionally(num_samples,0);
+  vector<array<double,3>>
+  data = original.generateProportionally(parameters.num_samples,0);
 
   // model a mixture using the original data
-  Mixture mixture(K,);
+  Mixture mixture(K,data,parameters.update_weights_new,parameters.simulation);
+  cout << mixture.estimateParameters() << endl;
 }
 
 /*!
@@ -782,10 +784,10 @@ vector<double> generateRandomWeights(int num_weights)
     weights.push_back(w);
   }
   weights.push_back(range);
-  /*for (int i=0; i<weights.size(); i++) {
+  for (int i=0; i<weights.size(); i++) {
     cout << weights[i] << " ";
   } 
-  cout << endl;*/
+  cout << endl;
   return weights;
 }
 
@@ -805,7 +807,7 @@ vector<Component> generateRandomComponents(int num_components)
     mu[1] = (rand()/(double)RAND_MAX)*360;
     double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
     Component component(mu,kappa);
-    //component.printParameters(cout);
+    component.printParameters(cout);
     components.push_back(component);
   }
   return components;
