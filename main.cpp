@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     buildAngularProfile(parameters);
   }
 
-  if (parameters.read_profiles == SET && parameters.mixture_model == SET) {
+  if (parameters.read_profiles == SET) {
     computeEstimators(parameters);
   } 
 

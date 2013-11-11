@@ -14,7 +14,7 @@
 struct Parameters parseCommandLineInput(int argc, char **argv)
 {
   struct Parameters parameters;
-  string pdb_id,scop_id,generation;
+  string pdb_id,scop_id,generation,constrain;
 
   bool noargs = 1;
 
@@ -30,6 +30,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("force","force build the profile")
        ("directory",value<string>(&parameters.profiles_dir),
                                       "path to all profiles")
+       ("constrain",value<string>(&constrain),"to constrain kappa")
        ("bins","to compute the frequencies of angles")
        ("res",value<double>(&parameters.res),"heat map resolution")
        ("mixture","flag to do mixture modelling")
@@ -68,18 +69,26 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.read_profiles = UNSET;
   }
 
-  if (vm.count("file") && vm.count("pdbid")) {
-    cout << "Please use one of --file or --pdbid ..." << endl;
-    Usage(argv[0],desc);
-  } else if (vm.count("file")) {
-    cout << "Using protein file: " << parameters.file << endl;
-  } else if (vm.count("pdbid")) {
-    cout << "Using PDB ID: " << pdb_id << endl;
-    parameters.file = getPDBFilePath(pdb_id);
-  } else if (vm.count("scopid")) {
-    cout << "Using SCOP ID: " << scop_id << endl;
-    parameters.file = getSCOPFilePath(scop_id);
-  } 
+  if (constrain.compare("kappa") == 0) {
+    parameters.constrain_kappa = SET;
+  } else {
+    parameters.constrain_kappa = UNSET;
+  }
+
+  if (!vm.count("directory") && !vm.count("mixture")) {
+    if (vm.count("file") && vm.count("pdbid")) {
+      cout << "Please use one of --file or --pdbid ..." << endl;
+      Usage(argv[0],desc);
+    } else if (vm.count("file")) {
+      cout << "Using protein file: " << parameters.file << endl;
+    } else if (vm.count("pdbid")) {
+      cout << "Using PDB ID: " << pdb_id << endl;
+      parameters.file = getPDBFilePath(pdb_id);
+    } else if (vm.count("scopid")) {
+      cout << "Using SCOP ID: " << scop_id << endl;
+      parameters.file = getSCOPFilePath(scop_id);
+    } 
+  }
   noargs = 0;
 
   if (vm.count("mixture")) {  // run mixture modelling
@@ -503,7 +512,7 @@ void modelOneComponent(struct Parameters &parameters,
   array<double,3> direction = data.first;
   double num_samples = data.second;
   //vonMisesDistribution_2DPlot(direction,parameters.res);
-  Component component(direction,num_samples);
+  Component component(direction,num_samples,parameters.constrain_kappa);
   component.minimizeMessageLength();
 }
 
@@ -516,18 +525,21 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
 {
   // if the optimal number of components need to be determined
   if (parameters.infer_num_components == SET) {
-    for (int k=2; k<=500; k++) {
-      if (k % 4 == 3) {
-        cout << "Running for K: " << k << endl;
-        Mixture mixture(k,data,parameters.update_weights_new,parameters.simulation);
-        mixture.estimateParameters();
-      }
+    vector<double> msglens;
+    for (int k=1; k<=20; k++) {
+      cout << "Running for K: " << k << endl;
+      Mixture mixture(k,data,parameters.update_weights_new,
+                      parameters.constrain_kappa,parameters.simulation);
+      double msg = mixture.estimateParameters();
+      msglens.push_back(msg);
     }
+    plotMessageLengthAgainstComponents(msglens);
   } else if (parameters.infer_num_components == UNSET) {
     // for a given value of number of components
     // do the mixture modelling
     Mixture mixture(parameters.fit_num_components,data,
-                    parameters.update_weights_new,parameters.simulation);
+                    parameters.update_weights_new,parameters.constrain_kappa,
+                    parameters.simulation);
     mixture.estimateParameters();
   }
 }
@@ -751,7 +763,8 @@ void simulateMixtureModel(struct Parameters &parameters)
   vector<double> weights = generateRandomWeights(K);
 
   // generate random components
-  vector<Component> components = generateRandomComponents(K);
+  vector<Component> 
+  components = generateRandomComponents(K,parameters.constrain_kappa);
 
   // original mixture model
   Mixture original(K,weights,components);
@@ -759,8 +772,9 @@ void simulateMixtureModel(struct Parameters &parameters)
   data = original.generateProportionally(parameters.num_samples,0);
 
   // model a mixture using the original data
-  Mixture mixture(K,data,parameters.update_weights_new,parameters.simulation);
-  cout << mixture.estimateParameters() << endl;
+  modelMixture(parameters,data);
+  //Mixture mixture(parameters.fit_num_components,data,parameters.update_weights_new,parameters.simulation);
+  //cout << mixture.estimateParameters() << endl;
 }
 
 /*!
@@ -795,10 +809,16 @@ vector<double> generateRandomWeights(int num_weights)
  *  \brief This function is used to generate random components.
  *  \param num_components an integer
  *  \return the list of components
+ *  \param constrain_kappa an integer
  */
-vector<Component> generateRandomComponents(int num_components)
+vector<Component>
+generateRandomComponents(int num_components, int constrain_kappa)
 {
-  srand(time(NULL));
+  auto ts = high_resolution_clock::now();
+  usleep(1000);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
   vector<Component> components;
   for (int i=0; i<num_components; i++) {
     // initialize component parameters
@@ -806,10 +826,46 @@ vector<Component> generateRandomComponents(int num_components)
     mu[0] = (rand()/(double)RAND_MAX)*180;
     mu[1] = (rand()/(double)RAND_MAX)*360;
     double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
-    Component component(mu,kappa);
+    Component component(mu,kappa,constrain_kappa);
     component.printParameters(cout);
     components.push_back(component);
   }
   return components;
+}
+
+/*!
+ *  \brief This function is used to plot the message lengths for different
+ *  number of components.
+ *  \param msglens a reference to a vector<double>
+ */
+void plotMessageLengthAgainstComponents(vector<double> &msglens)
+{
+  // output the data to a file
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens-infer.dat";
+  ofstream file(data_file.c_str());
+  for (int i=0; i<msglens.size(); i++) {
+    file << i+1 << "\t" << msglens[i] << endl;
+  }
+  file.close();
+
+  // prepare gnuplot script file
+  ofstream script("script.p");
+	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
+	script << "set terminal post eps" << endl ;
+	script << "set autoscale\t" ;
+	script << "# scale axes automatically" << endl ;
+	script << "set xtic auto\t" ;
+	script << "# set xtics automatically" << endl ;
+	script << "set ytic auto\t" ;
+	script << "# set ytics automatically" << endl ;
+  script << "set xr [0:]" << endl;
+	//script << "set title \"# of components: " << K << "\"" << endl ;
+	script << "set xlabel \"# of components\"" << endl ;
+	script << "set ylabel \"message length (in bits)\"" << endl ;
+	script << "set output \"mixture/msglens-infer.eps\"" << endl ;
+	script << "plot \"mixture/msglens-infer.dat\" using 1:2 notitle " 
+         << "with linespoints lc rgb \"red\"" << endl ;
+  script.close();
+  system("gnuplot -persist script.p") ;	
 }
 

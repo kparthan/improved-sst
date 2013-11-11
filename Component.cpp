@@ -11,18 +11,22 @@ Component::Component()
  *  \brief This is a constructor function.
  *  \param mean_direction a reference to an array<double,3>
  *  \param N a double
+ *  \param constrain_kappa an integer
  */
-Component::Component(array<double,3> &mean_direction, double N) :
-                     mean_direction(mean_direction), N(N)
+Component::Component(array<double,3> &mean_direction, double N, 
+                     int constrain_kappa) : mean_direction(mean_direction),
+                     N(N), constrain_kappa(constrain_kappa)
 {}
 
 /*!
  *  \brief This is a constructor function.
  *  \param mean_direction a reference to an array<double,2>
  *  \param kappa a double
+ *  \param constrain_kappa an integer
  */
-Component::Component(array<double,2> &mean_direction, double kappa) :
-                     mu(mean_direction), kappa_mml(kappa), kappa_ml(kappa)
+Component::Component(array<double,2> &mean_direction, double kappa,
+                     int constrain_kappa) : mu(mean_direction), kappa_ml(kappa),
+                     kappa_mml(kappa), constrain_kappa(constrain_kappa)
 {}
 
 /*!
@@ -34,6 +38,7 @@ void Component::minimizeMessageLength()
   estimateVonMisesMean();
   kappa_ml = estimateKappa_ML();
   kappa_mml = estimateKappa_MML(kappa_ml);
+  cout << "kappa (MML): " << kappa_mml << endl;
   von_mises = VonMises3D(mu,kappa_mml);
 }
 
@@ -86,8 +91,10 @@ void Component::estimateVonMisesMean()
 double Component::estimateKappa_ML()
 {
   double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
-  if (fabs(kappa) >= MAX_KAPPA) {
-    kappa = MAX_KAPPA;
+  if (constrain_kappa == SET) {
+    if (fabs(kappa) >= MAX_KAPPA) {
+      kappa = MAX_KAPPA;
+    }
   }
   cout << "Kappa (ML): " << kappa << endl;
   return kappa;
@@ -119,7 +126,7 @@ double Component::estimateKappa_MML(double initial)
       } else {
         cout << "No significant change ..." << endl;
         cout << "current: " << current << endl;
-        if (current >= MAX_KAPPA) {
+        if (constrain_kappa == SET && current >= MAX_KAPPA) {
           return MAX_KAPPA;
         } else {
           return current;
@@ -127,7 +134,7 @@ double Component::estimateKappa_MML(double initial)
       }
     } else {
       cout << "Derivative is zero ..." << endl;
-      if (prev >= MAX_KAPPA) {
+      if (constrain_kappa == SET && prev >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
         return prev;
@@ -162,6 +169,11 @@ double Component::computeFirstPart(double kappa)
                  - log(kappa) + 2 * log(1 + kappa * kappa) 
                  + log(ratioBesselFunction(kappa)) 
                  + 0.5 * log(ratioBesselFunction_firstDerivative(kappa));
+  if (constrain_kappa == SET) {
+    double tmp = atan(MAX_KAPPA) - (MAX_KAPPA/(1+MAX_KAPPA*MAX_KAPPA));
+    double constant = PI / (2 * tmp);
+    part1 -= log(constant);
+  }
   return part1;
 }
 
@@ -173,7 +185,7 @@ double Component::computeFirstPart(double kappa)
 double Component::computeSecondPart(double kappa)
 {
   double part2 = 1.5 - kappa * R -  N * log(kappa) + N * log(4) + N * LOG_PI
-                 + N * log(sinh(kappa));
+                 + N * log(sinh(kappa)) - 2 * N * log(AOM);
   return part2;
 }
 
@@ -270,6 +282,11 @@ double Component::computePriorDensity()
 {
   double kappa_sq = kappa_mml * kappa_mml;
   double num = kappa_sq * fabs(sin(mu[0]));
+  if (constrain_kappa == SET) {
+    double tmp = atan(MAX_KAPPA) - (MAX_KAPPA/(1+MAX_KAPPA*MAX_KAPPA));
+    double constant = PI / (2 * tmp);
+    num *= constant;
+  }
   double denom = PI * PI * (1+kappa_sq) * (1+kappa_sq);
   return num/denom; 
 }

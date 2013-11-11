@@ -12,12 +12,14 @@ Mixture::Mixture()
  *  \param num_components an integer
  *  \param angles a reference to a vector<array<double,2>>
  *  \param update_weights_new an integer
+ *  \param constrain_kappa an integer
  *  \param simulation an integer
  */
 Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
-                 int update_weights_new, int simulation) : 
+                 int update_weights_new, int constrain_kappa, int simulation) : 
                  K(num_components), angles(angles), simulation(simulation),
-                 update_weights_new(update_weights_new)
+                 update_weights_new(update_weights_new),
+                 constrain_kappa(constrain_kappa)
 {
   for (int i=0; i<angles.size(); i++) {
     array<double,3> x = convertToCartesian(1,angles[i][0],angles[i][1]);
@@ -30,12 +32,14 @@ Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
  *  \param num_components an integer
  *  \param data a reference to a vector<array<double,3>>
  *  \param update_weights_new an integer
+ *  \param constrain_kappa an integer
  *  \param simulation an integer
  */
 Mixture::Mixture(int num_components, vector<array<double,3>> &data,
-                 int update_weights_new, int simulation) : 
+                 int update_weights_new, int constrain_kappa, int simulation) : 
                  K(num_components), data(data), simulation(simulation),
-                 update_weights_new(update_weights_new)
+                 update_weights_new(update_weights_new),
+                 constrain_kappa(constrain_kappa)
 {
   for (int i=0; i<data.size(); i++) {
     Point<double> point(data[i]);
@@ -69,7 +73,11 @@ void Mixture::initialize()
   }*/
 
   // initialize responsibility matrix
-  srand(time(NULL));
+  auto ts = high_resolution_clock::now();
+  usleep(1000);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
   for (int i=0; i<N; i++) {
     vector<double> tmp(K,0);
     responsibility.push_back(tmp);
@@ -99,7 +107,7 @@ void Mixture::initialize2()
   weights = generateRandomWeights(K);
 
   // initialize components
-  components = generateRandomComponents(K);
+  components = generateRandomComponents(K,constrain_kappa);
 
   // set the dimensions of r_{ik}, n_k and alpha_k matrices
   for (int i=0; i<N; i++) {
@@ -119,14 +127,14 @@ void Mixture::initializeComponentParameters()
   for (int i=0; i<K; i++) {
     array<double,3> mean({0,0,0});
     for (int j=0; j<N; j++) {
-      if (responsibility[j][i] == 1) {
+      if (responsibility[j][i] > 0.5) {
         array<double,3> x = data[j]; 
         for (int k=0; k<3; k++) {
           mean[k] += x[k];
         }
       }
     }
-    Component component(mean,sample_size[i]);
+    Component component(mean,sample_size[i],constrain_kappa);
     component.minimizeMessageLength();
     components.push_back(component);
   }
@@ -203,7 +211,7 @@ void Mixture::updateComponents()
     /*for (int k=0; k<3; k++) {
       sum[k] /= sample_size[i];
     }*/
-    Component component(sum,sample_size[i]);
+    Component component(sum,sample_size[i],constrain_kappa);
     component.minimizeMessageLength();
     components.push_back(component);
   }
@@ -239,6 +247,12 @@ double Mixture::probability(array<double,2> &x)
   double px = 0,density;
   for (int i=0; i<K; i++) {
     density = components[i].likelihood(x);
+    if (density >= 1) {
+      cout << "density: " << density << endl;
+    }
+      cout << "density: " << density << endl;
+    cout.flush();
+    assert(density <= 1);
     px += weights[i] * density;
   }
   return px;
@@ -268,6 +282,10 @@ double Mixture::computeMinimumMessageLength()
   double Il = 0;
   for (int i=0; i<N; i++) {
     double px = probability(angles[i]);
+    if (px > 1) {
+      px = 1;
+    }
+    //assert(px < 1);
     Il -= log(px);
   }
   Il -= 2 * N * log(AOM);
@@ -329,7 +347,10 @@ double Mixture::estimateParameters()
     printParameters(log,iter,current);
     //if (iter++ == 100) break;
     if (iter != 1) {
-      if (prev - current < 10) {
+      /*if (current > prev) {
+        current = prev;
+        break;
+      } else*/ if (prev - current < (0.005 * prev)) {
         break;
       }
     }
@@ -462,7 +483,7 @@ void Mixture::load(string &file_name)
     weights.push_back(numbers[1]);
     array<double,2> mu({numbers[2],numbers[3]});
     double kappa = numbers[4];
-    Component component(mu,kappa);
+    Component component(mu,kappa,constrain_kappa);
     components.push_back(component);
     numbers.clear();
   }

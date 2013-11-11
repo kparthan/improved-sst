@@ -10,6 +10,7 @@ struct Parameters
   string file;                  // pdb file
   int force;                    // flag to force build the angular profile
   string profiles_dir;          // path to the directory containing the profiles
+  int constrain_kappa;          // flag to constrain kappa
   int read_profiles;            // flag to read through the existing profiles
   int heat_map;                 // flag to update bins for MATLAB visualization
   double res;                   // resolution of the bins
@@ -63,7 +64,8 @@ void outputBins(vector<vector<int>> &, double);
 void visualizeMixtureComponents(struct Parameters &);
 void simulateMixtureModel(struct Parameters &);
 vector<double> generateRandomWeights(int);
-vector<Component> generateRandomComponents(int);
+vector<Component> generateRandomComponents(int, int);
+void plotMessageLengthAgainstComponents(vector<double> &);
 
 #endif
 

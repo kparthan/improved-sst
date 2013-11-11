@@ -21,6 +21,9 @@ class Mixture
     //! Sample size
     int N;
 
+    //! Flag to bound kappa
+    int constrain_kappa;
+
     //! Responsibility matrix (r_ik)
     vector<vector<double>> responsibility;
 
@@ -47,10 +50,10 @@ class Mixture
     Mixture();
 
     //! Constructor
-    Mixture(int, vector<array<double,2>> &, int, int);
+    Mixture(int, vector<array<double,2>> &, int, int, int);
 
     //! Constructor
-    Mixture(int, vector<array<double,3>> &, int, int);
+    Mixture(int, vector<array<double,3>> &, int, int, int);
 
     //! Constructor
     Mixture(int , vector<double> &, vector<Component> &);

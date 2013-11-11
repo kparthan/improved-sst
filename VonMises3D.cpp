@@ -84,7 +84,12 @@ double VonMises3D::density(double theta, double phi)
       tmp += unit_mean[i] * x[i];
     }
     double exponent = kappa * (tmp - 1);
-    return constant * exp(exponent);
+    double pr = constant * exp(exponent);
+    //assert(pr <= 1);
+    if (pr > 1) {
+      pr = 1;
+    }
+    return pr;
   }
 }
 
@@ -96,7 +101,11 @@ double VonMises3D::density(double theta, double phi)
  */
 vector<array<double,3>> VonMises3D::generateCanonical(int N)
 {
-  srand(time(NULL));
+  auto ts = high_resolution_clock::now();
+  usleep(1000);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
   double exponent = exp(-2 * kappa);
   double k_inv = 1 / (double)kappa;
   vector<array<double,3>> coordinates;

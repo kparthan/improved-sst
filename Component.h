@@ -19,6 +19,9 @@ class Component
     //! rbar = |R|/N
     double rbar,R;
 
+    //! Flag to constrain kappa
+    int constrain_kappa;
+
     //! ML and MML estimates of kappa
     double kappa_ml,kappa_mml;
 
@@ -30,10 +33,10 @@ class Component
     Component();
 
     //! Constructor
-    Component(array<double,3> &, double);
+    Component(array<double,3> &, double, int);
 
     //! Constructor
-    Component(array<double,2> &, double);
+    Component(array<double,2> &, double, int);
 
     //! Minimize message length
     void minimizeMessageLength();
