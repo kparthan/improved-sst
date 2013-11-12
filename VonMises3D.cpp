@@ -85,10 +85,11 @@ double VonMises3D::density(double theta, double phi)
     }
     double exponent = kappa * (tmp - 1);
     double pr = constant * exp(exponent);
-    //assert(pr <= 1);
     if (pr > 1) {
-      pr = 1;
-    }
+      cout << "pr: " << pr << endl;
+    } 
+    cout.flush();
+    assert(pr <= 1);
     return pr;
   }
 }

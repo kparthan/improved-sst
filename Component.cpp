@@ -38,7 +38,7 @@ void Component::minimizeMessageLength()
   estimateVonMisesMean();
   kappa_ml = estimateKappa_ML();
   kappa_mml = estimateKappa_MML(kappa_ml);
-  cout << "kappa (MML): " << kappa_mml << endl;
+  cout << "Kappa (MML): " << kappa_mml << endl;
   von_mises = VonMises3D(mu,kappa_mml);
 }
 

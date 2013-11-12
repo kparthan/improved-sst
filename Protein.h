@@ -18,7 +18,7 @@ class Protein
     //! Stores the coordinates
     vector<vector<Point<double>>> coordinates;
 
-    //! List of spherical coordinates
+    //! List of spherical coordinates (r \neq 1,theta,phi)
     vector<vector<array<double,3>>> spherical_coordinates;
 
     //! Gets the list of all spherical coordinates

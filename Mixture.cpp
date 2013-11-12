@@ -247,14 +247,9 @@ double Mixture::probability(array<double,2> &x)
   double px = 0,density;
   for (int i=0; i<K; i++) {
     density = components[i].likelihood(x);
-    if (density >= 1) {
-      cout << "density: " << density << endl;
-    }
-      cout << "density: " << density << endl;
-    cout.flush();
-    assert(density <= 1);
     px += weights[i] * density;
   }
+  assert(px <= 1);
   return px;
 }
 
@@ -345,15 +340,15 @@ double Mixture::estimateParameters()
     current = computeMinimumMessageLength();
     msglens.push_back(current);
     printParameters(log,iter,current);
-    //if (iter++ == 100) break;
-    if (iter != 1) {
-      /*if (current > prev) {
+    if (iter == 100) break;
+    /*if (iter != 1) {
+      if (current > prev) {
         current = prev;
         break;
-      } else*/ if (prev - current < (0.005 * prev)) {
+      } else if (prev - current < 10) {
         break;
       }
-    }
+    }*/
     prev = current;
     iter++;
   }
@@ -365,6 +360,7 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
+  //iter = getMinimumIndex(msglens);
   /*ofstream summary("summary-part3",ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;

@@ -497,6 +497,12 @@ void computeEstimators(struct Parameters &parameters)
     modelOneComponent(parameters,data);
   } else if (parameters.mixture_model == SET) { // mixture modelling
     vector<array<double,3>> data = gatherData(parameters);
+    /*for (int i=0; i<data.size(); i++) {
+      for (int k=0; k<3; k++) {
+        cout << data[i][k] << " ";
+      }
+      cout << endl;
+    }*/
     modelMixture(parameters,data);
   }
 }
@@ -624,7 +630,10 @@ vector<array<double,3>> gatherData(struct Parameters &parameters)
         protein.load(files[i]);
         vector<array<double,3>> coords = protein.getSphericalCoordinatesList();
         for (int j=0; j<coords.size(); j++) {
-          coordinates.push_back(coords[j]);
+          double theta = coords[j][1];
+          double phi = coords[j][2];
+          array<double,3> x = convertToCartesian(1,theta,phi);
+          coordinates.push_back(x);
         }
       }
       return coordinates;
