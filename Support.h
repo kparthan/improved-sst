@@ -36,6 +36,7 @@ void writeToFile(vector<Point<double>> &, const char *);
 string extractName(string &);
 array<double,3> convertToSpherical(Point<double> &);
 array<double,3> convertToCartesian(double, double, double);
+void scaleToAOM(double *);
 void print(ostream &, array<double,3> &);
 void vonMisesDistribution_2DPlot(array<double,3> &);
 double ratioBesselFunction(double);

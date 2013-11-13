@@ -94,6 +94,9 @@ class Mixture
     //! Prints the model parameters
     void printParameters(ostream &, int, double);
 
+    //! Prints the model parameters used in simulation
+    void printParameters();
+
     //! Plot the variation in message length
     void plotMessageLengthEM();
 

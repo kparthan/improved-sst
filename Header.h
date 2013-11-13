@@ -35,7 +35,7 @@
 #define PI boost::math::constants::pi<double>()
 #define LOG_PI log(PI)
 #define ZERO std::numeric_limits<double>::epsilon()
-#define TOLERANCE 1e-8
+#define TOLERANCE 1e-6
 
 #define SET 1 
 #define UNSET 0

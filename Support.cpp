@@ -245,11 +245,26 @@ array<double,3> convertToCartesian(double r, double theta, double phi)
 {
   array<double,3> x;
   double theta_rad = theta * PI / 180;
+  //scaleToAOM(&theta_rad);
   double phi_rad = phi * PI / 180;
+  //scaleToAOM(&phi_rad);
   x[0] = r * sin(theta_rad) * cos(phi_rad);
   x[1] = r * sin(theta_rad) * sin(phi_rad);
   x[2] = r * cos(theta_rad);
   return x;
+}
+
+/*!
+ *  \brief This function scales the value to AOM.
+ *  \param angle_rad (in radians) a double
+ *  \return angle to AOM radians
+ */
+void scaleToAOM(double *angle_rad)
+{
+  int scale = 1 / (double) AOM;
+  int angle = (*angle_rad) * scale;
+  *angle_rad = angle / (double) scale;
+  cout << *angle_rad << endl;
 }
 
 /*!
@@ -497,12 +512,6 @@ void computeEstimators(struct Parameters &parameters)
     modelOneComponent(parameters,data);
   } else if (parameters.mixture_model == SET) { // mixture modelling
     vector<array<double,3>> data = gatherData(parameters);
-    /*for (int i=0; i<data.size(); i++) {
-      for (int k=0; k<3; k++) {
-        cout << data[i][k] << " ";
-      }
-      cout << endl;
-    }*/
     modelMixture(parameters,data);
   }
 }
@@ -779,11 +788,10 @@ void simulateMixtureModel(struct Parameters &parameters)
   Mixture original(K,weights,components);
   vector<array<double,3>>
   data = original.generateProportionally(parameters.num_samples,0);
+  original.printParameters();
 
   // model a mixture using the original data
   modelMixture(parameters,data);
-  //Mixture mixture(parameters.fit_num_components,data,parameters.update_weights_new,parameters.simulation);
-  //cout << mixture.estimateParameters() << endl;
 }
 
 /*!
@@ -794,7 +802,7 @@ void simulateMixtureModel(struct Parameters &parameters)
 vector<double> generateRandomWeights(int num_weights)
 {
   auto ts = high_resolution_clock::now();
-  usleep(1000);
+  usleep(10);
   auto te = high_resolution_clock::now();
   double t = duration_cast<nanoseconds>(ts-te).count();
   srand(t);
@@ -807,10 +815,6 @@ vector<double> generateRandomWeights(int num_weights)
     weights.push_back(w);
   }
   weights.push_back(range);
-  for (int i=0; i<weights.size(); i++) {
-    cout << weights[i] << " ";
-  } 
-  cout << endl;
   return weights;
 }
 
@@ -824,7 +828,7 @@ vector<Component>
 generateRandomComponents(int num_components, int constrain_kappa)
 {
   auto ts = high_resolution_clock::now();
-  usleep(1000);
+  usleep(10);
   auto te = high_resolution_clock::now();
   double t = duration_cast<nanoseconds>(ts-te).count();
   srand(t);

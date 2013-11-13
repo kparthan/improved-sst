@@ -57,7 +57,9 @@ Mixture::Mixture(int num_components, vector<array<double,3>> &data,
  */
 Mixture::Mixture(int k, vector<double> &w, vector<Component> &c):
                 K(k), weights(w), components(c)
-{}
+{
+  simulation = SET;
+}
 
 /*!
  *  \brief This function initializes the parameters of the model.
@@ -249,7 +251,7 @@ double Mixture::probability(array<double,2> &x)
     density = components[i].likelihood(x);
     px += weights[i] * density;
   }
-  assert(px <= 1);
+  assert(px > 0);
   return px;
 }
 
@@ -264,6 +266,7 @@ double Mixture::computeMinimumMessageLength()
   // assume uniform priors
   double Ik = log(MAX_COMPONENTS);
   cout << "Ik: " << Ik << endl;
+  assert(Ik > 0);
 
   // enocde the weights
   double Iw = ((K-1)/2.0) * log(N);
@@ -272,19 +275,17 @@ double Mixture::computeMinimumMessageLength()
     Iw -= 0.5 * log(weights[i]);
   }
   cout << "Iw: " << Iw << endl;
+  assert(Iw >= 0);
 
   // encode the likelihood of the sample
-  double Il = 0;
+  double Il = 0,px;
   for (int i=0; i<N; i++) {
-    double px = probability(angles[i]);
-    if (px > 1) {
-      px = 1;
-    }
-    //assert(px < 1);
+    px = probability(angles[i]);
     Il -= log(px);
   }
   Il -= 2 * N * log(AOM);
   cout << "Il: " << Il << endl;
+  assert(Il > 0);
 
   // encode the parameters of the components
   double It = 0,p;
@@ -293,6 +294,7 @@ double Mixture::computeMinimumMessageLength()
     It -= log(p);
   }
   cout << "It: " << It << endl;
+  assert(It > 0);
 
   // the constant term
   // # of continuous parameters d = 4K-1
@@ -340,15 +342,17 @@ double Mixture::estimateParameters()
     current = computeMinimumMessageLength();
     msglens.push_back(current);
     printParameters(log,iter,current);
-    if (iter == 100) break;
-    /*if (iter != 1) {
-      if (current > prev) {
-        current = prev;
-        break;
-      } else if (prev - current < 10) {
+    //if (iter == 30) break;
+    if (iter != 1) {
+      assert(current > 0);
+      // because EM has to consistently produce lower 
+      // message lengths otherwise something wrong!
+      if (current <= prev && prev - current < 1) {  // if diff in msglen < 10 bits
+      //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
+                                              // terminates prematurely
         break;
       }
-    }*/
+    }
     prev = current;
     iter++;
   }
@@ -360,7 +364,6 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
-  //iter = getMinimumIndex(msglens);
   /*ofstream summary("summary-part3",ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;
@@ -381,12 +384,28 @@ void Mixture::printParameters(ostream &os, int iter, double msglen)
 {
   os << "Iteration #: " << iter << endl;
   for (int k=0; k<K; k++) {
-    os << "\t" << fixed << setw(10) << setprecision(3) << sample_size[k];
-    os << "\t" << fixed << setw(10) << setprecision(3) << weights[k];
+    os << "\t" << fixed << setw(10) << setprecision(5) << sample_size[k];
+    os << "\t" << fixed << setw(10) << setprecision(5) << weights[k];
     os << "\t";
     components[k].printParameters(os);
   }
   os << "\t\t\tmsglen: " << msglen << " bits." << endl;
+}
+
+/*!
+ *  \brief This function prints the parameters used to simulate the mixture
+ *  modelling process.
+ */
+void Mixture::printParameters()
+{
+  ofstream file("mixture/simulation/simulate.dat");
+  for (int k=0; k<K; k++) {
+    file << "\t" << fixed << setw(10) << (int)sample_size[k];
+    file << "\t" << fixed << setw(10) << setprecision(5) << weights[k];
+    file << "\t";
+    components[k].printParameters(file);
+  }
+  file.close();
 }
 
 /*!
@@ -467,7 +486,7 @@ void Mixture::load(string &file_name)
   vector<double> numbers;
   while (getline(file,line)) {
     K++;
-    boost::char_separator<char> sep(",()[] \t");
+    boost::char_separator<char> sep("mukap,:()[] \t");
     boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
     BOOST_FOREACH (const string& t, tokens) {
       istringstream iss(t);
@@ -493,7 +512,7 @@ void Mixture::load(string &file_name)
 int Mixture::randomComponent()
 {
   auto ts = high_resolution_clock::now();
-  usleep(1000);
+  usleep(10);
   auto te = high_resolution_clock::now();
   double t = duration_cast<nanoseconds>(ts-te).count();
   srand(t);
@@ -541,6 +560,9 @@ void Mixture::generateRandomSampleSize(bool save_data)
       saveComponentData(i,sample);
     }
   }
+  for (int i=0; i<sample_size.size(); i++) {
+    cout << sample_size[i] << endl;
+  }
 }
 
 /*!
@@ -559,9 +581,6 @@ Mixture::generateProportionally(int num_samples, bool save_data)
     int k = randomComponent();
     sample_size[k]++;
   }
-  for (int i=0; i<sample_size.size(); i++) {
-    cout << sample_size[i] << endl;
-  }
   vector<array<double,3>> sample;
   for (int i=0; i<K; i++) {
     vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
@@ -569,7 +588,7 @@ Mixture::generateProportionally(int num_samples, bool save_data)
       saveComponentData(i,x);
     }
     for (int j=0; j<x.size(); j++) {
-      sample.push_back(x[i]);
+      sample.push_back(x[j]);
     }
   }
   return sample;

@@ -85,11 +85,7 @@ double VonMises3D::density(double theta, double phi)
     }
     double exponent = kappa * (tmp - 1);
     double pr = constant * exp(exponent);
-    if (pr > 1) {
-      cout << "pr: " << pr << endl;
-    } 
-    cout.flush();
-    assert(pr <= 1);
+    //assert(pr <= 1);
     return pr;
   }
 }
@@ -103,7 +99,7 @@ double VonMises3D::density(double theta, double phi)
 vector<array<double,3>> VonMises3D::generateCanonical(int N)
 {
   auto ts = high_resolution_clock::now();
-  usleep(1000);
+  usleep(1);
   auto te = high_resolution_clock::now();
   double t = duration_cast<nanoseconds>(ts-te).count();
   srand(t);
@@ -112,6 +108,7 @@ vector<array<double,3>> VonMises3D::generateCanonical(int N)
   vector<array<double,3>> coordinates;
   for (int i=0; i<N; i++) {
     array<double,3> x;
+
     // generate probability value p \in [0,1]
     double p = rand() / (double) RAND_MAX;
 
@@ -119,9 +116,11 @@ vector<array<double,3>> VonMises3D::generateCanonical(int N)
     x[2] = 1 + k_inv * log(p + ((1-p) * exponent));
     assert(fabs(x[2]) <= 1);
     double theta = acos(x[2]);
+    //scaleToAOM(&theta);
 
     // generate phi \in [0,2 PI]
     double phi = (rand() / (double) RAND_MAX) * 2 * PI;
+    //scaleToAOM(&phi);
 
     // compute x and y coordinates
     x[0] = sin(theta) * cos(phi);

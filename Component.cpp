@@ -115,6 +115,13 @@ double Component::estimateKappa_MML(double initial)
     if (prev < 0) {
       prev = fabs(prev);
     }
+    if (num_iterations > 1000) {
+      if (constrain_kappa == SET && current >= MAX_KAPPA) {
+        return MAX_KAPPA;
+      } else {
+        return prev;
+      }
+    } 
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
     if (fabs(fx_der) > TOLERANCE) {
