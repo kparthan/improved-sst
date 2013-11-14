@@ -314,9 +314,7 @@ double Mixture::estimateParameters()
   clock_t c_start = clock();
   auto t_start = high_resolution_clock::now();
 
-  initialize();
-  double prev=0,current;
-  int iter = 1;
+  /* prepare log file */
   string file_name = string(CURRENT_DIRECTORY) + "mixture/";
   if (simulation == SET) {
     file_name += "simulation/";
@@ -331,6 +329,21 @@ double Mixture::estimateParameters()
   }
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
+
+  /* set the max allowed diff in msglen */
+  double MAX_ALLOWED_DIFF_MSGLEN;
+  if (simulation == SET) {
+    // terminate EM when diff in msglen is < 1 bit
+    MAX_ALLOWED_DIFF_MSGLEN = 1; 
+  } else {
+    // terminate EM when diff in msglen is < 10 bits
+    MAX_ALLOWED_DIFF_MSGLEN = 10;
+  }
+
+  /* EM loop */
+  double prev=0,current;
+  int iter = 1;
+  initialize();
   printParameters(log,0,current);
   while (1) {
     // Expectation (E-step)
@@ -347,7 +360,7 @@ double Mixture::estimateParameters()
       assert(current > 0);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (current <= prev && prev - current < 1) {  // if diff in msglen < 10 bits
+      if (current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
         break;
@@ -552,17 +565,22 @@ void Mixture::saveComponentData(int index, vector<array<double,3>> &data)
  *  each component.
  *  \param save_data a boolean variable
  */
-void Mixture::generateRandomSampleSize(bool save_data)
+vector<array<double,3>> Mixture::generateRandomSampleSize(bool save_data)
 {
+  vector<array<double,3>> sample;
   for (int i=0; i<K; i++) {
-    vector<array<double,3>> sample = components[i].generate((int)sample_size[i]);
+    vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
     if (save_data) {
-      saveComponentData(i,sample);
+      saveComponentData(i,x);
+    }
+    for (int j=0; j<x.size(); j++) {
+      sample.push_back(x[j]);
     }
   }
   for (int i=0; i<sample_size.size(); i++) {
     cout << sample_size[i] << endl;
   }
+  return sample;
 }
 
 /*!

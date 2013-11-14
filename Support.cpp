@@ -37,13 +37,13 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("infer_components","flag to infer the number of components")
        ("k",value<int>(&parameters.fit_num_components),"number of components")
        ("update_weights_new","flag to update weights using modified rule")
-       // parameters to aid in visualization of mixture components
+       // parameters to aid in visualization/modelling of mixture components
        ("load",value<string>(&parameters.mixture_file),"mixture file")
        ("generate",value<string>(&generation),"method to generate samples")
        ("samples",value<int>(&parameters.num_samples),"sample size")
-       // parameters that are associated with mixture model simulation
-       ("simulate",value<int>(&parameters.simulate_num_components),
-                              "flag to simulate the mixture model data")
+       ("simulate","flag to run the simulation")
+       ("components",value<int>(&parameters.simulate_num_components),
+                              "# of mixture components used in the simulation")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -93,7 +93,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
 
   if (vm.count("mixture")) {  // run mixture modelling
     parameters.mixture_model = SET;
-    if (vm.count("load")) {  // for visualization
+    if (vm.count("load")) {  // for visualization/simulation
       parameters.load_mixture = SET;
       if (generation.compare("using_mixture_weights") == 0) {
         parameters.sample_generation = USING_MIXTURE_WEIGHTS;
@@ -106,23 +106,24 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
         cout << "Unrecognized generation flag ..." << endl;
         Usage(argv[0],desc);
       }
+    } else {
+      parameters.load_mixture = UNSET;
     }
     if (vm.count("simulate")) {
       parameters.simulation = SET;
-      if (parameters.simulate_num_components == 0) {
-        cout << "# of simulated components should be non-zero ..." << endl;
-        Usage(argv[0],desc);
+      cout << "Simulating a mixture model ..." << endl;
+      if (!vm.count("components") && !vm.count("load")) {
+        parameters.simulate_num_components = DEFAULT_COMPONENTS;
+        cout << "# of components used in simulation: " 
+             << parameters.simulate_num_components << endl;
       }
-      cout << "# of simulated components: " 
-           << parameters.simulate_num_components << endl;
       if (!vm.count("samples")) {
         parameters.num_samples = DEFAULT_SAMPLE_SIZE; 
       }
     } else {
       parameters.simulation = UNSET;
     }
-    if (!vm.count("load")) {  // for parameter inference
-      parameters.load_mixture = UNSET;
+    if (vm.count("simulate") || !vm.count("load")) {
       if (vm.count("infer_components")) {
         parameters.infer_num_components = SET;
       } else {
@@ -141,7 +142,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
       } else {
         parameters.update_weights_new = UNSET;
       }
-    } 
+    }
   } else {  // run for single von mises
     parameters.mixture_model = UNSET;
   }
@@ -774,21 +775,32 @@ void visualizeMixtureComponents(struct Parameters &parameters)
  */
 void simulateMixtureModel(struct Parameters &parameters)
 {
-  // # of components
-  int K = parameters.simulate_num_components;
+  vector<array<double,3>> data;
+  if (parameters.load_mixture == SET) {
+    Mixture original;
+    original.load(parameters.mixture_file);
+    bool save = 0;
+    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+      data = original.generateProportionally(parameters.num_samples,save);
+    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+      data = original.generateRandomSampleSize(save);
+    }
+  } else {
+    // # of components
+    int K = parameters.simulate_num_components;
 
-  // generate random weights
-  vector<double> weights = generateRandomWeights(K);
+    // generate random weights
+    vector<double> weights = generateRandomWeights(K);
 
-  // generate random components
-  vector<Component> 
-  components = generateRandomComponents(K,parameters.constrain_kappa);
+    // generate random components
+    vector<Component> 
+    components = generateRandomComponents(K,parameters.constrain_kappa);
 
-  // original mixture model
-  Mixture original(K,weights,components);
-  vector<array<double,3>>
-  data = original.generateProportionally(parameters.num_samples,0);
-  original.printParameters();
+    // original mixture model
+    Mixture original(K,weights,components);
+    data = original.generateProportionally(parameters.num_samples,0);
+    original.printParameters();
+  }
 
   // model a mixture using the original data
   modelMixture(parameters,data);

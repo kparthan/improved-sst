@@ -110,7 +110,7 @@ class Mixture
     void saveComponentData(int, vector<array<double,3>> &);
 
     //! Generate random data using arbitrary sample size
-    void generateRandomSampleSize(bool);
+    vector<array<double,3>> generateRandomSampleSize(bool);
 
     //! Generate random data from the distribution using mixture proportions
     vector<array<double,3>> generateProportionally(int, bool);

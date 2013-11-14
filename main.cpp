@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     simulateMixtureModel(parameters);
   }
 
-  if (parameters.load_mixture == SET) {
+  if (parameters.load_mixture == SET && parameters.simulation == UNSET) {
     visualizeMixtureComponents(parameters);
   } 
 
