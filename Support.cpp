@@ -542,12 +542,15 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   // if the optimal number of components need to be determined
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
-    for (int k=1; k<=20; k++) {
-      cout << "Running for K: " << k << endl;
-      Mixture mixture(k,data,parameters.update_weights_new,
-                      parameters.constrain_kappa,parameters.simulation);
-      double msg = mixture.estimateParameters();
-      msglens.push_back(msg);
+    for (int i=1; i<=40; i++) {
+      if (i % 4 == 3) {
+        int k = 5 * i;
+        cout << "Running for K: " << k << endl;
+        Mixture mixture(k,data,parameters.update_weights_new,
+                        parameters.constrain_kappa,parameters.simulation);
+        double msg = mixture.estimateParameters();
+        msglens.push_back(msg);
+      }
     }
     plotMessageLengthAgainstComponents(msglens);
   } else if (parameters.infer_num_components == UNSET) {
@@ -866,7 +869,7 @@ generateRandomComponents(int num_components, int constrain_kappa)
 void plotMessageLengthAgainstComponents(vector<double> &msglens)
 {
   // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglens-infer.dat";
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglensc-infer-part3.dat";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
     file << i+1 << "\t" << msglens[i] << endl;
@@ -887,7 +890,7 @@ void plotMessageLengthAgainstComponents(vector<double> &msglens)
 	//script << "set title \"# of components: " << K << "\"" << endl ;
 	script << "set xlabel \"# of components\"" << endl ;
 	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"mixture/msglens-infer.eps\"" << endl ;
+	script << "set output \"mixture/msglensc-infer-part3.eps\"" << endl ;
 	script << "plot \"mixture/msglens-infer.dat\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();

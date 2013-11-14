@@ -377,13 +377,13 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
-  /*ofstream summary("summary-part3",ios::app);
+  ofstream summary("summaryc-part3",ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;
   summary << fixed << setw(20) << setprecision(3) << cpu_time/60; // in mins
   summary << fixed << setw(20) << setprecision(3) << wall_time/60; // in mins
   summary << fixed << setw(20) << setprecision(3) << current << endl;
-  summary.close();*/
+  summary.close();
   return current;
 }
 

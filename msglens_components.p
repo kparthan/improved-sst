@@ -7,5 +7,5 @@ set ytic auto	# set ytics automatically
 #set title ""
 set xlabel "# of components"
 set ylabel "message length (in bits)"
-set output "msglens_components.eps"
-plot "msglens_components.dat" using 1:5 notitle with points lc rgb "red"
+set output "msglens_components_class_b.eps"
+plot "msglens_components_class_b.dat" using 1:5 notitle with points lc rgb "red"
