@@ -13,9 +13,11 @@ class Mixture
     vector<Component> components;
     
     //! Sample (x_i) -- spherical coordinates with unit radius
+    //! (measured in degrees)
     vector<array<double,2>> angles;
 
     //! Sample (x_i) -- Cartesian coordinates
+    //! (on a sphere of unit radius)
     vector<array<double,3>> data;
 
     //! Sample size

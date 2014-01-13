@@ -11,6 +11,7 @@ Mixture::Mixture()
  *  \brief This is a constructor function.
  *  \param num_components an integer
  *  \param angles a reference to a vector<array<double,2>>
+ *  (measured in degrees)
  *  \param update_weights_new an integer
  *  \param constrain_kappa an integer
  *  \param simulation an integer

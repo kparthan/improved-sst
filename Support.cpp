@@ -75,6 +75,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.constrain_kappa = UNSET;
   }
 
+  // to JUST build the angular profile
   if (!vm.count("directory") && !vm.count("mixture")) {
     if (vm.count("file") && vm.count("pdbid")) {
       cout << "Please use one of --file or --pdbid ..." << endl;
@@ -228,7 +229,7 @@ array<double,3> convertToSpherical(Point<double> &point)
   Point<double> origin(0,0,0);
   values[0] = distance<double>(origin,point);
   Vector<double> i_plus_1 = point.positionVector();
-  array<double,2> angles = angleWithAxes<double>(i_plus_1);
+  array<double,2> angles = angleWithAxes<double>(i_plus_1); // angles in radians
   values[1] = angles[0] * (180/PI);
   values[2] = angles[1] * (180/PI);
   return values;

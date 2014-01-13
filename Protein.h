@@ -19,9 +19,11 @@ class Protein
     vector<vector<Point<double>>> coordinates;
 
     //! List of spherical coordinates (r \neq 1,theta,phi)
+    //! theta,phi measured in degrees
     vector<vector<array<double,3>>> spherical_coordinates;
 
     //! Gets the list of all spherical coordinates
+    //! theta,phi measured in degrees
     vector<array<double,3>> all_spherical_coordinates;
 
     //! Times taken

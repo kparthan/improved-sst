@@ -13,7 +13,8 @@ VonMises3D::VonMises3D() : mu(array<double,2>()),kappa(1)
 /*!
  *  \brief constructor function which sets the value of mean and 
  *  standard deviation of the distribution
- *  \param mean a reference to a array<double,2>
+ *  \param mu a reference to a array<double,2>
+ *  (theta,phi measured in degrees)
  *  \param kappa a double
  */
 VonMises3D::VonMises3D(array<double,2> &mu, double kappa) : 
@@ -181,7 +182,7 @@ vector<array<double,3>> VonMises3D::generateCoordinates(int N)
 
 /*!
  *  \brief This function is used to generate random samples (angles) from the 
- *  distribution.
+ *  distribution (angles generated are measured in degrees).
  *  \param N an integer
  *  \return the list of random samples
  */

@@ -11,6 +11,7 @@ class Component
     array<double,3> mean_direction;
 
     //! Mean direction on a unit sphere
+    //! (measured in degrees)
     array<double,2> mu;
 
     //! Sample size

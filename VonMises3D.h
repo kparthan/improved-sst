@@ -7,6 +7,7 @@ class VonMises3D
 {
   private:
     //! Mean of the distribution
+    //! theta,phi measured in degrees)
 		array<double,2> mu;
 
     //! Cartesian mean of the distribution

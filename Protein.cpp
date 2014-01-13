@@ -177,6 +177,7 @@ void Protein::load(path &path_to_file)
 
 /*!
  *  \brief This functions reads the profile from a regular file.
+ *  (theta,phi angles read are in degrees)
  *  \param file_name a reference to a string
  */
 void Protein::read_profile(string &file_name)
@@ -220,6 +221,7 @@ void Protein::read_profile(string &file_name)
 
 /*!
  *  \brief Saves the spherical system profile.
+ *  (theta,phi angles saved are in degrees)
  */
 void Protein::save()
 {
