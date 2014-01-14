@@ -66,7 +66,7 @@ void visualizeMixtureComponents(struct Parameters &);
 void simulateMixtureModel(struct Parameters &);
 vector<double> generateRandomWeights(int);
 vector<Component> generateRandomComponents(int, int);
-void plotMessageLengthAgainstComponents(vector<double> &);
+void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 
 #endif
 

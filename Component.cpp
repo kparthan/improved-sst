@@ -20,12 +20,12 @@ Component::Component(array<double,3> &mean_direction, double N,
 
 /*!
  *  \brief This is a constructor function.
- *  \param mean_direction a reference to an array<double,2>
+ *  \param mu a reference to an array<double,2>
  *  \param kappa a double
  *  \param constrain_kappa an integer
  */
-Component::Component(array<double,2> &mean_direction, double kappa,
-                     int constrain_kappa) : mu(mean_direction), kappa_ml(kappa),
+Component::Component(array<double,2> &mu, double kappa,
+                     int constrain_kappa) : mu(mu), kappa_ml(kappa),
                      kappa_mml(kappa), constrain_kappa(constrain_kappa)
 {}
 

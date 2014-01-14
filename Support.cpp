@@ -543,17 +543,19 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   // if the optimal number of components need to be determined
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
-    for (int i=1; i<=40; i++) {
-      if (i % 4 == 3) {
-        int k = 5 * i;
+    vector<int> components;
+    for (int i=2; i<=10; i++) {
+      //if (i % 4 == 3) {
+        int k = i;
         cout << "Running for K: " << k << endl;
+        components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
                         parameters.constrain_kappa,parameters.simulation);
         double msg = mixture.estimateParameters();
         msglens.push_back(msg);
-      }
+      //}
     }
-    plotMessageLengthAgainstComponents(msglens);
+    plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
   } else if (parameters.infer_num_components == UNSET) {
     // for a given value of number of components
     // do the mixture modelling
@@ -734,7 +736,7 @@ void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
 void outputBins(vector<vector<int>> &bins, double res)
 {
   double theta=0,phi;
-  ofstream fbins("matlab/bins");
+  ofstream fbins("matlab/bins_2D");
   ofstream fbins3D("matlab/bins_3D");
   for (int i=0; i<bins.size(); i++) {
     phi = 0;
@@ -865,19 +867,32 @@ generateRandomComponents(int num_components, int constrain_kappa)
 /*!
  *  \brief This function is used to plot the message lengths for different
  *  number of components.
+ *  \param components a reference to a vector<int>
  *  \param msglens a reference to a vector<double>
+ *  \param simulation an integer
  */
-void plotMessageLengthAgainstComponents(vector<double> &msglens)
+void plotMessageLengthAgainstComponents(vector<int> &components,
+                                        vector<double> &msglens, int simulation)
 {
+  assert(components.size() == msglens.size());
   // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/msglensc-infer-part3.dat";
+  string data_file = string(CURRENT_DIRECTORY) + "mixture/";
+  if (simulation == SET) {
+    data_file += "simulation/";
+  }
+  data_file += "msglens-infer.dat";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
-    file << i+1 << "\t" << msglens[i] << endl;
+    file << components[i] << "\t" << msglens[i] << endl;
   }
   file.close();
 
   // prepare gnuplot script file
+  string output_file = string(CURRENT_DIRECTORY) + "mixture/";
+  if (simulation == SET) {
+    output_file += "simulation/";
+  }
+  output_file += "msglens-infer.eps";
   ofstream script("script.p");
 	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
 	script << "set terminal post eps" << endl ;
@@ -891,8 +906,8 @@ void plotMessageLengthAgainstComponents(vector<double> &msglens)
 	//script << "set title \"# of components: " << K << "\"" << endl ;
 	script << "set xlabel \"# of components\"" << endl ;
 	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"mixture/msglensc-infer-part3.eps\"" << endl ;
-	script << "plot \"mixture/msglens-infer.dat\" using 1:2 notitle " 
+	script << "set output \"" << output_file << "\"" << endl ;
+	script << "plot \"" << data_file << "\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();
   system("gnuplot -persist script.p") ;	

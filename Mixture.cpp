@@ -247,12 +247,20 @@ void Mixture::updateResponsibilityMatrix()
  */
 double Mixture::probability(array<double,2> &x)
 {
-  double px = 0,density;
+  double px = 0;
+  vector<double> density(K,0);
   for (int i=0; i<K; i++) {
-    density = components[i].likelihood(x);
-    px += weights[i] * density;
+    density[i] = components[i].likelihood(x);
+    px += weights[i] * density[i];
   }
-  assert(px > 0);
+  if (!(px > 0)) {
+    cout << "px: " << px << endl;
+    for (int i=0; i<K; i++) {
+      cout << weights[i] << "\t" << density[i] << endl;
+    }
+  }
+  fflush(stdout);
+  assert(px >= 0);
   return px;
 }
 
@@ -312,6 +320,7 @@ double Mixture::computeMinimumMessageLength()
  */
 double Mixture::estimateParameters()
 {
+
   clock_t c_start = clock();
   auto t_start = high_resolution_clock::now();
 
@@ -330,6 +339,7 @@ double Mixture::estimateParameters()
   }
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
+  
 
   /* set the max allowed diff in msglen */
   double MAX_ALLOWED_DIFF_MSGLEN;
@@ -359,11 +369,16 @@ double Mixture::estimateParameters()
     //if (iter == 30) break;
     if (iter != 1) {
       assert(current > 0);
+      //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
       if (current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
+        log << "\t\t" << current/N << " bpr" << endl;
+        null_msglen = computeNullModelMessageLength();
+        log << "Null model msglen: " << null_msglen << " bits.";
+        log << "\t(" << null_msglen/N << " bpr)" << endl;
         break;
       }
     }
@@ -378,7 +393,7 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
-  ofstream summary("summaryc-part3",ios::app);
+  ofstream summary("summary",ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;
   summary << fixed << setw(20) << setprecision(3) << cpu_time/60; // in mins
@@ -386,6 +401,21 @@ double Mixture::estimateParameters()
   summary << fixed << setw(20) << setprecision(3) << current << endl;
   summary.close();
   return current;
+}
+
+/*!
+ *  \brief This function computes the null model message length.
+ *  \return the null model message length
+ */
+double Mixture::computeNullModelMessageLength()
+{
+  null_msglen = 0;
+  null_msglen += N * (log(4*PI)-(2*log(AOM)));
+  for (int i=0; i<angles.size(); i++) {
+    double theta = angles[i][0] * PI / 180;
+    null_msglen -= log(sin(theta));
+  }
+  return null_msglen / log(2);
 }
 
 /*!

@@ -47,6 +47,9 @@ class Mixture
     //! List of message lengths over several iterations
     vector<double> msglens;
 
+    //! Null model message length
+    double null_msglen;
+
   public:
     //! Null constructor
     Mixture();
@@ -92,6 +95,9 @@ class Mixture
 
     //! Estimate mixture parameters
     double estimateParameters();
+
+    //! Computes the null model message length
+    double computeNullModelMessageLength();
 
     //! Prints the model parameters
     void printParameters(ostream &, int, double);
