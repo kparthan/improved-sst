@@ -1,6 +1,8 @@
 #include "Mixture.h"
 #include "Support.h"
 
+extern int initialize_components_from_file;
+
 /*!
  *  \brief Null constructor module
  */
@@ -75,27 +77,72 @@ void Mixture::initialize()
     weights.push_back(w);
   }*/
 
-  // initialize responsibility matrix
-  auto ts = high_resolution_clock::now();
-  usleep(1000);
-  auto te = high_resolution_clock::now();
-  double t = duration_cast<nanoseconds>(ts-te).count();
-  srand(t);
-  for (int i=0; i<N; i++) {
-    vector<double> tmp(K,0);
-    responsibility.push_back(tmp);
-    int index = rand() % K;
-    //cout << index << endl;
-    responsibility[i][index] = 1;
-  }
-  sample_size = vector<double>(K,0);
-  updateEffectiveSampleSize();
-  weights = vector<double>(K,0);
-  alphas = vector<double>(K,0);
-  updateWeights();
+  if (initialize_components_from_file == UNSET) {
+    // initialize responsibility matrix
+    auto ts = high_resolution_clock::now();
+    usleep(1000);
+    auto te = high_resolution_clock::now();
+    double t = duration_cast<nanoseconds>(ts-te).count();
+    srand(t);
+    for (int i=0; i<N; i++) {
+      vector<double> tmp(K,0);
+      responsibility.push_back(tmp);
+      int index = rand() % K;
+      //cout << index << endl;
+      responsibility[i][index] = 1;
+    }
+    sample_size = vector<double>(K,0);
+    updateEffectiveSampleSize();
+    weights = vector<double>(K,0);
+    alphas = vector<double>(K,0);
+    updateWeights();
 
-  // initialize parameters of each component
-  initializeComponentParameters();
+    // initialize parameters of each component
+    initializeComponentParameters();
+  } else if (initialize_components_from_file == SET) {
+    for (int i=0; i<N; i++) {
+      vector<double> tmp(K,0);
+      responsibility.push_back(tmp);
+      //int index = rand() % K;
+      //cout << index << endl;
+      //responsibility[i][index] = 1;
+    }
+    int count = 0;
+    double w = 0;
+    ifstream file("mixture/initialize_weights_file");
+    string line;
+    vector<double> numbers;
+    while (getline(file,line)) {
+      count++;
+      boost::char_separator<char> sep("mukap,:()[] \t");
+      boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
+      BOOST_FOREACH (const string& t, tokens) {
+        istringstream iss(t);
+        double x;
+        iss >> x;
+        numbers.push_back(x);
+      }
+      sample_size.push_back(numbers[0]);
+      weights.push_back(numbers[1]);
+      w += numbers[1];
+      array<double,2> mu({numbers[2],numbers[3]});
+      double kappa = numbers[4];
+      Component component(mu,kappa,constrain_kappa);
+      components.push_back(component);
+      numbers.clear();
+    }
+    file.close();
+    if (count < K) {
+      int n = K - count;
+      vector<double> ws = generateRandomWeights(n,1-w);
+      vector<Component> cs = generateRandomComponents(n,constrain_kappa);
+      for (int i=0; i<n; i++) {
+        weights.push_back(ws[i]);
+        components.push_back(cs[i]);
+        sample_size.push_back(0);
+      }
+    }
+  }
 }
 
 /*!
@@ -107,7 +154,7 @@ void Mixture::initialize2()
   cout << "sample size: " << N << endl;
 
   // initialize weights of components
-  weights = generateRandomWeights(K);
+  weights = generateRandomWeights(K,1);
 
   // initialize components
   components = generateRandomComponents(K,constrain_kappa);
@@ -356,6 +403,9 @@ double Mixture::estimateParameters()
   int iter = 1;
   initialize();
   printParameters(log,0,current);
+  null_msglen = computeNullModelMessageLength();
+  cout << "null_msglen: " << null_msglen << endl;
+  MAX_ALLOWED_DIFF_MSGLEN = 0.001 * null_msglen;
   while (1) {
     // Expectation (E-step)
     updateResponsibilityMatrix();
@@ -372,11 +422,10 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
+      if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
         log << "\t\t" << current/N << " bpr" << endl;
-        null_msglen = computeNullModelMessageLength();
         log << "Null model msglen: " << null_msglen << " bits.";
         log << "\t(" << null_msglen/N << " bpr)" << endl;
         break;
@@ -412,7 +461,7 @@ double Mixture::computeNullModelMessageLength()
   null_msglen = 0;
   null_msglen += N * (log(4*PI)-(2*log(AOM)));
   for (int i=0; i<angles.size(); i++) {
-    double theta = angles[i][0] * PI / 180;
+    double theta = angleInRadians(angles[i][0]);
     null_msglen -= log(sin(theta));
   }
   return null_msglen / log(2);

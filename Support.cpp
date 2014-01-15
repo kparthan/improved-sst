@@ -2,6 +2,8 @@
 #include "VonMises3D.h"
 #include "Mixture.h"
 
+int initialize_components_from_file;
+
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -44,6 +46,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("simulate","flag to run the simulation")
        ("components",value<int>(&parameters.simulate_num_components),
                               "# of mixture components used in the simulation")
+       ("initialize_components_from_file","to read the components")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -57,6 +60,12 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.force = SET;
   } else {
     parameters.force = UNSET;
+  }
+
+  if (vm.count("initialize_components_from_file")) {
+    initialize_components_from_file = SET;
+  } else {
+    initialize_components_from_file = UNSET;
   }
   
   if (vm.count("directory")) {
@@ -406,6 +415,16 @@ double getLatticeConstant(int d)
   return exp(tmp);
 }
 
+/*!
+ *  \brief This function converts the angle from degrees to radians.
+ *  \param theta (measured in degrees) a double
+ *  \return the value in radians
+ */
+double angleInRadians(double theta)
+{
+  return theta * PI / 180;
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -544,7 +563,7 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=2; i<=10; i++) {
+    for (int i=20; i<=100; i+=10) {
       //if (i % 4 == 3) {
         int k = i;
         cout << "Running for K: " << k << endl;
@@ -796,7 +815,7 @@ void simulateMixtureModel(struct Parameters &parameters)
     int K = parameters.simulate_num_components;
 
     // generate random weights
-    vector<double> weights = generateRandomWeights(K);
+    vector<double> weights = generateRandomWeights(K,1);
 
     // generate random components
     vector<Component> 
@@ -815,9 +834,10 @@ void simulateMixtureModel(struct Parameters &parameters)
 /*!
  *  \brief This function is used to generate a list of random weights.
  *  \param num_weights an integer
+ *  \param range a double
  *  \return the list of weights
  */
-vector<double> generateRandomWeights(int num_weights)
+vector<double> generateRandomWeights(int num_weights, double range)
 {
   auto ts = high_resolution_clock::now();
   usleep(10);
@@ -825,7 +845,7 @@ vector<double> generateRandomWeights(int num_weights)
   double t = duration_cast<nanoseconds>(ts-te).count();
   srand(t);
   vector<double> weights;
-  double range = 1;
+  //double range = 1;
   for (int i=0; i<num_weights-1; i++) {
     double w = (rand() / (double) RAND_MAX) * range;
     assert(w > 0 && w < range);

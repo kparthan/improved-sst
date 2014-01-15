@@ -5,6 +5,7 @@
 #include "Protein.h"
 #include "Component.h"
 
+//int initialize_weights_from_file;
 struct Parameters
 {
   string file;                  // pdb file
@@ -26,6 +27,8 @@ struct Parameters
   // parameters to simulate the mixture modelling
   int simulation;               // flag to simulate
   int simulate_num_components;  // # of components to simulate
+  // initial weights used in the EM method
+  //string initial_weights_file;
 };
 
 // general functions
@@ -45,6 +48,7 @@ double ratioBesselFunction_secondDerivative(double);
 double ratioBesselFunction_thirdDerivative(double);
 double computeConstantTerm(int);
 double getLatticeConstant(int);
+double angleInRadians(double);
 
 // Protein functions
 string getPDBFilePath(string &);
@@ -64,7 +68,7 @@ void updateBins(vector<vector<int>> &, double, Protein &);
 void outputBins(vector<vector<int>> &, double);
 void visualizeMixtureComponents(struct Parameters &);
 void simulateMixtureModel(struct Parameters &);
-vector<double> generateRandomWeights(int);
+vector<double> generateRandomWeights(int, double);
 vector<Component> generateRandomComponents(int, int);
 void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 

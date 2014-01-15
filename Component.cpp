@@ -27,7 +27,9 @@ Component::Component(array<double,3> &mean_direction, double N,
 Component::Component(array<double,2> &mu, double kappa,
                      int constrain_kappa) : mu(mu), kappa_ml(kappa),
                      kappa_mml(kappa), constrain_kappa(constrain_kappa)
-{}
+{
+  von_mises = VonMises3D(mu,kappa_mml);
+}
 
 /*!
  *  \brief This function is used to minimize the message length expression
@@ -288,7 +290,8 @@ double Component::computeParametersProbability()
 double Component::computePriorDensity()
 {
   double kappa_sq = kappa_mml * kappa_mml;
-  double num = kappa_sq * fabs(sin(mu[0]));
+  double theta_rad = angleInRadians(mu[0]);
+  double num = kappa_sq * fabs(sin(theta_rad));
   if (constrain_kappa == SET) {
     double tmp = atan(MAX_KAPPA) - (MAX_KAPPA/(1+MAX_KAPPA*MAX_KAPPA));
     double constant = PI / (2 * tmp);
@@ -313,7 +316,8 @@ double Component::computeFisherInformation()
     log_fisher += 2 * log(kappa_mml);
     log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
     log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
-    log_fisher += 2 * log(fabs(sin(mu[0])));
+    double theta_rad = angleInRadians(mu[0]);
+    log_fisher += 2 * log(fabs(sin(theta_rad)));
     return exp(log_fisher);
   }
 }
