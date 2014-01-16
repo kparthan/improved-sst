@@ -46,8 +46,8 @@
 #define DEFAULT_RESOLUTION 0.1
 #define DEFAULT_COMPONENTS 2
 #define MAX_COMPONENTS 10
-//#define MAX_KAPPA ceil(1/(0.09*AOM*AOM))
-#define MAX_KAPPA 100 
+#define MAX_KAPPA ceil(1/(0.09*AOM*AOM))
+//#define MAX_KAPPA 100 
 
 // for mixture components visualization
 #define VISUALIZE_2D 0

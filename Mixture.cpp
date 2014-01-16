@@ -109,7 +109,7 @@ void Mixture::initialize()
     }
     int count = 0;
     double w = 0;
-    ifstream file("mixture/initialize_weights_file");
+    ifstream file("mixture/initialize_components_file");
     string line;
     vector<double> numbers;
     while (getline(file,line)) {

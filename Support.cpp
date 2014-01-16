@@ -563,16 +563,16 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=20; i<=100; i+=10) {
-      //if (i % 4 == 3) {
-        int k = i;
+    for (int i=2; i<=16; i++) {
+      if (i % 3 == 2) {
+        int k = 10 * i;
         cout << "Running for K: " << k << endl;
         components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
                         parameters.constrain_kappa,parameters.simulation);
         double msg = mixture.estimateParameters();
         msglens.push_back(msg);
-      //}
+      }
     }
     plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
   } else if (parameters.infer_num_components == UNSET) {
@@ -900,7 +900,7 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
   if (simulation == SET) {
     data_file += "simulation/";
   }
-  data_file += "msglens-infer.dat";
+  data_file += "msglens-infer2.dat";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
     file << components[i] << "\t" << msglens[i] << endl;
