@@ -30,7 +30,7 @@
 #define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
-#define AOM 0.2
+#define AOM 0.001
 #define LARGE_NUMBER 1000000000
 #define PI boost::math::constants::pi<double>()
 #define LOG_PI log(PI)

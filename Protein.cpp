@@ -312,6 +312,22 @@ array<double,3> Protein::computeMeanDirection()
 }
 
 /*!
+ *  \brief This function is used to compute the distance between successive
+ *  residues of the protein.
+ */
+void Protein::computeSuccessiveDistances()
+{
+  for (int i=0; i<coordinates.size(); i++) {
+    vector<double> dist;
+    for (int j=0; j<coordinates[i].size()-1; j++) {
+      double d = lcb::geometry::distance<double>(coordinates[i][j],coordinates[i][j+1]);
+      dist.push_back(d);
+    }
+    distances.push_back(dist);
+  }
+}
+
+/*!
  *  \brief This function computes the message length to communicate the protein
  *  coordinates using the sphere model.
  *  \return the message length
@@ -324,20 +340,73 @@ double Protein::computeMessageLengthUsingSphereModel()
   int num_chains = chains.size(); // alternately spherical_coordinates.size()
   msglen += encodeUsingLogStarModel(num_chains);
 
-  //
+  double constant = log2(4*PI) - 2*log2(AOM);
+  for (int i=0; i<distances.size(); i++) {
+    // for each chain state the number of residues
+    int num_residues = distances[i].size();
+    msglen += encodeUsingLogStarModel(num_residues);
+
+    // state the residues
+    vector<double> radii;
+    for (int j=0; j<distances[i].size(); j++) {
+      double r = distances[i][j];
+      radii.push_back(r);
+      msglen += 2 * log2(r);  // state the points on the surface of sphere
+    }
+    // state the points on the surface of sphere
+    msglen += num_residues * constant;
+    // collect the radii and send them together
+    // state the radii
+    msglen += encodeUsingNormalModel(radii);
+  }  
+  return msglen;
+}
+
+/*!
+ *  \brief This function computes the message length to communicate the protein
+ *  coordinates using the null model.
+ *  \param mixture a reference to a Mixture
+ *  \return the message length
+ */
+double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
+{
+  double msglen = 0;
+
+  // message length to state the number of chains
+  int num_chains = chains.size(); // alternately spherical_coordinates.size()
+  msglen += encodeUsingLogStarModel(num_chains);
+
+  double constant = log2(4*PI) - 2*log2(AOM);
   for (int i=0; i<spherical_coordinates.size(); i++) {
     // for each chain state the number of residues
     int num_residues = spherical_coordinates[i].size();
     msglen += encodeUsingLogStarModel(num_residues);
 
-    // state the residues
-    // collect the radii and send them together
-    vector<double> radii;
+    // first point is origin
+    // state the second & third points using the sphere model
+    vector<double> radii(2,0);
+    radii[0] = distances[i][0];
+    radii[1] = distances[i][1];
+    // state the points on the surface of sphere
+    msglen += 2 * (log2(radii[0]) + log2(radii[1]));
+    msglen += 2 * constant;
+    // state the radii of the first two points
+    msglen += encodeUsingNormalModel(radii);
+    radii.clear();
+    vector<array<double,3>> points;
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       double r = spherical_coordinates[i][j][0];
       radii.push_back(r);
+      double theta = spherical_coordinates[i][j][1];
+      double phi = spherical_coordinates[i][j][2];
+      array<double,3> x = convertToCartesian(1,theta,phi);
+      points.push_back(x);
     }
+    // state the radii
     msglen += encodeUsingNormalModel(radii);
-  }  
+    // state the theta,phi on unit spheres
+    msglen += encodeUsingMixtureModel(points,mixture);
+  }
+  return msglen;
 }
 

@@ -2,6 +2,7 @@
 #define PROTEIN_H
 
 #include "Header.h"
+#include "Mixture.h"
 
 class Protein
 {
@@ -17,6 +18,9 @@ class Protein
 
     //! Stores the coordinates
     vector<vector<Point<double>>> coordinates;
+
+    //! Distances between the successive residues
+    vector<vector<double>> distances;
 
     //! List of spherical coordinates (r \neq 1,theta,phi)
     //! theta,phi measured in degrees
@@ -49,6 +53,9 @@ class Protein
     //! Constructor
     Protein(ProteinStructure *,string &);
 
+    //! Computes the successive distances between atoms
+    void computeSuccessiveDistances();
+
     //! Gets the list of spherical coordinates
     void computeSphericalTransformation();
 
@@ -78,6 +85,9 @@ class Protein
 
     //! Computes the message length using sphere model
     double computeMessageLengthUsingSphereModel();
+
+    //! Computes the message length using null model
+    double computeMessageLengthUsingNullModel(Mixture &);
 
 };
 

@@ -490,6 +490,17 @@ double encodeUsingNormalModel(vector<double> &radii)
   return msglen;
 }
 
+/*!
+ *  \brief This function is used to compute the encoding length using a
+ *  mixture model.
+ *  \param points a reference to a vector<array<double,3>>
+ *  \param mixture a reference to a Mixture
+ *  \return the message length
+ */
+double encodeUsingMixtureModel(vector<array<double,3>> &points, Mixture &mixture)
+{
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -1009,17 +1020,28 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
 {
   cout << "Assigning secondary structure to " << structure_file << endl;
 
-  // read mixture data
-  Mixture mixture;
-  mixture.load(mixture_file);
-
   // read protein coordinate data
   string name = extractName(structure_file);
   ProteinStructure *p = parsePDBFile(structure_file);
   Protein protein(p,name);
-  protein.computeSphericalTransformation();
+  int num_residues = p->getNumberOfResidues();
+  cout << "Number of residues: " << num_residues << endl;
 
   // compute the message length to transmit using the sphere approach
+  protein.computeSuccessiveDistances();
   double msglen = protein.computeMessageLengthUsingSphereModel();
+  cout << "Sphere model message length: " << msglen << " bits. (" 
+       << msglen / (double)num_residues << " bpr)" << endl;
+
+  // compute the message length to rtansmit using the null model
+  // null model: mixture model
+  // read mixture data
+  Mixture mixture;
+  mixture.load(mixture_file);
+  protein.computeSphericalTransformation();
+  msglen = protein.computeMessageLengthUsingNullModel(mixture);
+  cout << "Null model message length: " << msglen << " bits. (" 
+       << msglen / (double)num_residues << " bpr)" << endl;
+
 }
 

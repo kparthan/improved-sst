@@ -67,15 +67,16 @@ double Normal::value(double x)
  */
 double Normal::negativeLogLikelihood(vector<double> &sample)
 {
-  double term,value = 0;
+  double value = 0;
   double tmp = 0.5 * log(2*PI) + log(sigma);
-  value += sample.size() * tmp;
-  double denom = 2 * sigma * sigma;
+  value += (sample.size() * tmp);
+
+  double num = 0;
   for (int i=0; i<sample.size(); i++) {
-    double num = (sample[i]-mu) * (sample[i]-mu);
-    term = num / (double)denom;
-    value += term;
+    num += (sample[i]-mu) * (sample[i]-mu);
   }
+  double denom = 2 * sigma * sigma;
+  value += num / (double)denom;
   return value;
 }
 

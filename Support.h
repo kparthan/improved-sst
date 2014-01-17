@@ -52,6 +52,7 @@ double getLatticeConstant(int);
 double angleInRadians(double);
 double encodeUsingLogStarModel(double);
 double encodeUsingNormalModel(vector<double> &);
+double encodeUsingMixtureModel(vector<array<double,3>> &, Mixture &);
 
 // Protein functions
 string getPDBFilePath(string &);
