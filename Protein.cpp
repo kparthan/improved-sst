@@ -387,19 +387,19 @@ double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
     vector<double> radii(2,0);
     radii[0] = distances[i][0];
     radii[1] = distances[i][1];
-    // state the points on the surface of sphere
+    // state the two points on the surface of sphere
     msglen += 2 * (log2(radii[0]) + log2(radii[1]));
     msglen += 2 * constant;
     // state the radii of the first two points
     msglen += encodeUsingNormalModel(radii);
     radii.clear();
-    vector<array<double,3>> points;
+    vector<array<double,2>> points;
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       double r = spherical_coordinates[i][j][0];
       radii.push_back(r);
-      double theta = spherical_coordinates[i][j][1];
-      double phi = spherical_coordinates[i][j][2];
-      array<double,3> x = convertToCartesian(1,theta,phi);
+      array<double,2> x;
+      x[0] = spherical_coordinates[i][j][1];  // theta
+      x[1] = spherical_coordinates[i][j][2];  // phi
       points.push_back(x);
     }
     // state the radii

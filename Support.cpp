@@ -493,12 +493,18 @@ double encodeUsingNormalModel(vector<double> &radii)
 /*!
  *  \brief This function is used to compute the encoding length using a
  *  mixture model.
- *  \param points a reference to a vector<array<double,3>>
+ *  \param points a reference to a vector<array<double,2>>
  *  \param mixture a reference to a Mixture
  *  \return the message length
  */
-double encodeUsingMixtureModel(vector<array<double,3>> &points, Mixture &mixture)
+double encodeUsingMixtureModel(vector<array<double,2>> &points, Mixture &mixture)
 {
+  double msglen = 0;
+  double negative_log_likelihood = mixture.negativeLogLikelihood(points);
+  msglen += negative_log_likelihood / log(2);
+  // account for AOM
+  msglen -= points.size() * 2 * log2(AOM);
+  return msglen;
 }
 
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
