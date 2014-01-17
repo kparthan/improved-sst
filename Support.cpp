@@ -1,6 +1,7 @@
 #include "Support.h"
 #include "VonMises3D.h"
 #include "Mixture.h"
+#include "Normal.h"
 
 int initialize_components_from_file;
 
@@ -47,6 +48,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("components",value<int>(&parameters.simulate_num_components),
                               "# of mixture components used in the simulation")
        ("initialize_components_from_file","to read the components")
+       // parameters to run sst
+       ("sst","flag to execute sst script")
+       ("structure",value<string>(&parameters.structure),"the structure file")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -100,6 +104,11 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     } 
   }
   noargs = 0;
+
+  if (vm.count("mixture") && vm.count("sst")) {
+    cout << "Not allowed to use \"mixture\" and \"sst\" options together\n";
+    Usage(argv[0],desc);
+  }
 
   if (vm.count("mixture")) {  // run mixture modelling
     parameters.mixture_model = SET;
@@ -164,6 +173,24 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     }
   } else {
     parameters.heat_map = UNSET;
+  }
+
+  if (vm.count("sst")) {
+    parameters.sst = SET;
+    if (vm.count("load")) { 
+      parameters.load_mixture = SET;
+    } else {
+      parameters.load_mixture = UNSET;
+    }
+    if (!vm.count("structure")) {
+      if (vm.count("pdbid")) {
+        parameters.structure = getPDBFilePath(pdb_id);
+      } else if (vm.count("scopid")) {
+        parameters.structure = getSCOPFilePath(scop_id);
+      }
+    }
+  } else {
+    parameters.sst = UNSET;
   }
 
   if (noargs) {
@@ -425,6 +452,44 @@ double angleInRadians(double theta)
   return theta * PI / 180;
 }
 
+/*!
+ *  \brief This module computes the statement cost to communicate an
+ *  integer over a log star distribution. 
+ *  \return the length of encoding (in bits)
+ */
+double encodeUsingLogStarModel(double value)
+{
+  double result = 0;
+  if( value < 1 ){
+    throw range_error("Not a positive real integer");
+  }
+  
+  double partial = log2(value);
+  while(partial > 0){
+    result += partial;
+    partial = log2(partial);
+  }
+  return (result + log2(2.865));
+}
+
+/*!
+ *  \brief This function encodes the radius of the sphere assuming a Normal
+ *  distribution.
+ *  \param radii a reference to a vector<double>
+ *  \return the message length to encode the radii
+ */
+double encodeUsingNormalModel(vector<double> &radii)
+{
+  double mu = 3.8;
+  double sigma = 0.2;
+  Normal normal(mu,sigma);
+  double negative_log_likelihood = normal.negativeLogLikelihood(radii);
+  double msglen = negative_log_likelihood / log(2);
+  // account for the AOM
+  msglen -= radii.size() * log2(AOM);
+  return msglen;
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -563,8 +628,8 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=2; i<=16; i++) {
-      if (i % 3 == 2) {
+    for (int i=1; i<=20; i++) {
+      //if (i % 2 == 1) {
         int k = 10 * i;
         cout << "Running for K: " << k << endl;
         components.push_back(k);
@@ -572,7 +637,7 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
                         parameters.constrain_kappa,parameters.simulation);
         double msg = mixture.estimateParameters();
         msglens.push_back(msg);
-      }
+      //}
     }
     plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
   } else if (parameters.infer_num_components == UNSET) {
@@ -900,7 +965,7 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
   if (simulation == SET) {
     data_file += "simulation/";
   }
-  data_file += "msglens-infer2.dat";
+  data_file += "msglens-infer.dat";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
     file << components[i] << "\t" << msglens[i] << endl;
@@ -931,5 +996,30 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();
   system("gnuplot -persist script.p") ;	
+}
+
+//////////////////////// SST FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+/*!
+ *  \brief This function assigns the secondary structure to a protein.
+ *  \param mixture_file a string
+ *  \param structure_file a string
+ */
+void assignSecondaryStructure(string mixture_file, string structure_file)
+{
+  cout << "Assigning secondary structure to " << structure_file << endl;
+
+  // read mixture data
+  Mixture mixture;
+  mixture.load(mixture_file);
+
+  // read protein coordinate data
+  string name = extractName(structure_file);
+  ProteinStructure *p = parsePDBFile(structure_file);
+  Protein protein(p,name);
+  protein.computeSphericalTransformation();
+
+  // compute the message length to transmit using the sphere approach
+  double msglen = protein.computeMessageLengthUsingSphereModel();
 }
 

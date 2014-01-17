@@ -31,7 +31,7 @@ Protein::Protein(ProteinStructure *structure, string &name) :
       coordinates.push_back(chain_coordinates);
     }
   }
-  //cout << "# of suitable chains: " << coordinates.size() << endl;
+  cout << "# of suitable chains: " << coordinates.size() << endl;
   if (coordinates.size() == 0) {
     cout << name << " is an unsuitable structure ..." << endl;
     ofstream log("errors.log",ios::app);
@@ -309,5 +309,35 @@ array<double,3> Protein::computeMeanDirection()
     }
   }
   return estimate;
+}
+
+/*!
+ *  \brief This function computes the message length to communicate the protein
+ *  coordinates using the sphere model.
+ *  \return the message length
+ */
+double Protein::computeMessageLengthUsingSphereModel()
+{
+  double msglen = 0;
+
+  // message length to state the number of chains
+  int num_chains = chains.size(); // alternately spherical_coordinates.size()
+  msglen += encodeUsingLogStarModel(num_chains);
+
+  //
+  for (int i=0; i<spherical_coordinates.size(); i++) {
+    // for each chain state the number of residues
+    int num_residues = spherical_coordinates[i].size();
+    msglen += encodeUsingLogStarModel(num_residues);
+
+    // state the residues
+    // collect the radii and send them together
+    vector<double> radii;
+    for (int j=0; j<spherical_coordinates[i].size(); j++) {
+      double r = spherical_coordinates[i][j][0];
+      radii.push_back(r);
+    }
+    msglen += encodeUsingNormalModel(radii);
+  }  
 }
 

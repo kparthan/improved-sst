@@ -76,6 +76,9 @@ class Protein
     //! Computes the mean direction
     array<double,3> computeMeanDirection();
 
+    //! Computes the message length using sphere model
+    double computeMessageLengthUsingSphereModel();
+
 };
 
 #endif
