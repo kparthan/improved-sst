@@ -26,8 +26,8 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/pkas7/"
-#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/parthan/"
+#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.001
@@ -55,6 +55,10 @@
 #define USING_MIXTURE_WEIGHTS 0
 #define RANDOM_SAMPLE_SIZE 1
 #define DEFAULT_SAMPLE_SIZE 2000
+
+// for sst
+#define MIN_SEGMENT_SIZE 4
+#define MAX_SEGMENT_SIZE 50
 
 using namespace std;
 using namespace std::chrono;

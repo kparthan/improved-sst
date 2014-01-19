@@ -41,6 +41,7 @@ string extractName(string &);
 array<double,3> convertToSpherical(Point<double> &);
 array<double,3> convertToCartesian(double, double, double);
 void scaleToAOM(double *);
+template <typename RealType> RealType minimum(RealType, RealType);
 void print(ostream &, array<double,3> &);
 void vonMisesDistribution_2DPlot(array<double,3> &);
 double ratioBesselFunction(double);
@@ -52,7 +53,7 @@ double getLatticeConstant(int);
 double angleInRadians(double);
 double encodeUsingLogStarModel(double);
 double encodeUsingNormalModel(vector<double> &);
-double encodeUsingMixtureModel(vector<array<double,3>> &, Mixture &);
+double encodeUsingMixtureModel(vector<array<double,2>> &, Mixture &);
 
 // Protein functions
 string getPDBFilePath(string &);

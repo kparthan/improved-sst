@@ -306,6 +306,26 @@ void scaleToAOM(double *angle_rad)
 }
 
 /*!
+ *  \brief This function finds the minimum of the two elements 
+ *  \param a an element of type Realtype 
+ *  \param b an element of type Realtype 
+ *  \return the minimum value 
+ */
+template <typename RealType>
+RealType minimum(RealType a, RealType b)
+{
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+template int minimum(int,int);
+template float minimum(float,float);
+template double minimum(double,double);
+template long double minimum(long double,long double);
+
+/*!
  *  \brief This function prints the elements of an array.
  *  \param os a reference to a ostream
  *  \param a a reference to an array<double,3>
@@ -493,12 +513,18 @@ double encodeUsingNormalModel(vector<double> &radii)
 /*!
  *  \brief This function is used to compute the encoding length using a
  *  mixture model.
- *  \param points a reference to a vector<array<double,3>>
+ *  \param points a reference to a vector<array<double,2>>
  *  \param mixture a reference to a Mixture
  *  \return the message length
  */
-double encodeUsingMixtureModel(vector<array<double,3>> &points, Mixture &mixture)
+double encodeUsingMixtureModel(vector<array<double,2>> &points, Mixture &mixture)
 {
+  double msglen = 0;
+  double negative_log_likelihood = mixture.negativeLogLikelihood(points);
+  msglen += negative_log_likelihood / log(2);
+  // account for AOM
+  msglen -= points.size() * 2 * log2(AOM);
+  return msglen;
 }
 
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1033,7 +1059,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
   cout << "Sphere model message length: " << msglen << " bits. (" 
        << msglen / (double)num_residues << " bpr)" << endl;
 
-  // compute the message length to rtansmit using the null model
+  // compute the message length to tansmit using the null model
   // null model: mixture model
   // read mixture data
   Mixture mixture;
@@ -1043,5 +1069,9 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
   cout << "Null model message length: " << msglen << " bits. (" 
        << msglen / (double)num_residues << " bpr)" << endl;
 
+
+  // compute the message length using the compression model
+  // using ideal models
+  protein.computeCodeLengthMatrix();
 }
 

@@ -312,6 +312,22 @@ double Mixture::probability(array<double,2> &x)
 }
 
 /*!
+ *  \brief This function computes the negative log likelihood of a data
+ *  sample.
+ *  \param a reference to a vector<array<double,2>>
+ *  \return the negative log likelihood (base e)
+ */
+double Mixture::negativeLogLikelihood(vector<array<double,2>> &sample)
+{
+  double value = 0,density;
+  for (int i=0; i<sample.size(); i++) {
+    density = probability(sample[i]);
+    value -= log(density);
+  }
+  return value;
+}
+
+/*!
  *  \brief This function computes the minimum message length using the current
  *  model parameters.
  *  \return the minimum message length

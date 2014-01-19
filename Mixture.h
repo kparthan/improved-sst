@@ -90,6 +90,9 @@ class Mixture
     //! Probability of a datum
     double probability(array<double,2> &);
 
+    //! Computes the negative log likelihood
+    double negativeLogLikelihood(vector<array<double,2>> &);
+
     //! Computes the minimum message length
     double computeMinimumMessageLength();
 

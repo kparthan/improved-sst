@@ -7,7 +7,10 @@ OBJECTS = main.o \
   Normal.o  \
   VonMises3D.o \
   Component.o \
-  Mixture.o
+  Mixture.o \
+  Segment.o \
+  OptimalFit.o  \
+  IdealModel.o
 
 all: main 
 
@@ -33,6 +36,15 @@ Component.o: Component.cpp Component.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Mixture.o: Mixture.cpp Mixture.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Segment.o: Segment.cpp Segment.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+OptimalFit.o: OptimalFit.cpp OptimalFit.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+IdealModel.o: IdealModel.cpp IdealModel.h Header.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:
