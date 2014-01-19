@@ -3,6 +3,7 @@
 
 #include "Header.h"
 #include "Mixture.h"
+#include "OptimalFit.h"
 
 class Protein
 {
@@ -32,6 +33,12 @@ class Protein
 
     //! Times taken
     double cpu_time,wall_time;
+
+    //! Optimal model matrix
+    vector<vector<OptimalFit>> optimal_model;
+
+    //! Optimal code length matrix
+    vector<vector<double>> optimal_code_length;
 
   protected:
     //!i Checks for a chain break
@@ -89,6 +96,8 @@ class Protein
     //! Computes the message length using null model
     double computeMessageLengthUsingNullModel(Mixture &);
 
+    //! Computes the optimal code length matrix
+    void computeCodeLengthMatrix();
 };
 
 #endif

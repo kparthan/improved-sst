@@ -1,4 +1,5 @@
 #include "Support.h"
+#include "Segment.h"
 
 /*!
  *  \brief Null constructor module.
@@ -408,5 +409,65 @@ double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
     msglen += encodeUsingMixtureModel(points,mixture);
   }
   return msglen;
+}
+
+/*!
+ *  \brief This function is used to initialize code length matrices.
+ *  \param chain_index an integer
+ */
+void Protein::initializeCodeLengthMatrices(int chain_index)
+{
+  for (int i=0; i<optimal_model.size(); i++) {
+    optimal_model[i].clear();
+  }
+  optimal_model.clear();
+  int n = coordinates[chain_index].size();
+  vector<OptimalFit> optimal(n,OptimalFit());
+  vector<double> code_length(n,LARGE_NUMBER);
+  for (int i=0; i<n; i++) {
+    optimal_model.push_back(optimal);
+    optimal_code_length.push_back(code_length);
+  }
+}
+
+/*!
+ *  \brief This function computes the code length matrix of individual
+ *  pairs in the protein structure.
+ */
+void Protein::computeCodeLengthMatrix()
+{
+  for (int i=0; i<coordinates.size(); i++) {
+    initializeCodeLengthMatrices(i);
+    int j = 0;
+    cout << "cartesian coordinates size: " << coordinates[i].size() << endl;
+    cout << "distances size: " << distances[i].size() << endl;
+    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;
+    while (j < coordinates[i].size()) {
+      int range = minimum((int)coordinates[i].size(),j+MAX_SEGMENT_SIZE);
+      for (int k=j+MIN_SEGMENT_SIZE-1; k<range; k++) {
+        //cout << j << ":" << k << endl;
+        Segment segment(j,k,coordinates[i],spherical_coordinates[i]);
+        if (j == 0) {
+          segment.setInitialDistances(distances[i][0],distances[i][1]);
+        }
+        OptimalFit fit,ideal_fit;
+        // fit null model to the segment
+        ideal_fit = segment.fitNullModel();
+        for (int m=1; m<8; m++) {
+          fit = segment.fitIdealModel(m);
+          if (fit < ideal_fit) {
+            ideal_fit = fit;
+          }
+        }
+        optimal_model[j][k] = ideal_fit;
+        optimal_code_length[j][k] = ideal_fit.getMessageLength();
+      }
+      if (j == 0) {
+        j += MIN_SEGMENT_SIZE - 1;
+      } else {
+        j++;
+      }
+    }
+  }
 }
 
