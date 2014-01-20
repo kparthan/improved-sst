@@ -9,6 +9,9 @@ class IdealModel
     //! The ideal ProteinStructure
     ProteinStructure *model;
 
+    //! Residues of the model
+    vector<Point<double>> residues;
+
     //! Length of the model
     int length;
 
@@ -30,6 +33,12 @@ class IdealModel
 
     //! Overloading = operator
     IdealModel operator=(const IdealModel &);
+
+    //! Gets the condensed list of residues
+    vector<Point<double>> getResidues(int);
+
+    //! Returns the name of the ideal model
+    string getName();
 
 };
 

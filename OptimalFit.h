@@ -6,7 +6,7 @@
 class OptimalFit
 {
   private:
-    //! The respresentative ideal model;
+    //! The respresentative ideal model
     IdealModel ideal_model;
 
     //! Message length

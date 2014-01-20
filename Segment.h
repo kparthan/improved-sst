@@ -1,14 +1,18 @@
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
-#include "Header.h"
+#include "Support.h"
 #include "OptimalFit.h"
+#include "Mixture.h"
 
 class Segment
 {
   private:
     //! End indices of the segment
     int start,end;
+
+    //! Length of the segment
+    int num_residues;
 
     //! Cartesian coordinates of the segment
     vector<Point<double>> cartesian;
@@ -17,7 +21,7 @@ class Segment
     vector<array<double,3>> spherical;
 
     //! Initial two distances
-    double radii[2];
+    vector<double> radii;
 
   public:
     //! Constructor
@@ -27,10 +31,10 @@ class Segment
     void setInitialDistances(double, double);
 
     //! Fit null model
-    OptimalFit fitNullModel();
+    OptimalFit fitNullModel(Mixture &);
 
     //! Fit an ideal model
-    OptimalFit fitIdealModel(IdealModel &);
+    OptimalFit fitIdealModel(IdealModel &, Mixture &);
 };
 
 #endif

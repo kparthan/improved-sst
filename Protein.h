@@ -56,6 +56,9 @@ class Protein
     //! Initializes code length matrices
     void initializeCodeLengthMatrices(int);
 
+    //! Prints the optimal code length matrix to a file
+    void printCodeLengthMatrix(int);
+
   public: 
     //! Null constructor
     Protein();
@@ -100,7 +103,7 @@ class Protein
     double computeMessageLengthUsingNullModel(Mixture &);
 
     //! Computes the optimal code length matrix
-    void computeCodeLengthMatrix();
+    void computeCodeLengthMatrix(Mixture &);
 };
 
 #endif
