@@ -187,6 +187,8 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
         parameters.structure = getPDBFilePath(pdb_id);
       } else if (vm.count("scopid")) {
         parameters.structure = getSCOPFilePath(scop_id);
+      } else if (vm.count("file")) {
+        parameters.structure = parameters.file;
       }
     }
   } else {
@@ -299,7 +301,7 @@ array<double,3> convertToCartesian(double r, double theta, double phi)
  */
 void scaleToAOM(double *angle_rad)
 {
-  int scale = 1 / (double) AOM;
+  int scale = 1 / (double) AOM_angle;
   int angle = (*angle_rad) * scale;
   *angle_rad = angle / (double) scale;
   cout << *angle_rad << endl;
@@ -1073,5 +1075,82 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
   // compute the message length using the compression model
   // using ideal models
   protein.computeCodeLengthMatrix();
+}
+
+/*!
+ *  \brief This function loads the ideal models to be used in the compression
+ *  model.
+ *  \return the vector of ideal models
+ */
+vector<IdealModel> loadIdealModels()
+{
+  vector<IdealModel> ideal_models;
+  string name,path;
+  int num_residues;
+
+  // load idealAlphaHelix_LH
+  name = "AlphaHelix_LH";
+  path = "./ideal_models/idealAlphaHelix_LH.pdb";
+  ProteinStructure *alpha_lh = parsePDBFile(path);
+  num_residues = alpha_lh->getNumberOfResidues();
+  //cout << "# residues (alpha_lh): " << num_residues << endl;
+  IdealModel m0(alpha_lh,name);
+  ideal_models.push_back(m0);
+
+  // load idealAlphaHelix_RH
+  name = "AlphaHelix_RH";
+  path = "./ideal_models/idealAlphaHelix_RH.pdb";
+  ProteinStructure *alpha_rh = parsePDBFile(path);
+  num_residues = alpha_rh->getNumberOfResidues();
+  //cout << "# residues (alpha_rh): " << num_residues << endl;
+  IdealModel m1(alpha_rh,name);
+  ideal_models.push_back(m1);
+
+  // load idealPiHelix_LH
+  name = "PiHelix_LH";
+  path = "./ideal_models/idealPiHelix_LH.pdb";
+  ProteinStructure *pi_lh = parsePDBFile(path);
+  num_residues = pi_lh->getNumberOfResidues();
+  //cout << "# residues (pi_lh): " << num_residues << endl;
+  IdealModel m2(pi_lh,name);
+  ideal_models.push_back(m2);
+
+  // load idealPiHelix_RH
+  name = "PiHelix_RH";
+  path = "./ideal_models/idealPiHelix_RH.pdb";
+  ProteinStructure *pi_rh = parsePDBFile(path);
+  num_residues = pi_rh->getNumberOfResidues();
+  //cout << "# residues (pi_rh): " << num_residues << endl;
+  IdealModel m3(pi_rh,name);
+  ideal_models.push_back(m3);
+
+  // load ideal310Helix_LH
+  name = "310Helix_LH";
+  path = "./ideal_models/ideal310Helix_LH.pdb";
+  ProteinStructure *three10_lh = parsePDBFile(path);
+  num_residues = three10_lh->getNumberOfResidues();
+  //cout << "# residues (three10_lh): " << num_residues << endl;
+  IdealModel m4(three10_lh,name);
+  ideal_models.push_back(m4);
+
+  // load ideal310Helix_RH
+  name = "310Helix_RH";
+  path = "./ideal_models/ideal310Helix_RH.pdb";
+  ProteinStructure *three10_rh = parsePDBFile(path);
+  num_residues = three10_rh->getNumberOfResidues();
+  //cout << "# residues (three10_rh): " << num_residues << endl;
+  IdealModel m5(three10_rh,name);
+  ideal_models.push_back(m5);
+
+  // load idealParallelBetaStrand
+  name = "ParallelBetaStrand";
+  path = "./ideal_models/idealParallelBetaStrand.pdb";
+  ProteinStructure *beta_strand = parsePDBFile(path);
+  num_residues = beta_strand->getNumberOfResidues();
+  //cout << "# residues (beta_strand): " << num_residues << endl;
+  IdealModel m6(beta_strand,name);
+  ideal_models.push_back(m6);
+
+  return ideal_models;
 }
 

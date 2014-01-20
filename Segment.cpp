@@ -30,17 +30,21 @@ void Segment::setInitialDistances(double d1, double d2)
  */
 OptimalFit Segment::fitNullModel()
 {
+  double msglen = 0;
+  if (start == 0) {
+  }
+  OptimalFit fit;
+  return fit;
 }
 
 /*!
  *  \brief This function fits a null model to the protein segment.
- *  \param model an integer
+ *  \param model a reference to a IdealModel;
  *  \return the optimal fit using the ideal model
  */
-OptimalFit Segment::fitIdealModel(int model)
+OptimalFit Segment::fitIdealModel(IdealModel &model)
 {
-  switch(model) {
-    
-  }
+  OptimalFit fit;
+  return fit;
 }
 

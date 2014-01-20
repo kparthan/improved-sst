@@ -4,6 +4,7 @@
 #include "Header.h"
 #include "Protein.h"
 #include "Component.h"
+#include "IdealModel.h"
 
 //int initialize_weights_from_file;
 struct Parameters
@@ -79,6 +80,7 @@ void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 
 // sst functions
 void assignSecondaryStructure(string, string);
+vector<IdealModel> loadIdealModels();
 
 #endif
 

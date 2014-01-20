@@ -322,6 +322,7 @@ double Mixture::negativeLogLikelihood(vector<array<double,2>> &sample)
   double value = 0,density;
   for (int i=0; i<sample.size(); i++) {
     density = probability(sample[i]);
+    //cout << i+1 << " " << -log2(density)-2*log2(AOM) << endl;
     value -= log(density);
   }
   return value;
@@ -421,7 +422,7 @@ double Mixture::estimateParameters()
   printParameters(log,0,current);
   null_msglen = computeNullModelMessageLength();
   cout << "null_msglen: " << null_msglen << endl;
-  MAX_ALLOWED_DIFF_MSGLEN = 0.001 * null_msglen;
+  //MAX_ALLOWED_DIFF_MSGLEN = 0.001 * null_msglen;
   while (1) {
     // Expectation (E-step)
     updateResponsibilityMatrix();
@@ -438,6 +439,7 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
+      //if (iter > 20 && current <= prev && (prev - current) <= 0.001 * prev) {
       if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely

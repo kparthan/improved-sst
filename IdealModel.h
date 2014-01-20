@@ -6,6 +6,9 @@
 class IdealModel
 {
   private:
+    //! The ideal ProteinStructure
+    ProteinStructure *model;
+
     //! Length of the model
     int length;
 
@@ -18,6 +21,12 @@ class IdealModel
   
     //! Constructor
     IdealModel(int, string);
+
+    //! Constructor
+    IdealModel(ProteinStructure *, string);
+
+    //! Alters the length of the ideal model
+    void setLength(int);
 
     //! Overloading = operator
     IdealModel operator=(const IdealModel &);

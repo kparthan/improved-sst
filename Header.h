@@ -26,11 +26,12 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/parthan/"
-#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/pkas7/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.001
+#define AOM_angle 0.2
 #define LARGE_NUMBER 1000000000
 #define PI boost::math::constants::pi<double>()
 #define LOG_PI log(PI)
@@ -46,7 +47,7 @@
 #define DEFAULT_RESOLUTION 0.1
 #define DEFAULT_COMPONENTS 2
 #define MAX_COMPONENTS 10
-#define MAX_KAPPA ceil(1/(0.09*AOM*AOM))
+#define MAX_KAPPA ceil(1/(0.09*AOM_angle*AOM_angle))
 //#define MAX_KAPPA 100 
 
 // for mixture components visualization
@@ -57,8 +58,9 @@
 #define DEFAULT_SAMPLE_SIZE 2000
 
 // for sst
+#define NUM_IDEAL_MODELS 7
 #define MIN_SEGMENT_SIZE 4
-#define MAX_SEGMENT_SIZE 50
+#define MAX_SEGMENT_SIZE 49
 
 using namespace std;
 using namespace std::chrono;

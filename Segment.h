@@ -30,7 +30,7 @@ class Segment
     OptimalFit fitNullModel();
 
     //! Fit an ideal model
-    OptimalFit fitIdealModel(int);
+    OptimalFit fitIdealModel(IdealModel &);
 };
 
 #endif

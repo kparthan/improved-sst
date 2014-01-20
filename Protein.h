@@ -53,6 +53,9 @@ class Protein
     //! Reads the profile from a file
     void read_profile(string &);
 
+    //! Initializes code length matrices
+    void initializeCodeLengthMatrices(int);
+
   public: 
     //! Null constructor
     Protein();

@@ -419,8 +419,10 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
 {
   for (int i=0; i<optimal_model.size(); i++) {
     optimal_model[i].clear();
+    optimal_code_length[i].clear();
   }
   optimal_model.clear();
+  optimal_code_length.clear();
   int n = coordinates[chain_index].size();
   vector<OptimalFit> optimal(n,OptimalFit());
   vector<double> code_length(n,LARGE_NUMBER);
@@ -436,6 +438,7 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
  */
 void Protein::computeCodeLengthMatrix()
 {
+  vector<IdealModel> ideal_models = loadIdealModels();
   for (int i=0; i<coordinates.size(); i++) {
     initializeCodeLengthMatrices(i);
     int j = 0;
@@ -453,8 +456,8 @@ void Protein::computeCodeLengthMatrix()
         OptimalFit fit,ideal_fit;
         // fit null model to the segment
         ideal_fit = segment.fitNullModel();
-        for (int m=1; m<8; m++) {
-          fit = segment.fitIdealModel(m);
+        for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+          fit = segment.fitIdealModel(ideal_models[m]);
           if (fit < ideal_fit) {
             ideal_fit = fit;
           }
