@@ -14,10 +14,13 @@ class Segment
     //! Length of the segment
     int num_residues;
 
-    //! Cartesian coordinates of the segment
+    //! Cartesian coordinates of the protein 
     vector<Point<double>> cartesian;
 
-    //! Spherical coordinates of the segment
+    //! Cartesian coordinates of the segment
+    vector<vector<double>> observed_residues;
+
+    //! Spherical coordinates of the protein 
     vector<array<double,3>> spherical;
 
     //! Initial two distances
@@ -35,6 +38,9 @@ class Segment
 
     //! Fit an ideal model
     OptimalFit fitIdealModel(IdealModel &, Mixture &);
+
+    //!
+    void transform();
 };
 
 #endif

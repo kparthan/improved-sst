@@ -38,9 +38,11 @@ struct Parameters parseCommandLineInput (int, char **);
 void Usage (const char *, options_description &);
 bool checkFile(string &);
 void writeToFile(vector<Point<double>> &, const char *);
+void writeToFile(vector<vector<double>> &, const char *);
 string extractName(string &);
 array<double,3> convertToSpherical(Point<double> &);
 array<double,3> convertToCartesian(double, double, double);
+vector<double> point2vector(Point<double> &);
 void scaleToAOM(double *);
 template <typename RealType> RealType minimum(RealType, RealType);
 void print(ostream &, array<double,3> &);
@@ -62,6 +64,8 @@ string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
+pair<vector<Point<double>>,Matrix<double>> 
+convertToCanonicalForm(vector<Point<double>> &);
 
 void computeEstimators(struct Parameters &);
 void modelOneComponent(struct Parameters &, pair<array<double,3>,double> &);

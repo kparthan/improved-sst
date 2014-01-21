@@ -10,7 +10,7 @@ class IdealModel
     ProteinStructure *model;
 
     //! Residues of the model
-    vector<Point<double>> residues;
+    vector<vector<double>> residues;
 
     //! Length of the model
     int length;
@@ -35,7 +35,10 @@ class IdealModel
     IdealModel operator=(const IdealModel &);
 
     //! Gets the condensed list of residues
-    vector<Point<double>> getResidues(int);
+    vector<vector<double>> getResidues(int);
+
+    //! Returns the protein structure
+    ProteinStructure *getStructure();
 
     //! Returns the name of the ideal model
     string getName();

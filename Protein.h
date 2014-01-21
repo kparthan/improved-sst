@@ -17,6 +17,9 @@ class Protein
     //! Protein Structure
     ProteinStructure *structure;
 
+    //! Translation point
+    Point<double> translation_vector;
+
     //! Stores the coordinates
     vector<vector<Point<double>>> coordinates;
 
@@ -41,11 +44,14 @@ class Protein
     vector<vector<double>> optimal_code_length;
 
   protected:
-    //!i Checks for a chain break
+    //! Checks for a chain break
     bool checkChainBreak(string &, vector<Atom> &);
 
     //! Gets the number of chain breaks
     int getNumberOfChainBreaks(string &, vector<Atom> &);
+
+    //! Translate the protein so that its first point is the origin
+    void translateProteinToOrigin(vector<Point<double>> &);
 
     //! Computes the transformation at an index
     vector<Point<double>> computeTransformation(int, int);

@@ -29,6 +29,7 @@ Protein::Protein(ProteinStructure *structure, string &name) :
         Point<double> p = atoms[j].point<double>();
         chain_coordinates.push_back(p);
       }
+      translateProteinToOrigin(chain_coordinates);
       coordinates.push_back(chain_coordinates);
     }
   }
@@ -40,7 +41,28 @@ Protein::Protein(ProteinStructure *structure, string &name) :
     log.close();
     exit(1);
   }
-  //writeToFile(coordinates,"coordinates");
+}
+
+/*!
+ *  \brief This function translates the protein so that its first point
+ *  coincides with the origin
+ *  \param chain_coordinates a reference to a vector<double>
+ */
+void Protein::translateProteinToOrigin(vector<Point<double>> &chain_coordinates)
+{
+  // before translation
+  writeToFile(chain_coordinates,"before_translation");
+  translation_vector.x(-chain_coordinates[0].x());
+  translation_vector.y(-chain_coordinates[0].y());
+  translation_vector.z(-chain_coordinates[0].z());
+  cout << "Translation vector: " << translation_vector << endl;
+
+  // translate the protein
+  for (int i=0; i<chain_coordinates.size(); i++) {
+    chain_coordinates[i] += translation_vector;
+  }
+  // after translation
+  writeToFile(chain_coordinates,"after_translation");
 }
 
 /*!
@@ -117,40 +139,14 @@ void Protein::computeSphericalTransformation()
  */
 vector<Point<double>> Protein::computeTransformation(int chain_index, int index)
 {
-  vector<Point<double>> transformed_coordinates(4,Point<double>());
-  // translate index to origin
-  for (int i=0; i<4; i++) {
-    transformed_coordinates[i] = coordinates[chain_index][index+i-2] -
-                                 coordinates[chain_index][index];
-  }
-  // rotate so that i-1 is on -ve x-axis
-  double angle;
-  Vector<double> vi_minus_1,negative_xaxis,rotation_axis;
-  vector<double> vec1 = {-1,0,0};
-  negative_xaxis = vec1;
-  vi_minus_1 = transformed_coordinates[1].positionVector();
-  rotation_axis = Vector<double>::crossProduct(vi_minus_1,negative_xaxis);
-  angle = Vector<double>::angleBetween(vi_minus_1,negative_xaxis);
-  for (int i=0; i<4; i++) {
-    transformed_coordinates[i] = 
-          rotate<double>(transformed_coordinates[i],rotation_axis,angle);
-  }
-  // rotate so that i-2 is on XY plane
-  Vector<double> vi_minus_2,normal,positive_zaxis;
-  vector<double> vec2 = {0,0,1};
-  positive_zaxis = vec2;
-  vi_minus_2 = transformed_coordinates[0].positionVector();
-  normal = Vector<double>::crossProduct(vi_minus_2,negative_xaxis);
-  angle = Vector<double>::angleBetween(normal,positive_zaxis);
-  rotation_axis = negative_xaxis;
-  if (vi_minus_2[2] < 0) {
-    angle *= -1;
-  }
-  for (int i=0; i<4; i++) {
-    transformed_coordinates[i] =
-          rotate<double>(transformed_coordinates[i],rotation_axis,angle);
-  }
-  return transformed_coordinates;
+  vector<Point<double>> four_mer(4,Point<double>());
+  four_mer[0] = coordinates[chain_index][index-2];
+  four_mer[1] = coordinates[chain_index][index-1];
+  four_mer[2] = coordinates[chain_index][index];
+  four_mer[3] = coordinates[chain_index][index+1];
+  pair<vector<Point<double>>,Matrix<double>> 
+  transformation = convertToCanonicalForm(four_mer);
+  return transformation.first; 
 }
 
 /*!

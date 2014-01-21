@@ -1,4 +1,5 @@
 #include "IdealModel.h"
+#include "Support.h"
 
 /*!
  *  \brief This is a null constructor.
@@ -31,7 +32,8 @@ IdealModel::IdealModel(ProteinStructure *structure, string name):
   vector<Atom> atoms = chain.getAtoms();
   for (int j=0; j<atoms.size(); j++) {
     Point<double> p = atoms[j].point<double>();
-    residues.push_back(p);
+    vector<double> res = point2vector(p);
+    residues.push_back(res);
   }
   //assert(residues.size() == length);
 }
@@ -66,13 +68,22 @@ IdealModel IdealModel::operator=(const IdealModel &source)
  *  \param num_residues an integer
  *  \return the list of coordinates of the condensed ideal model
  */
-vector<Point<double>> IdealModel::getResidues(int num_residues)
+vector<vector<double>> IdealModel::getResidues(int num_residues)
 {
-  vector<Point<double>> points;
+  vector<vector<double>> points;
   for (int i=0; i<num_residues; i++) {
     points.push_back(residues[i]);
   }
   return points;
+}
+
+/*!
+ *  \brief This function returns the protein structure of the ideal model.
+ *  \return the ProteinStructure
+ */
+ProteinStructure *IdealModel::getStructure()
+{
+  return model;
 }
 
 /*

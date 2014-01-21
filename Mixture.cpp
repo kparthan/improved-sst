@@ -439,8 +439,8 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      //if (iter > 20 && current <= prev && (prev - current) <= 0.001 * prev) {
-      if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
+      if (iter > 20 && current <= prev && (prev - current) <= 0.001 * prev) {
+      //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
         log << "\t\t" << current/N << " bpr" << endl;

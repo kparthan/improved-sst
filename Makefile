@@ -1,4 +1,4 @@
-CFLAGS=-std=c++0x -g $(shell pkg-config --cflags liblcb-experimental) 
+CFLAGS=-std=c++0x -O3 -g $(shell pkg-config --cflags liblcb-experimental) 
 LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \
@@ -10,7 +10,8 @@ OBJECTS = main.o \
   Mixture.o \
   Segment.o \
   OptimalFit.o  \
-  IdealModel.o
+  IdealModel.o  \
+  Superpose3D.o
 
 all: main 
 
@@ -45,6 +46,9 @@ OptimalFit.o: OptimalFit.cpp OptimalFit.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 IdealModel.o: IdealModel.cpp IdealModel.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Superpose3D.o: Superpose3D.cpp Superpose3D.h suffstat.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:

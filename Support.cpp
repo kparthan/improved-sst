@@ -238,7 +238,25 @@ void writeToFile(vector<Point<double>> &coordinates, const char *file_name)
   for (int i=0; i<coordinates.size(); i++){
     file << coordinates[i] << endl;
   }
- file.close(); 
+  file.close(); 
+}
+
+/*!
+ *  \brief This module prints the elements of a vector<vector<>> to a file
+ *  \param v a reference to vector<vector<double>>
+ *  \param file_name a pointer to a const char
+ */
+void writeToFile(vector<vector<double>> &v, const char *file_name)
+{
+  ofstream file(file_name);
+  for (int i=0; i<v.size(); i++) {
+    file << "(";
+    for (int j=0; j<v[i].size()-1; j++) {
+      file << v[i][j] << ", ";
+    }
+    file << v[i][v[i].size()-1] << ")" << endl;
+  }
+  file.close(); 
 }
 
 /*!
@@ -292,6 +310,20 @@ array<double,3> convertToCartesian(double r, double theta, double phi)
   x[1] = r * sin(theta_rad) * sin(phi_rad);
   x[2] = r * cos(theta_rad);
   return x;
+}
+
+/*!
+ *  \brief This function converts a liblcb::Point object to a std::vector object
+ *  \param p a reference to a Point<double>
+ *  \return a vector
+ */
+vector<double> point2vector(Point<double> &p)
+{
+  vector<double> v;
+  v.push_back(p.x());
+  v.push_back(p.y());
+  v.push_back(p.z());
+  return v;
 }
 
 /*!
@@ -623,6 +655,66 @@ ProteinStructure *parsePDBFile(string &pdb_file)
     cout << " [OK]" << endl;
     return one_model;
   }
+}
+
+/*!
+ *  \brief This function transforms a set of four points (p0,p1,p2,p3) to a 
+ *  canonical form such that p2 is the origin, p1 lies on the -ve X-axis and 
+ *  p0 lies on the XY plane.
+ *  \param four_mer a reference to a vector<Point<double>>
+ *  \return the transformed list of four coordinates and the transformation
+ *  matrix
+ */
+pair<vector<Point<double>>,Matrix<double>>
+convertToCanonicalForm(vector<Point<double>> &four_mer)
+{
+  assert(four_mer.size() == 4);
+  vector<Point<double>> transformed_coordinates(4,Point<double>());
+
+  // translate p2 to origin
+  double x = -four_mer[2].x();
+  double y = -four_mer[2].y();
+  double z = -four_mer[2].z();
+  Matrix<double> translation = lcb::geometry::translationMatrix(x,y,z);
+  for (int i=0; i<4; i++) {
+    transformed_coordinates[i] = lcb::geometry::transform(four_mer[i],translation);
+  }
+  // rotate so that p1 is on -ve x-axis
+  double angle;
+  Vector<double> p1,negative_xaxis,rotation_axis;
+  vector<double> vec1 = {-1,0,0};
+  negative_xaxis = vec1;
+  p1 = transformed_coordinates[1].positionVector();
+  rotation_axis = Vector<double>::crossProduct(p1,negative_xaxis);
+  angle = Vector<double>::angleBetween(p1,negative_xaxis);
+  Matrix<double> rm1 = rotationMatrix<double>(rotation_axis,angle);
+  for (int i=0; i<4; i++) {
+    transformed_coordinates[i] = 
+          lcb::geometry::transform(transformed_coordinates[i],rm1);
+          //rotate<double>(transformed_coordinates[i],rotation_axis,angle);
+  }
+  // rotate so that p0 is on XY plane
+  Vector<double> p0,normal,positive_zaxis;
+  vector<double> vec2 = {0,0,1};
+  positive_zaxis = vec2;
+  p0 = transformed_coordinates[0].positionVector();
+  normal = Vector<double>::crossProduct(p0,negative_xaxis);
+  angle = Vector<double>::angleBetween(normal,positive_zaxis);
+  rotation_axis = negative_xaxis;
+  if (p0[2] < 0) {
+    angle *= -1;
+  }
+  Matrix<double> rm2 = rotationMatrix<double>(rotation_axis,angle);
+  for (int i=0; i<4; i++) {
+    transformed_coordinates[i] =
+          lcb::geometry::transform(transformed_coordinates[i],rm2);
+          //rotate<double>(transformed_coordinates[i],rotation_axis,angle);
+  }
+  Matrix<double> rotation = rm2 * rm1;
+  rotation.changeDimensions(4,4);
+  rotation[3][3] = 1;
+  Matrix<double> transformation = rotation * translation;
+  return pair<vector<Point<double>>,Matrix<double>> (transformed_coordinates,transformation);
 }
 
 /*!
