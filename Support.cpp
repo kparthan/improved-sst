@@ -1074,7 +1074,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
 
   // compute the message length using the compression model
   // using ideal models
-  protein.computeCodeLengthMatrix();
+  protein.computeCodeLengthMatrix(mixture);
 }
 
 /*!

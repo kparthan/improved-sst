@@ -435,8 +435,9 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
 /*!
  *  \brief This function computes the code length matrix of individual
  *  pairs in the protein structure.
+ *  \param mixture a reference to a Mixture
  */
-void Protein::computeCodeLengthMatrix()
+void Protein::computeCodeLengthMatrix(Mixture &mixture)
 {
   vector<IdealModel> ideal_models = loadIdealModels();
   for (int i=0; i<coordinates.size(); i++) {
@@ -455,9 +456,9 @@ void Protein::computeCodeLengthMatrix()
         }
         OptimalFit fit,ideal_fit;
         // fit null model to the segment
-        ideal_fit = segment.fitNullModel();
+        ideal_fit = segment.fitNullModel(mixture);
         for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-          fit = segment.fitIdealModel(ideal_models[m]);
+          fit = segment.fitIdealModel(ideal_models[m],mixture);
           if (fit < ideal_fit) {
             ideal_fit = fit;
           }
@@ -471,6 +472,25 @@ void Protein::computeCodeLengthMatrix()
         j++;
       }
     }
+    printCodeLengthMatrix(i);
   }
+}
+
+/*!
+ *  \brief This function outputs the code length matrix to a file.
+ *  \param chain_index an integer
+ */
+void Protein::printCodeLengthMatrix(int chain_index)
+{
+  string name = "code_length_matrix_chain_";
+  name += boost::lexical_cast<string>(chain_index+1);
+  ofstream file(name.c_str());
+  for (int i=0; i<optimal_code_length.size(); i++) {
+    for (int j=0; j<optimal_code_length[i].size(); j++) {
+      file << fixed << scientific << optimal_code_length[i][j] << "\t";
+    }
+    file << endl;
+  }
+  file.close();
 }
 
