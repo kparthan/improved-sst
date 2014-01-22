@@ -29,7 +29,7 @@ class Normal
     const double standardDeviation(); 
 
 		//! Function value
-		double value(double);
+		double density(double);
 
     //! Computes the negative log likelihood of a sample
     double negativeLogLikelihood(vector<double> &);

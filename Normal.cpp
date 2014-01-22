@@ -50,13 +50,13 @@ const double Normal::standardDeviation(void)
 /*!
  *  \brief This function computes the value of the distribution at a given x
  *  \param x a double
- *  \return value of the function given x
+ *  \return density of the function given x
  */
-double Normal::value(double x)
+double Normal::density(double x)
 {
-	double expNumerator = (-1) * (x-mu) * (x-mu);
-	double expDenominator = (double)2 * sigma * sigma;
-	double val = (exp (expNumerator/expDenominator)) / ((sqrt(2*PI)) * sigma);
+  double tmp = (x-mu)/(double)sigma;
+  double exponent = -0.5 * tmp * tmp;
+	double val = exp(exponent) / ((sqrt(2*PI)) * sigma);
   return val;
 }
 

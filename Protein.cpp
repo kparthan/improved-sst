@@ -1,5 +1,6 @@
 #include "Support.h"
 #include "Segment.h"
+#include "Message.h"
 
 /*!
  *  \brief Null constructor module.
@@ -52,14 +53,14 @@ void Protein::translateProteinToOrigin(vector<Point<double>> &chain_coordinates)
 {
   // before translation
   writeToFile(chain_coordinates,"before_translation");
-  translation_vector.x(-chain_coordinates[0].x());
-  translation_vector.y(-chain_coordinates[0].y());
-  translation_vector.z(-chain_coordinates[0].z());
-  cout << "Translation vector: " << translation_vector << endl;
+  initial_translation_vector.x(-chain_coordinates[0].x());
+  initial_translation_vector.y(-chain_coordinates[0].y());
+  initial_translation_vector.z(-chain_coordinates[0].z());
+  cout << "Translation vector: " << initial_translation_vector << endl;
 
   // translate the protein
   for (int i=0; i<chain_coordinates.size(); i++) {
-    chain_coordinates[i] += translation_vector;
+    chain_coordinates[i] += initial_translation_vector;
   }
   // after translation
   writeToFile(chain_coordinates,"after_translation");
@@ -116,7 +117,7 @@ void Protein::computeSphericalTransformation()
     vector<array<double,3>> chain_coordinates;
     for (int j=2; j<coordinates[i].size()-1; j++) {
       vector<Point<double>> transformed_coordinates = computeTransformation(i,j);
-      //string file_index = boost::lexical_cast<string>(j);
+      //string file_index = "tmp/" + boost::lexical_cast<string>(j);
       //writeToFile(transformed_coordinates,file_index.c_str());
       array<double,3> values = convertToSpherical(transformed_coordinates[3]);
       chain_coordinates.push_back(values);
@@ -331,30 +332,22 @@ void Protein::computeSuccessiveDistances()
  */
 double Protein::computeMessageLengthUsingSphereModel()
 {
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
   double msglen = 0;
 
   // message length to state the number of chains
   int num_chains = chains.size(); // alternately spherical_coordinates.size()
-  msglen += encodeUsingLogStarModel(num_chains);
+  msglen += message.encodeUsingLogStarModel(num_chains);
 
-  double constant = log2(4*PI) - 2*log2(AOM);
   for (int i=0; i<distances.size(); i++) {
     // for each chain state the number of residues
     int num_residues = distances[i].size();
-    msglen += encodeUsingLogStarModel(num_residues);
+    msglen += message.encodeUsingLogStarModel(num_residues);
 
-    // state the residues
-    vector<double> radii;
     for (int j=0; j<distances[i].size(); j++) {
-      double r = distances[i][j];
-      radii.push_back(r);
-      msglen += 2 * log2(r);  // state the points on the surface of sphere
+      msglen += message.encodeUsingSphereModel(distances[i][j],normal);
     }
-    // state the points on the surface of sphere
-    msglen += num_residues * constant;
-    // collect the radii and send them together
-    // state the radii
-    msglen += encodeUsingNormalModel(radii);
   }  
   return msglen;
 }
@@ -367,42 +360,36 @@ double Protein::computeMessageLengthUsingSphereModel()
  */
 double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
 {
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
   double msglen = 0;
 
   // message length to state the number of chains
   int num_chains = chains.size(); // alternately spherical_coordinates.size()
-  msglen += encodeUsingLogStarModel(num_chains);
+  msglen += message.encodeUsingLogStarModel(num_chains);
 
-  double constant = log2(4*PI) - 2*log2(AOM);
   for (int i=0; i<spherical_coordinates.size(); i++) {
     // for each chain state the number of residues
     int num_residues = spherical_coordinates[i].size();
-    msglen += encodeUsingLogStarModel(num_residues);
+    msglen += message.encodeUsingLogStarModel(num_residues);
 
     // first point is origin
     // state the second & third points using the sphere model
-    vector<double> radii(2,0);
-    radii[0] = distances[i][0];
-    radii[1] = distances[i][1];
-    // state the two points on the surface of sphere
-    msglen += 2 * (log2(radii[0]) + log2(radii[1]));
-    msglen += 2 * constant;
-    // state the radii of the first two points
-    msglen += encodeUsingNormalModel(radii);
-    radii.clear();
-    vector<array<double,2>> points;
+    msglen += message.encodeUsingSphereModel(distances[i][0],normal);
+    msglen += message.encodeUsingSphereModel(distances[i][1],normal);
+
+    // state the remaining points using the mixture model
+    double r;
+    array<double,2> x;
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
-      double r = spherical_coordinates[i][j][0];
-      radii.push_back(r);
-      array<double,2> x;
+      // state radius
+      r = spherical_coordinates[i][j][0];
+      msglen += message.encodeUsingNormalModel(r,normal);
+      // state theta,phi
       x[0] = spherical_coordinates[i][j][1];  // theta
       x[1] = spherical_coordinates[i][j][2];  // phi
-      points.push_back(x);
+      msglen += message.encodeUsingMixtureModel(x,mixture);
     }
-    // state the radii
-    msglen += encodeUsingNormalModel(radii);
-    // state the theta,phi on unit spheres
-    msglen += encodeUsingMixtureModel(points,mixture);
   }
   return msglen;
 }
@@ -432,8 +419,9 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
  *  \brief This function computes the code length matrix of individual
  *  pairs in the protein structure.
  *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
  */
-void Protein::computeCodeLengthMatrix(Mixture &mixture)
+void Protein::computeCodeLengthMatrix(Mixture &mixture, int orientation)
 {
   vector<IdealModel> ideal_models = loadIdealModels();
   for (int i=0; i<coordinates.size(); i++) {
@@ -454,7 +442,7 @@ void Protein::computeCodeLengthMatrix(Mixture &mixture)
         // fit null model to the segment
         ideal_fit = segment.fitNullModel(mixture);
         for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-          fit = segment.fitIdealModel(ideal_models[m],mixture);
+          fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
           if (fit < ideal_fit) {
             ideal_fit = fit;
           }

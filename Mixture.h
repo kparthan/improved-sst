@@ -23,9 +23,6 @@ class Mixture
     //! Sample size
     int N;
 
-    //! Flag to bound kappa
-    int constrain_kappa;
-
     //! Responsibility matrix (r_ik)
     vector<vector<double>> responsibility;
 
@@ -51,8 +48,14 @@ class Mixture
     double null_msglen;
 
   public:
+    //! Flag to bound kappa
+    int constrain_kappa;
+
     //! Null constructor
     Mixture();
+
+    //! Constructor
+    Mixture(int, vector<Component> &, vector<double> &);
 
     //! Constructor
     Mixture(int, vector<array<double,2>> &, int, int, int);
@@ -128,6 +131,9 @@ class Mixture
 
     //! Generate heat map data
     void generateHeatmapData(double);
+
+    //! Conflates a component with the current mixture
+    Mixture conflate(Component &);
 };
 
 #endif

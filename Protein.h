@@ -18,7 +18,7 @@ class Protein
     ProteinStructure *structure;
 
     //! Translation point
-    Point<double> translation_vector;
+    Point<double> initial_translation_vector;
 
     //! Stores the coordinates
     vector<vector<Point<double>>> coordinates;
@@ -109,7 +109,7 @@ class Protein
     double computeMessageLengthUsingNullModel(Mixture &);
 
     //! Computes the optimal code length matrix
-    void computeCodeLengthMatrix(Mixture &);
+    void computeCodeLengthMatrix(Mixture &, int);
 };
 
 #endif

@@ -23,7 +23,8 @@ int main(int argc, char **argv)
   } 
 
   if (parameters.load_mixture == SET && parameters.sst == SET) {
-    assignSecondaryStructure(parameters.mixture_file,parameters.structure);
+    assignSecondaryStructure(parameters.mixture_file,parameters.structure,
+                             parameters.orientation);
   }
 
   return 0;

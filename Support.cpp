@@ -51,6 +51,8 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        // parameters to run sst
        ("sst","flag to execute sst script")
        ("structure",value<string>(&parameters.structure),"the structure file")
+       ("orientation",value<int>(&parameters.orientation),
+          "orientation of the mean/direction used in the adaptive encoding")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -190,6 +192,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
       } else if (vm.count("file")) {
         parameters.structure = parameters.file;
       }
+    }
+    if (!vm.count("orientation")) {
+      parameters.orientation = DEFAULT_ORIENTATION;
     }
   } else {
     parameters.sst = UNSET;
@@ -504,61 +509,6 @@ double getLatticeConstant(int d)
 double angleInRadians(double theta)
 {
   return theta * PI / 180;
-}
-
-/*!
- *  \brief This module computes the statement cost to communicate an
- *  integer over a log star distribution. 
- *  \return the length of encoding (in bits)
- */
-double encodeUsingLogStarModel(double value)
-{
-  double result = 0;
-  if( value < 1 ){
-    throw range_error("Not a positive real integer");
-  }
-  
-  double partial = log2(value);
-  while(partial > 0){
-    result += partial;
-    partial = log2(partial);
-  }
-  return (result + log2(2.865));
-}
-
-/*!
- *  \brief This function encodes the radius of the sphere assuming a Normal
- *  distribution.
- *  \param radii a reference to a vector<double>
- *  \return the message length to encode the radii
- */
-double encodeUsingNormalModel(vector<double> &radii)
-{
-  double mu = 3.8;
-  double sigma = 0.2;
-  Normal normal(mu,sigma);
-  double negative_log_likelihood = normal.negativeLogLikelihood(radii);
-  double msglen = negative_log_likelihood / log(2);
-  // account for the AOM
-  msglen -= radii.size() * log2(AOM);
-  return msglen;
-}
-
-/*!
- *  \brief This function is used to compute the encoding length using a
- *  mixture model.
- *  \param points a reference to a vector<array<double,2>>
- *  \param mixture a reference to a Mixture
- *  \return the message length
- */
-double encodeUsingMixtureModel(vector<array<double,2>> &points, Mixture &mixture)
-{
-  double msglen = 0;
-  double negative_log_likelihood = mixture.negativeLogLikelihood(points);
-  msglen += negative_log_likelihood / log(2);
-  // account for AOM
-  msglen -= points.size() * 2 * log2(AOM);
-  return msglen;
 }
 
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1135,8 +1085,10 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
  *  \brief This function assigns the secondary structure to a protein.
  *  \param mixture_file a string
  *  \param structure_file a string
+ *  \param orientation an integer
  */
-void assignSecondaryStructure(string mixture_file, string structure_file)
+void assignSecondaryStructure(string mixture_file, string structure_file,
+                              int orientation)
 {
   cout << "Assigning secondary structure to " << structure_file << endl;
 
@@ -1166,7 +1118,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file)
 
   // compute the message length using the compression model
   // using ideal models
-  protein.computeCodeLengthMatrix(mixture);
+  protein.computeCodeLengthMatrix(mixture,orientation);
 }
 
 /*!

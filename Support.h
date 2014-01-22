@@ -31,6 +31,8 @@ struct Parameters
   // parameters to run sst
   int sst;                      // flag to run sst
   string structure;             // protein structure file
+  int orientation;              // orientation to be used in the adaptive
+                                // encoding scheme
 };
 
 // general functions
@@ -54,9 +56,6 @@ double ratioBesselFunction_thirdDerivative(double);
 double computeConstantTerm(int);
 double getLatticeConstant(int);
 double angleInRadians(double);
-double encodeUsingLogStarModel(double);
-double encodeUsingNormalModel(vector<double> &);
-double encodeUsingMixtureModel(vector<array<double,2>> &, Mixture &);
 
 // Protein functions
 string getPDBFilePath(string &);
@@ -83,7 +82,7 @@ vector<Component> generateRandomComponents(int, int);
 void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 
 // sst functions
-void assignSecondaryStructure(string, string);
+void assignSecondaryStructure(string, string, int);
 vector<IdealModel> loadIdealModels();
 
 #endif

@@ -35,8 +35,11 @@
 #define LARGE_NUMBER 1000000000
 #define PI boost::math::constants::pi<double>()
 #define LOG_PI log(PI)
+#define LOG2_PI log2(PI)
 #define ZERO std::numeric_limits<double>::epsilon()
 #define TOLERANCE 1e-6
+#define NORMAL_MEAN 3.8
+#define NORMAL_SIGMA 0.2
 
 #define SET 1 
 #define UNSET 0
@@ -61,6 +64,7 @@
 #define NUM_IDEAL_MODELS 7
 #define MIN_SEGMENT_SIZE 4
 #define MAX_SEGMENT_SIZE 49
+#define DEFAULT_ORIENTATION 1
 
 using namespace std;
 using namespace std::chrono;

@@ -37,7 +37,7 @@ class Segment
     OptimalFit fitNullModel(Mixture &);
 
     //! Fit an ideal model
-    OptimalFit fitIdealModel(IdealModel &, Mixture &);
+    OptimalFit fitIdealModel(IdealModel &, Mixture &, int);
 
     //!
     void transform();

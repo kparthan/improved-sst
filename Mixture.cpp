@@ -10,6 +10,19 @@ Mixture::Mixture()
 {}
 
 /*!
+ *  \brief This is a constructor function which instantiates a Mixture
+ *  \param K an integer
+ *  \param components a reference to a vector<Component>
+ *  \param weights a reference to a vector<double> 
+ */
+Mixture::Mixture(int K, vector<Component> &components, vector<double> &weights):
+                 K(K), components(components),weights(weights)
+{
+  assert(components.size() == K);
+  assert(weights.size() == K);
+}
+
+/*!
  *  \brief This is a constructor function.
  *  \param num_components an integer
  *  \param angles a reference to a vector<array<double,2>>
@@ -740,5 +753,16 @@ void Mixture::generateHeatmapData(double res)
   }
   fbins2D.close();
   fbins3D.close();
+}
+
+/*!
+ *  \brief This function conflates a component with the current mixture.
+ *  \param component a reference to a Component 
+ *  \return the conflated  Mixture
+ */
+Mixture Mixture::conflate(Component &component)
+{
+  Mixture conflated;
+  return conflated;
 }
 

@@ -1,9 +1,10 @@
-CFLAGS=-std=c++0x -O3 -g $(shell pkg-config --cflags liblcb-experimental) 
+CFLAGS=-std=c++0x -g $(shell pkg-config --cflags liblcb-experimental) 
 LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \
   Support.o \
   Protein.o \
+  Message.o \
   Normal.o  \
   VonMises3D.o \
   Component.o \
@@ -25,6 +26,9 @@ Support.o: Support.cpp Support.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Protein.o: Protein.cpp Protein.h Support.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Message.o: Message.cpp Message.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 Normal.o: Normal.cpp Normal.h 
