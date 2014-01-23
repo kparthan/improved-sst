@@ -416,50 +416,117 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
 }
 
 /*!
- *  \brief This function computes the code length matrix of individual
- *  pairs in the protein structure.
+ *  \brief This function compresses the protein using the expert ideal models.
  *  \param mixture a reference to a Mixture
  *  \param orientation an integer
  */
-void Protein::computeCodeLengthMatrix(Mixture &mixture, int orientation)
+void Protein::compressUsingIdealModels(Mixture &mixture, int orientation)
 {
   vector<IdealModel> ideal_models = loadIdealModels();
   for (int i=0; i<coordinates.size(); i++) {
-    initializeCodeLengthMatrices(i);
-    int j = 0;
-    cout << "cartesian coordinates size: " << coordinates[i].size() << endl;
+    /*cout << "cartesian coordinates size: " << coordinates[i].size() << endl;
     cout << "distances size: " << distances[i].size() << endl;
-    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;
-    while (j < coordinates[i].size()) {
-      int range = minimum((int)coordinates[i].size(),j+MAX_SEGMENT_SIZE);
-      for (int k=j+MIN_SEGMENT_SIZE-1; k<range; k++) {
-        //cout << j << ":" << k << endl;
-        Segment segment(j,k,coordinates[i],spherical_coordinates[i]);
-        if (j == 0) {
-          segment.setInitialDistances(distances[i][0],distances[i][1]);
-        }
-        OptimalFit fit,ideal_fit;
-        // fit null model to the segment
-        ideal_fit = segment.fitNullModel(mixture);
-        for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
+    computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
+    pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
+    vector<int> segments = segmentation.second;
+    cout << "Compression fit: " << segmentation.first << " bits." << endl;
+    cout << "Bits per residue: " << segmentation.first/coordinates[i].size() 
+             << endl << endl; 
+    cout << "# of segments: " << segments.size()-1 << endl << endl;
+    cout << "Internal segmentation:" << endl;
+    int j;
+    for (j=0; j<segments.size()-1; j++) {
+      cout << segments[j] << "-->";
+    }
+    cout << segments[j] << endl << endl;
+  }
+}
+
+/*!
+ *  \brief This function computes the code length matrix of individual
+ *  pairs in the protein structure.
+ *  \param ideal_models a reference to a vector<IdealModel> 
+ *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
+ *  \param chain an integer
+ */
+void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
+                                      Mixture &mixture, int orientation, 
+                                      int chain)
+{
+  initializeCodeLengthMatrices(chain);
+  int chain_size = coordinates[chain].size();
+  for (int i=0; i<chain_size; i++) {
+    int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
+    for (int j=1; j<bound; j++) {
+      cout << i << ":" << j << endl;
+      Segment segment(i,j,coordinates[chain],spherical_coordinates[chain]);
+      if (i == 0) {
+        segment.setInitialDistances(distances[chain][0],distances[chain][1]);
+      }
+      int segment_length = j - i + 1; 
+      OptimalFit fit,ideal_fit;
+      // fit null model to the segment
+      ideal_fit = segment.fitNullModel(mixture);
+      for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+        if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+            (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
           fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
           if (fit < ideal_fit) {
             ideal_fit = fit;
           }
         }
-        optimal_model[j][k] = ideal_fit;
-        optimal_code_length[j][k] = ideal_fit.getMessageLength();
       }
-      if (j == 0) {
-        j += MIN_SEGMENT_SIZE - 1;
-      } else {
-        j++;
-      }
+      optimal_model[i][j] = ideal_fit;
+      optimal_code_length[i][j] = ideal_fit.getMessageLength();
     }
-    printCodeLengthMatrix(i);
   }
+  printCodeLengthMatrix(chain);
 }
 
+/*!
+ *  \brief This module computes the optimal segmentation using
+ *  dynamic programming
+ *  \param chain an integer
+ *  \return the indices of the segments
+ */
+pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
+{
+  pair <double,vector<int>> segmentation;
+  int chain_size = coordinates[chain].size();
+  vector<double> optimal_msglen(chain_size,100000);
+  vector<int> optimal_index(chain_size,-1);
+
+  for (int i=0; i<chain_size; i++){
+    optimal_msglen[i] = optimal_code_length[0][i];
+    optimal_index[i] = i;
+    for (int j=1; j<i; j++){
+      if (optimal_code_length[j][i] + optimal_msglen[j] < optimal_msglen[i]){
+        optimal_msglen[i] = optimal_code_length[j][i] + optimal_msglen[j];
+        optimal_index[i] = j;
+      }
+    }
+  }
+  segmentation.first = optimal_msglen[chain_size-1];
+  int index = chain_size - 1;
+  vector<int> backtrack; 
+  backtrack.push_back(chain_size-1);
+  while (1){
+    if (index == optimal_index[index]){
+      break;
+    }
+    index = optimal_index[index];
+    backtrack.push_back(index);
+  }
+  backtrack.push_back(0);
+  vector<int> segments;
+  for (int i=backtrack.size()-1; i>=0; i--){
+    segments.push_back(backtrack[i]);
+  }
+  segmentation.second = segments;
+  return segmentation;
+}
 /*!
  *  \brief This function outputs the code length matrix to a file.
  *  \param chain_index an integer

@@ -62,7 +62,8 @@
 
 // for sst
 #define NUM_IDEAL_MODELS 7
-#define MIN_SEGMENT_SIZE 4
+#define MIN_SIZE_HELIX 6
+#define MIN_SIZE_STRAND 5
 #define MAX_SEGMENT_SIZE 49
 #define DEFAULT_ORIENTATION 1
 

@@ -1118,7 +1118,15 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
 
   // compute the message length using the compression model
   // using ideal models
-  protein.computeCodeLengthMatrix(mixture,orientation);
+  clock_t c_start = clock();
+  auto t_start = std::chrono::high_resolution_clock::now();
+  protein.compressUsingIdealModels(mixture,orientation);
+  clock_t c_end = clock();
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
+  double wall_time = std::chrono::duration_cast<std::chrono::seconds>(t_end-t_start).count();
+  cout << "CPU time: " << cpu_time << " secs." << endl;
+  cout << "Wall time: " << wall_time << " secs." << endl;
 }
 
 /*!

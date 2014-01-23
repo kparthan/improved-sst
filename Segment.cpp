@@ -114,7 +114,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
   // get the ideal model of length equal to the segment length
   vector<vector<double>> ideal_residues = model.getResidues(num_residues);
-  // [o: observed,MOVING] and [i: ideal,FIXED]
+  // [observed,MOVING] and [ideal,FIXED]
   vector<vector<double>> observed,ideal;  // observed, ideal are running lists
                                           // of the orginal untransformed
                                           // coordinates
@@ -125,6 +125,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
   vector<Point<double>> four_mer(4,Point<double>());
   pair<array<double,2>,array<double,2>> mu_x;
   array<double,2> mu,x;
+  array<double,3> vonmises_suffstats;
   double kappa = 5;
   double density;
   Mixture conflated_mixture;
@@ -149,9 +150,11 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
                                     ideal_residues[3],orientation);
   mu = mu_x.first;
   x = mu_x.second;
-  Component component(mut,kappa,mixture.constrain_kappa);
+  Component component(mu,kappa,mixture.constrain_kappa);
   conflated_mixture = mixture.conflate(component);
   msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
+  vonmises_suffstats = convertToCartesian(1,x[0],x[1]);
+  int N = 1;
 
   // ADAPTIVE SUPERPOSITION
   for (int om=start+3; om<end; om++) {
@@ -159,31 +162,45 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     //           om : most recent point communicated to the receiver
     //         om+1 : current point being transmitted
     // superpose (start,...,om) with the ideal model's (i1,...,im)
-    cout << "here\n";
+    observed.push_back(observed_residues[om-start]);
+    ideal.push_back(ideal_residues[om-start]);
     // copy the contents of the observed,ideal into temporary containers so that
     // these temp lists can be transformed without affecting the original lists
     observed_copy = observed;
     ideal_copy = ideal;
     //writeToFile(observed_copy,"observed_copy_before");
     //writeToFile(ideal_copy,"ideal_copy_before");
-    Superpose3DClass superpose(observed_copy,ideal_copy);
+    Superpose3DClass superpose(suff_stats,observed_copy[om-start],
+                               ideal_copy[om-start]);
     suff_stats = superpose.getSufficientStatistics();
-    observed_copy.push_back(observed_residues[om+1]);
+    observed_copy.push_back(observed_residues[om-start+1]);
     superpose.transformVectors(observed_copy);
     //writeToFile(observed_copy,"observed_copy_after");
     //writeToFile(ideal_copy,"ideal_copy_after");
     // get the current four_mer
     for (int i=0; i<4; i++) {
-      four_mer[i] = Point<double>(observed_copy[i]);
+      four_mer[i] = Point<double>(observed_copy[N+i]);
     }
     canonical_transformation = convertToCanonicalForm(four_mer);
     canonical_transformation_matrix = canonical_transformation.second;
     // apply the canonical transformation on the ideal four_mer
     // it is sufficient to transform im and i_{m+1}
-    pair<array<double,2>,array<double,2>> mu_x =
-    getCurrentMeanAndDirection(canonical_transformation,ideal_residues[om],
-                               ideal_residues[om+1],orientation);
-    exit(1);
+    mu_x = getCurrentMeanAndDirection(canonical_transformation,
+           ideal_residues[om-start],ideal_residues[om-start+1],orientation);
+    /*Component adaptive_component(vonmises_suffstats,N,mixture.constrain_kappa);
+    adaptive_component.minimizeMessageLength();
+    kappa = adaptive_component.getKappa();*/
+    mu = mu_x.first;
+    x = mu_x.second;
+    component = Component(mu,kappa,mixture.constrain_kappa);
+    conflated_mixture = mixture.conflate(component);
+    msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
+    // update von mises suff stats
+    N++;
+    array<double,3> tmp = convertToCartesian(1,x[0],x[1]);
+    for (int i=0; i<3; i++) {
+      vonmises_suffstats[i] += tmp[i];
+    }
   }
 
   ProteinStructure *p = model.getStructure();
@@ -194,12 +211,18 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 }
 
 /*!
- *
+ *  \brief This function computes the current mean of the VMF component and 
+ *  computes the direction from the mean to be used in the density function.
+ *  \param canonical_transformation a reference to a pair<vector<Point<double>>,Matrix<double>>
+ *  \param im a reference to a vector<double>
+ *  \param im_plus_1 a reference to a vector<double>
+ *  \param orientation an integer
+ *  \return the pair of mean and direction
  */
 pair<array<double,2>,array<double,2>> 
 Segment::getCurrentMeanAndDirection
          (pair<vector<Point<double>>,Matrix<double>> &canonical_transformation,
-          vector<double> &im, vector<double> &im_plus_1)
+          vector<double> &im, vector<double> &im_plus_1, int orientation)
 {
   // transform im and i_{m+1}
   Point<double> im_new =
@@ -213,7 +236,7 @@ Segment::getCurrentMeanAndDirection
 
   array<double,2> mu,x;
   array<double,3> difference;
-  Point<double,2> diff;
+  Point<double> diff;
   switch(orientation) {
     case 1:
       diff = im_plus_1_new - im_new;

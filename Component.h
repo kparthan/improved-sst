@@ -39,6 +39,9 @@ class Component
     //! Constructor
     Component(array<double,2> &, double, int);
 
+    //! Overloading = operator
+    Component operator=(const Component &);
+
     //! Minimize message length
     void minimizeMessageLength();
 
@@ -84,17 +87,17 @@ class Component
     //! Prints the component parameters 
     void printParameters(ostream &);
 
-    //! Return theta
-    double getTheta();
-
-    //! Return phi 
-    double getPhi();
+    //! Returns the mean direction
+    array<double,2> getMeanDirection();
 
     //! Return kappa 
     double getKappa();
 
     //! Generate random samples from this component
     vector<array<double,3>> generate(int);
+
+    //! Conflates two components
+    Component conflate(Component &);
 };
 
 #endif

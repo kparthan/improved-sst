@@ -32,6 +32,27 @@ Component::Component(array<double,2> &mu, double kappa,
 }
 
 /*!
+ *  \brief This module assigns an Component object on the rhs to one
+ *  on the lhs
+ *  \param source a reference to an Component object
+ */
+Component Component::operator=(const Component &source)
+{
+  if (this != &source) {
+    mean_direction = source.mean_direction;
+    mu = source.mu;
+    N = source.N;
+    rbar = source.rbar;
+    R = source.R;
+    constrain_kappa = source.constrain_kappa;
+    kappa_ml = source.kappa_ml;
+    kappa_mml = source.kappa_mml;
+    von_mises = source.von_mises;
+  }
+  return *this;
+}
+
+/*!
  *  \brief This function is used to minimize the message length expression
  *  by finding the suitable model parameters.
  */
@@ -332,21 +353,12 @@ void Component::printParameters(ostream &os)
 }
 
 /*!
- *  \brief This function returns the optimum theta.
- *  \return theta that corresponds to the minimum message length
+ *  \brief This function returns the mean direction of the distribution.
+ *  \return the angular mean
  */
-double Component::getTheta()
+array<double,2> Component::getMeanDirection()
 {
-  return mu[0];
-}
-
-/*!
- *  \brief This function returns the optimum phi.
- *  \return phi that corresponds to the minimum message length
- */
-double Component::getPhi()
-{
-  return mu[1];
+  return mu;
 }
 
 /*!
@@ -368,3 +380,32 @@ vector<array<double,3>> Component::generate(int num_points)
   von_mises = VonMises3D(mu,kappa_mml);
   return von_mises.generateCoordinates(num_points);
 }
+
+/*!
+ *  \brief This function conflates two components.
+ *  \param component a reference to a Component
+ *  \return the conflated component
+ */
+Component Component::conflate(Component &component)
+{
+  array<double,2> mu1 = mu;
+  array<double,3> mean1 = convertToCartesian(1,mu1[0],mu1[1]);
+  array<double,2> mu2 = component.getMeanDirection();
+  array<double,3> mean2 = convertToCartesian(1,mu2[0],mu2[1]);
+  double k1 = kappa_mml;
+  double k2 = component.getKappa();
+
+  array<double,3> resultant;
+  for (int i=0; i<3; i++) {
+    resultant[i] = k1 * mean1[i] + k2 * mean2[i];
+  }
+  Point<double> p(resultant);
+  array<double,3> resultant_spherical = convertToSpherical(p);
+  array<double,2> conflated_mu;
+  conflated_mu[0] = resultant_spherical[1];
+  conflated_mu[1] = resultant_spherical[2];
+  double conflated_kappa = resultant_spherical[0];
+  
+  return Component(conflated_mu,conflated_kappa,constrain_kappa); 
+}
+

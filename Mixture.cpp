@@ -16,7 +16,7 @@ Mixture::Mixture()
  *  \param weights a reference to a vector<double> 
  */
 Mixture::Mixture(int K, vector<Component> &components, vector<double> &weights):
-                 K(K), components(components),weights(weights)
+                 K(K), components(components), weights(weights)
 {
   assert(components.size() == K);
   assert(weights.size() == K);
@@ -452,7 +452,7 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (iter > 20 && current <= prev && (prev - current) <= 0.001 * prev) {
+      if (iter > 20 && current <= prev && (prev - current) <= 0.0001 * prev) {
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
@@ -762,7 +762,11 @@ void Mixture::generateHeatmapData(double res)
  */
 Mixture Mixture::conflate(Component &component)
 {
-  Mixture conflated;
-  return conflated;
+  vector<Component> new_components;
+  for (int i=0; i<K; i++) {
+    Component conflated_component = components[i].conflate(component);
+    new_components.push_back(conflated_component);
+  }
+  return Mixture(K,new_components,weights);
 }
 

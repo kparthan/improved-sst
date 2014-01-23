@@ -39,8 +39,11 @@ class Segment
     //! Fit an ideal model
     OptimalFit fitIdealModel(IdealModel &, Mixture &, int);
 
-    //!
-    void transform();
+    //! Computes the current mean and direction in the adaptive superposition
+    pair<array<double,2>,array<double,2>> 
+    getCurrentMeanAndDirection(pair<vector<Point<double>>,Matrix<double>> &,
+                               vector<double> &, vector<double> &, int);
+          
 };
 
 #endif
