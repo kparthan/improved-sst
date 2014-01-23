@@ -412,6 +412,8 @@ void Superpose3DClass::updateSufficientStatistics() {
   updated_stats.sum_Bx = stats1.sum_Bx + stats2.sum_Bx;
   updated_stats.sum_By = stats1.sum_By + stats2.sum_By;
   updated_stats.sum_Bz = stats1.sum_Bz + stats2.sum_Bz;
+
+  updated_stats.nVecs = stats1.nVecs + stats2.nVecs;
 }
 
 
@@ -653,6 +655,7 @@ Superpose3DClass::Superpose3DClass(
 }
 
 
+
 /* overloaded constructor with specified rotational centers */
 Superpose3DClass::Superpose3DClass(
   vector<vector<double> > &A, //moving
@@ -720,6 +723,7 @@ Superpose3DClass::Superpose3DClass(
   this->stats2 = stats2 ;
 	this->nVecs = stats1.nVecs+stats2.nVecs ;
 	updateLSqFit() ;
+  stats = updated_stats; // set updated suff stats to stats
   computeRotationMatrix();
   success_flag = 1;
 }
@@ -761,6 +765,7 @@ Superpose3DClass::Superpose3DClass(
   this->stats2 = stats2 ;
 	this->nVecs = stats1.nVecs+stats2.nVecs ;
 	updateLSqFit() ;
+  stats = updated_stats; // set updated suff stats to stats
   computeRotationMatrix();
   success_flag = 1;
 }
@@ -933,7 +938,6 @@ void Superpose3DClass::printQuaternionMatrix() {
 		cout << endl ;
 	}
 }
-
 
 
 suffStatClass Superpose3DClass::getSufficientStatistics() {
