@@ -1,5 +1,5 @@
-CFLAGS=-std=c++0x -g $(shell pkg-config --cflags liblcb-experimental) 
-LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -lboost_program_options -lboost_system -lboost_filesystem 
+CFLAGS=-std=c++0x -pg -g -O3 $(shell pkg-config --cflags liblcb-experimental) 
+LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -pg -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \
   Support.o \
@@ -25,7 +25,7 @@ main.o: main.cpp Support.h Header.h
 Support.o: Support.cpp Support.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
-Protein.o: Protein.cpp Protein.h Support.h 
+Protein.o: Protein.cpp Protein.h Support.h Header.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 Message.o: Message.cpp Message.h 

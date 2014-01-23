@@ -668,6 +668,63 @@ convertToCanonicalForm(vector<Point<double>> &four_mer)
 }
 
 /*!
+ *  \brief This function computes the transformation to align a given vector
+ *  with the Z-axis.
+ *  \param sp a reference to a vector<double>
+ *  \param ep a reference to a vector<double>
+ *  \return the transformation matrix
+ */
+Matrix<double> alignWithZAxis(vector<double> &sp, vector<double> &ep)
+{
+  // move sp to origin
+  vector<double> v(3,0);
+  for (int i=0; i<3; i++) {
+    v[i] = ep[i] - sp[i];
+  }
+  Point<double> dir(v);
+  array<double,3> spherical = convertToSpherical(dir);
+  array<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
+  double theta = angleInRadians(spherical[1]);
+  double phi = angleInRadians(spherical[2]);
+  Point<double> x(unit_vec);
+  Vector<double> rotation_axis1;
+  vector<double> zaxis = {0,0,1};
+  rotation_axis1 = zaxis;
+  Matrix<double> rm1 = rotationMatrix<double>(rotation_axis1,-phi);
+  Vector<double> rotation_axis2;
+  vector<double> yaxis = {0,1,0};
+  rotation_axis2 = yaxis;
+  Matrix<double> rm2 = rotationMatrix<double>(rotation_axis2,-theta);
+  Matrix<double> trans = rm2 * rm1;
+  return trans;
+}
+
+/*!
+ *  \brief This function applies the transformation of the ideal model and returns 
+ *  the corresponding unit vector.
+ *  \param matrix a reference to a Matrix<double>
+ *  \param sp a reference to a vector<double>
+ *  \param ep a reference to a vector<double>
+ *  \return the transformed unit vector
+ */
+array<double,3> applyIdealModelTransformation(Matrix<double> &matrix, 
+                vector<double> &sp, vector<double> &ep)
+{
+  Point<double> s(sp);
+  Point<double> e(ep);
+  Point<double> dir = e - s;
+  array<double,3> spherical = convertToSpherical(dir);
+  array<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
+  Point<double> x(unit_vec);
+  Point<double> xtrans = lcb::geometry::transform<double>(x,matrix);
+  array<double,3> y;
+  y[0] = xtrans.x();
+  y[1] = xtrans.y();
+  y[2] = xtrans.z();
+  return y;
+}
+
+/*!
  *  \brief This function is used to read the angular profiles and use this data
  *  to estimate parameters of a Von Mises distribution.
  *  \param parameters a reference to a struct Parameters

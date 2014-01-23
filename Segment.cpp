@@ -153,7 +153,10 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
   Component component(mu,kappa,mixture.constrain_kappa);
   conflated_mixture = mixture.conflate(component);
   msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
-  vonmises_suffstats = convertToCartesian(1,x[0],x[1]);
+  Matrix<double> zaxis_transform = alignWithZAxis(ideal_residues[2],ideal_residues[3]);
+  vonmises_suffstats = applyIdealModelTransformation(zaxis_transform,
+                        observed_residues[2],observed_residues[3]);
+  //vonmises_suffstats = convertToCartesian(1,x[0],x[1]);
   int N = 1;
 
   // ADAPTIVE SUPERPOSITION
@@ -187,19 +190,22 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     // it is sufficient to transform im and i_{m+1}
     mu_x = getCurrentMeanAndDirection(canonical_transformation,
            ideal_residues[om-start],ideal_residues[om-start+1],orientation);
-    /*Component adaptive_component(vonmises_suffstats,N,mixture.constrain_kappa);
+    Component adaptive_component(vonmises_suffstats,N,mixture.constrain_kappa);
     adaptive_component.minimizeMessageLength();
-    kappa = adaptive_component.getKappa();*/
+    kappa = adaptive_component.getKappa();
     mu = mu_x.first;
     x = mu_x.second;
     component = Component(mu,kappa,mixture.constrain_kappa);
     conflated_mixture = mixture.conflate(component);
     msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
     // update von mises suff stats
+    zaxis_transform = alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1]);
+    array<double,3> dir = applyIdealModelTransformation(zaxis_transform,
+                        observed_residues[om-start],observed_residues[om-start+1]);
     N++;
-    array<double,3> tmp = convertToCartesian(1,x[0],x[1]);
+    //array<double,3> tmp = convertToCartesian(1,x[0],x[1]);
     for (int i=0; i<3; i++) {
-      vonmises_suffstats[i] += tmp[i];
+      vonmises_suffstats[i] += dir[i];
     }
   }
 

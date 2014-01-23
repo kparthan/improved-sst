@@ -63,8 +63,9 @@ string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
-pair<vector<Point<double>>,Matrix<double>> 
-convertToCanonicalForm(vector<Point<double>> &);
+pair<vector<Point<double>>,Matrix<double>> convertToCanonicalForm(vector<Point<double>> &);
+Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
+array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);
 
 void computeEstimators(struct Parameters &);
 void modelOneComponent(struct Parameters &, pair<array<double,3>,double> &);

@@ -459,7 +459,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
   int chain_size = coordinates[chain].size();
   for (int i=0; i<chain_size; i++) {
     int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
-    for (int j=1; j<bound; j++) {
+    for (int j=i+1; j<bound; j++) {
       cout << i << ":" << j << endl;
       Segment segment(i,j,coordinates[chain],spherical_coordinates[chain]);
       if (i == 0) {
