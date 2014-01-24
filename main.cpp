@@ -2,14 +2,15 @@
 
 int main(int argc, char **argv)
 {
-  getHomeAndCurrentDIrectory();
-//  struct Parameters parameters = parseCommandLineInput(argc,argv);
-/*
+  getHomeAndCurrentDirectory();
+  struct Parameters parameters = parseCommandLineInput(argc,argv);
+  STRUCTURE = extractName(parameters.file);
 
   if (parameters.sst == UNSET && parameters.read_profiles == UNSET 
       && parameters.mixture_model == UNSET) {
     buildAngularProfile(parameters);
   }
+/*
   if (parameters.read_profiles == SET) {
     computeEstimators(parameters);
   } 

@@ -35,13 +35,13 @@ struct Parameters
 };
 
 // general functions
-void getHomeAndCurrentDIrectory();
+void getHomeAndCurrentDirectory();
 struct Parameters parseCommandLineInput (int, char **); 
 void Usage (const char *, options_description &);
 bool checkFile(string &);
 //void writeToFile(vector<Point<double>> &, const char *);
 //void writeToFile(vector<vector<double>> &, const char *);
-//string extractName(string &);
+string extractName(string &);
 //array<double,3> convertToSpherical(Point<double> &);
 //array<double,3> convertToCartesian(double, double, double);
 //vector<double> point2vector(Point<double> &);
@@ -60,9 +60,9 @@ bool checkFile(string &);
 //// Protein functions
 string getPDBFilePath(string &);
 string getSCOPFilePath(string &);
-//void buildAngularProfile(struct Parameters &);
-//bool checkIfSphericalProfileExists(string &);
-//ProteinStructure *parsePDBFile(string &);
+void buildAngularProfile(struct Parameters &);
+bool checkIfSphericalProfileExists(string &);
+ProteinStructure *parsePDBFile(string &);
 //pair<vector<Point<double>>,Matrix<double>> convertToCanonicalForm(vector<Point<double>> &);
 //Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
 //array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);

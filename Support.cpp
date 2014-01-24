@@ -4,8 +4,7 @@
 //#include "Normal.h"
 
 int initialize_components_from_file;
-string HOME_DIRECTORY;
-string CURRENT_DIRECTORY;
+string HOME_DIRECTORY,CURRENT_DIRECTORY,STRUCTURE;
 double XAXIS[3] = {1,0,0};
 double YAXIS[3] = {0,1,0};
 double ZAXIS[3] = {0,0,1};
@@ -13,9 +12,9 @@ double ZAXIS[3] = {0,0,1};
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
- *  \brief This function sets the current working directory variable.
+ *  \brief This function sets the home and current working directory variables.
  */
-void getHomeAndCurrentDIrectory()
+void getHomeAndCurrentDirectory()
 {
   struct passwd *pw = getpwuid(getuid());
   string HOME_DIRECTORY = pw->pw_dir;
@@ -200,14 +199,10 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     } else {
       parameters.load_mixture = UNSET;
     }
-    if (!vm.count("structure")) {
-      if (vm.count("pdbid")) {
-        parameters.structure = getPDBFilePath(pdb_id);
-      } else if (vm.count("scopid")) {
-        parameters.structure = getSCOPFilePath(scop_id);
-      } else if (vm.count("file")) {
-        parameters.structure = parameters.file;
-      }
+    if (vm.count("pdbid")) {
+      parameters.file = getPDBFilePath(pdb_id);
+    } else if (vm.count("scopid")) {
+      parameters.file = getSCOPFilePath(scop_id);
     }
     if (!vm.count("orientation")) {
       parameters.orientation = DEFAULT_ORIENTATION;
@@ -237,18 +232,18 @@ void Usage(const char *exe, options_description &desc)
   exit(1);
 }
 
-///*!
-// *  \brief This module checks whether the input file exists or not.
-// *  \param file_name a reference to a string
-// *  \return true or false depending on whether the file exists or not.
-// */
-//bool checkFile(string &file_name)
-//{
-//  /*ifstream file(fileName);
-//  return file;*/
-//  return boost::filesystem::exists(file_name);
-//}
-//
+/*!
+ *  \brief This module checks whether the input file exists or not.
+ *  \param file_name a reference to a string
+ *  \return true or false depending on whether the file exists or not.
+ */
+bool checkFile(string &file_name)
+{
+  ifstream file(fileName);
+  return file;
+  //return boost::filesystem::exists(file_name);
+}
+
 ///*!
 // *  \brief This module prints the list of coordinates to a file
 // *  \param coordinates a reference to vector<Point<double>>
@@ -281,20 +276,20 @@ void Usage(const char *exe, options_description &desc)
 //  file.close(); 
 //}
 //
-///*!
-// *  \brief This module extracts the file name from the path
-// *  \param file a reference to a string
-// *  \return the extracted portion of the file name
-// */
-//string extractName(string &file)
-//{
-//  unsigned pos1 = file.find_last_of("/");
-//  unsigned pos2 = file.find(".");
-//  int length = pos2 - pos1 - 1;
-//  string sub = file.substr(pos1+1,length);
-//  return sub;
-//}
-//
+/*!
+ *  \brief This module extracts the file name from the path
+ *  \param file a reference to a string
+ *  \return the extracted portion of the file name
+ */
+string extractName(string &file)
+{
+  unsigned pos1 = file.find_last_of("/");
+  unsigned pos2 = file.find(".");
+  int length = pos2 - pos1 - 1;
+  string sub = file.substr(pos1+1,length);
+  return sub;
+}
+
 ///*!
 // *  \brief This function computes the spherical coordinate values
 // *  \param point a reference to a Point<double>
@@ -560,73 +555,73 @@ string getSCOPFilePath(string &scop_id)
   return path;
 }
 
-///*!
-// *  \brief This method constructs the angular profiles of the protein structure.
-// *  \param parameters a reference to a struct Parameters
-// */
-//void buildAngularProfile(struct Parameters &parameters)
-//{
-//  string name = extractName(parameters.file);
-//  // check if spherical profile exists
-//  bool exist = checkIfSphericalProfileExists(name);
-//  Protein protein;
-//  if (!exist || parameters.force == SET) {
-//    /* Obtain protein coordinates */
-//    ProteinStructure *p = parsePDBFile(parameters.file);
-//    Protein protein(p,name);
-//    protein.computeSphericalTransformation();
-//    cout << "Saving profile of " << name << endl;
-//    protein.save();
-//    //updateLogFile(name,protein.getCPUTime(),protein.getNumberOfChains());
-//  } else {  
-//    cout << "Profile of " << name << " exists ..." << endl;
-//    protein.load(name);
-//  }
-//}
-//
-///*!
-// *  \brief This module checks for the existence of the spherical coordinate
-// *  profile.
-// *  \param name a reference to a string
-// *  \return present or not 
-// */
-//bool checkIfSphericalProfileExists(string &name)
-//{
-//  string spherical_profile = string(CURRENT_DIRECTORY) 
-//                             + "spherical_system/profiles/" + name + ".profile";
-//  return checkFile(spherical_profile); 
-//}
-//
-///*!
-// *  \brief This module parses the input PDB file.
-// *  \param pdb_file a reference to a string 
-// *  \return a pointer to a ProteinStructure object
-// */
-//ProteinStructure *parsePDBFile(string &pdb_file)
-//{
-//  if(!checkFile(pdb_file)){
-//    cout << "\nFile \"" << pdb_file << "\" does not exist ..." << endl;
-//    ofstream log("files_not_present",ios::app);
-//    log << extractName(pdb_file) << endl;
-//    log.close();
-//    exit(1);
-//  } else {
-//    cout << "Parsing PDB file ...";
-//    BrookhavenPDBParser parser;
-//    ProteinStructure *structure = 
-//        parser.getStructure(pdb_file.c_str())->select(CASelector());
-//    ProteinStructure *one_model = 
-//        new ProteinStructure(structure->getIdentifier());
-//    one_model->select(CASelector());
-//    std::shared_ptr<lcb::Model> newmodel = 
-//        std::make_shared<lcb::Model>(structure->getDefaultModel());
-//    one_model->addModel(newmodel);
-//    delete structure;
-//    cout << " [OK]" << endl;
-//    return one_model;
-//  }
-//}
-//
+/*!
+ *  \brief This method constructs the angular profiles of the protein structure.
+ *  \param parameters a reference to a struct Parameters
+ */
+void buildAngularProfile(struct Parameters &parameters)
+{
+  //string name = extractName(parameters.file);
+  // check if spherical profile exists
+  bool exist = checkIfSphericalProfileExists(STRUCTURE);
+  if (!exist || parameters.force == SET) {
+    /* Obtain protein coordinates */
+    ProteinStructure *p = parsePDBFile(parameters.file);
+    Protein protein(p,STRUCTURE);
+    protein.computeSphericalTransformation();
+    cout << "Saving profile of " << STRUCTURE << endl;
+    protein.save();
+    //updateLogFile(STRUCTURE,protein.getCPUTime(),protein.getNumberOfChains());
+  } else {  
+    Protein protein;
+    cout << "Profile of " << STRUCTURE << " exists ..." << endl;
+    protein.load(STRUCTURE);
+  }
+}
+
+/*!
+ *  \brief This module checks for the existence of the spherical coordinate
+ *  profile.
+ *  \param name a reference to a string
+ *  \return present or not 
+ */
+bool checkIfSphericalProfileExists(string &name)
+{
+  string spherical_profile = string(CURRENT_DIRECTORY) 
+                             + "spherical_system/profiles/" + name + ".profile";
+  return checkFile(spherical_profile); 
+}
+
+/*!
+ *  \brief This module parses the input PDB file.
+ *  \param pdb_file a reference to a string 
+ *  \return a pointer to a ProteinStructure object
+ */
+ProteinStructure *parsePDBFile(string &pdb_file)
+{
+  if(!checkFile(pdb_file)){
+    cout << "\nFile \"" << pdb_file << "\" does not exist ..." << endl;
+    ofstream log("files_not_present",ios::app);
+    log << extractName(pdb_file) << endl;
+    log.close();
+    exit(1);
+  } else {
+    cout << "Parsing PDB file ...";
+    BrookhavenPDBParser parser;
+    ProteinStructure *structure = 
+        parser.getStructure(pdb_file.c_str())->select(CASelector());
+    ProteinStructure *one_model = 
+        new ProteinStructure(structure->getIdentifier());
+    one_model->select(CASelector());
+    std::shared_ptr<lcb::Model> newmodel = 
+        std::make_shared<lcb::Model>(structure->getDefaultModel());
+    one_model->addModel(newmodel);
+    delete structure;
+    cout << " [OK]" << endl;
+    return one_model;
+  }
+}
+
 ///*!
 // *  \brief This function transforms a set of four points (p0,p1,p2,p3) to a 
 // *  canonical form such that p2 is the origin, p1 lies on the -ve X-axis and 

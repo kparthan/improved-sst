@@ -2,8 +2,8 @@
 #define PROTEIN_H
 
 #include "Header.h"
-#include "Mixture.h"
-#include "OptimalFit.h"
+//#include "Mixture.h"
+//#include "OptimalFit.h"
 
 class Protein
 {
