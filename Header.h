@@ -2,6 +2,7 @@
 #define HEADER_H
 
 #include <iostream>
+#include <pwd.h>
 #include <memory>
 #include <cstdlib>
 #include <vector>
@@ -16,7 +17,6 @@
 #include <cassert>
 #include <thread>
 #include <chrono>
-#include <omp.h>
 #include <liblcb/liblcb.h>
 #include <boost/math/constants/constants.hpp>
 #include <boost/math/special_functions/factorials.hpp>
@@ -25,9 +25,6 @@
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
-
-#define HOME_DIRECTORY "/home/pkas7/"
-#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.001
