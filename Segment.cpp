@@ -190,9 +190,11 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     // it is sufficient to transform im and i_{m+1}
     mu_x = getCurrentMeanAndDirection(canonical_transformation,
            ideal_residues[om-start],ideal_residues[om-start+1],orientation);
-    Component adaptive_component(vonmises_suffstats,N,mixture.constrain_kappa);
-    adaptive_component.minimizeMessageLength();
-    kappa = adaptive_component.getKappa();
+    if (N > 1) {
+      Component adaptive_component(vonmises_suffstats,N,SET);
+      adaptive_component.minimizeMessageLength();
+      kappa = adaptive_component.getKappa();
+    }
     mu = mu_x.first;
     x = mu_x.second;
     component = Component(mu,kappa,mixture.constrain_kappa);

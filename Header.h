@@ -26,8 +26,8 @@
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
 
-#define HOME_DIRECTORY "/home/parthan/"
-#define CURRENT_DIRECTORY "/home/parthan/Research/Work/improved-sst/"
+#define HOME_DIRECTORY "/home/pkas7/"
+#define CURRENT_DIRECTORY "/home/pkas7/Research/Work/improved-sst/"
 
 // numeric constants
 #define AOM 0.001

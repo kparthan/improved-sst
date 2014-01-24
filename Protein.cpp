@@ -457,9 +457,9 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
 {
   initializeCodeLengthMatrices(chain);
   int chain_size = coordinates[chain].size();
-  for (int i=0; i<chain_size; i++) {
+  for (int i=0; i<chain_size-1; i++) {
     int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
-    for (int j=i+1; j<bound; j++) {
+    for (int j=i+1; j<chain_size; j++) {
       cout << i << ":" << j << endl;
       Segment segment(i,j,coordinates[chain],spherical_coordinates[chain]);
       if (i == 0) {
@@ -469,12 +469,14 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       OptimalFit fit,ideal_fit;
       // fit null model to the segment
       ideal_fit = segment.fitNullModel(mixture);
-      for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-        if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
-            (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
-          fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
-          if (fit < ideal_fit) {
-            ideal_fit = fit;
+      if (j < bound) {
+        for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+          if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+              (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
+            fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
+            if (fit < ideal_fit) {
+              ideal_fit = fit;
+            }
           }
         }
       }
