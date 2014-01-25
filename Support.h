@@ -2,7 +2,7 @@
 #define SUPPORT_H
 
 #include "Header.h"
-//#include "Protein.h"
+#include "Protein.h"
 //#include "Component.h"
 //#include "IdealModel.h"
 
@@ -39,15 +39,15 @@ void getHomeAndCurrentDirectory();
 struct Parameters parseCommandLineInput (int, char **); 
 void Usage (const char *, options_description &);
 bool checkFile(string &);
-//void writeToFile(vector<Point<double>> &, const char *);
-//void writeToFile(vector<vector<double>> &, const char *);
+void writeToFile(vector<vector<double>> &, const char *);
 string extractName(string &);
-//array<double,3> convertToSpherical(Point<double> &);
-//array<double,3> convertToCartesian(double, double, double);
-//vector<double> point2vector(Point<double> &);
+void initializeMatrix(vector<vector<double>> &, int, int);
+void cartesian2spherical(vector<double> &, vector<double> &);
+void spherical2cartesian(vector<double> &, vector<double> &);
+void point2vector(Point<double> &, vector<double> &);
 //void scaleToAOM(double *);
 //template <typename RealType> RealType minimum(RealType, RealType);
-//void print(ostream &, array<double,3> &);
+void print(ostream &, vector<double> &);
 //void vonMisesDistribution_2DPlot(array<double,3> &);
 //double ratioBesselFunction(double);
 //double ratioBesselFunction_firstDerivative(double);
@@ -63,6 +63,8 @@ string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
+void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
+                            vector<vector<double>> &);
 //pair<vector<Point<double>>,Matrix<double>> convertToCanonicalForm(vector<Point<double>> &);
 //Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
 //array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);

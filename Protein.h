@@ -18,27 +18,27 @@ class Protein
     ProteinStructure *structure;
 
     //! Translation point
-    Point<double> initial_translation_vector;
+    vector<double> initial_translation_vector;
 
     //! Stores the coordinates
-    vector<vector<Point<double>>> coordinates;
+    vector<vector<vector<double>>> coordinates;
 
     //! Distances between the successive residues
     vector<vector<double>> distances;
 
     //! List of spherical coordinates (r \neq 1,theta,phi)
     //! theta,phi measured in degrees
-    vector<vector<array<double,3>>> spherical_coordinates;
+    vector<vector<vector<double>>> spherical_coordinates;
 
     //! Gets the list of all spherical coordinates
     //! theta,phi measured in degrees
-    vector<array<double,3>> all_spherical_coordinates;
+    vector<vector<double>> all_spherical_coordinates;
 
     //! Times taken
     double cpu_time,wall_time;
 
     //! Optimal model matrix
-    vector<vector<OptimalFit>> optimal_model;
+    //vector<vector<OptimalFit>> optimal_model;
 
     //! Optimal code length matrix
     vector<vector<double>> optimal_code_length;
@@ -51,10 +51,11 @@ class Protein
     int getNumberOfChainBreaks(string &, vector<Atom> &);
 
     //! Translate the protein so that its first point is the origin
-    void translateProteinToOrigin(vector<Point<double>> &);
+    void translateProteinToOrigin(vector<vector<double>> &);
 
     //! Computes the transformation at an index
-    vector<Point<double>> computeTransformation(int, int);
+    void computeTransformation(int, int, vector<vector<double>> &,
+                               vector<vector<double>> &, vector<vector<double>> &);
 
     //! Reads the profile from a file
     void read_profile(string &);
@@ -88,7 +89,7 @@ class Protein
     void save();
 
     //! Gets the list of all spherical coordinates
-    vector<array<double,3>> getSphericalCoordinatesList();
+    vector<vector<double>> getSphericalCoordinatesList();
 
     //! Get the CPU time
     double getCPUTime();
@@ -100,19 +101,19 @@ class Protein
     int getNumberOfSphericalCoordinates();
 
     //! Computes the mean direction
-    array<double,3> computeMeanDirection();
+    vector<double> computeMeanDirection();
 
     //! Computes the message length using sphere model
     double computeMessageLengthUsingSphereModel();
 
     //! Computes the message length using null model
-    double computeMessageLengthUsingNullModel(Mixture &);
+    //double computeMessageLengthUsingNullModel(Mixture &);
 
     //! Compression using ideal models
-    void compressUsingIdealModels(Mixture &, int);
+    //void compressUsingIdealModels(Mixture &, int);
 
     //! Computes the optimal code length matrix
-    void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int);
+    //void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int);
 
     //! Computes the optimal segmentation using dynamic programming
     pair<double,vector<int>> computeOptimalSegmentation(int);

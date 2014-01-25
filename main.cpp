@@ -1,5 +1,7 @@
 #include "Support.h"
 
+extern string STRUCTURE;
+
 int main(int argc, char **argv)
 {
   getHomeAndCurrentDirectory();

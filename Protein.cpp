@@ -2,6 +2,8 @@
 //#include "Segment.h"
 //#include "Message.h"
 
+extern string CURRENT_DIRECTORY;
+
 /*!
  *  \brief Null constructor module.
  */
@@ -25,225 +27,241 @@ Protein::Protein(ProteinStructure *structure, string &name) :
     bool chain_break = checkChainBreak(id,atoms);
     if (!chain_break) {
       chains.push_back(id);
-      vector<Point<double>> chain_coordinates;
+      vector<vector<double>> chain_coordinates;
+      vector<double> v(3,0);
       for (int j=0; j<atoms.size(); j++) {
         Point<double> p = atoms[j].point<double>();
-        chain_coordinates.push_back(p);
+        point2vector(p,v);
+        chain_coordinates.push_back(v);
       }
-      translateProteinToOrigin(chain_coordinates);
+      //translateProteinToOrigin(chain_coordinates);
       coordinates.push_back(chain_coordinates);
     }
   }
   cout << "# of suitable chains: " << coordinates.size() << endl;
   if (coordinates.size() == 0) {
     cout << name << " is an unsuitable structure ..." << endl;
-    ofstream log("errors.log",ios::app);
+    ofstream log("unsuitable_structures.log",ios::app);
     log << name << endl;
     log.close();
     exit(1);
   }
 }
 
-///*!
-// *  \brief This function translates the protein so that its first point
-// *  coincides with the origin
-// *  \param chain_coordinates a reference to a vector<double>
-// */
-//void Protein::translateProteinToOrigin(vector<Point<double>> &chain_coordinates)
-//{
-//  // before translation
-//  writeToFile(chain_coordinates,"before_translation");
-//  initial_translation_vector.x(-chain_coordinates[0].x());
-//  initial_translation_vector.y(-chain_coordinates[0].y());
-//  initial_translation_vector.z(-chain_coordinates[0].z());
-//  cout << "Translation vector: " << initial_translation_vector << endl;
-//
-//  // translate the protein
-//  for (int i=0; i<chain_coordinates.size(); i++) {
-//    chain_coordinates[i] += initial_translation_vector;
-//  }
-//  // after translation
-//  writeToFile(chain_coordinates,"after_translation");
-//}
-//
-///*!
-// *  \brief This function checks if the pdb file has any chain breaks.
-// *  \param id a reference to a string
-// *  \param atoms a reference to a vector<Atoms> 
-// *  \return whether there are chain breks or not
-// */
-//bool Protein::checkChainBreak(string &id, vector<Atom> &atoms)
-//{
-//  for (unsigned i = 1; i < atoms.size(); ++i) {
-//    double dist = distance<double>(atoms[i-1], atoms[i]);
-//    if (dist > 4) {
-//      cout << "Break in chain " << id << " ...\n";
-//      return 1;
-//    }
-//  }
-//  return 0;
-//}
-//
-///*!
-// *  \brief This function returns the number of chain breaks. 
-// *  \param id a reference to a string
-// *  \param atoms a reference to a vector<Atoms> 
-// *  \return the number of chain breaks 
-// */
-//int Protein::getNumberOfChainBreaks(string &id, vector<Atom> &atoms)
-//{
-//  int num_breaks = 0;
-//  for (unsigned i = 1; i < atoms.size(); ++i) {
-//    double dist = distance<double>(atoms[i-1], atoms[i]);
-//    if (dist > 4) {
-//      ++num_breaks;
-//    }
-//  }
-//  cout << "There are " << num_breaks << " breaks in chain " 
-//       << id << " of structure " << name  << endl;
-//  return num_breaks;
-//}
-//
-///*!
-// *  \brief This function transforms the protein to a soherical coordinate
-// *  system.
-// */
-//void Protein::computeSphericalTransformation()
-//{
-//  clock_t c_start = clock();
-//  auto t_start = high_resolution_clock::now();
-//
-//  for (int i=0; i<coordinates.size(); i++) {
-//    vector<array<double,3>> chain_coordinates;
-//    for (int j=2; j<coordinates[i].size()-1; j++) {
-//      vector<Point<double>> transformed_coordinates = computeTransformation(i,j);
-//      //string file_index = "tmp/" + boost::lexical_cast<string>(j);
-//      //writeToFile(transformed_coordinates,file_index.c_str());
-//      array<double,3> values = convertToSpherical(transformed_coordinates[3]);
-//      chain_coordinates.push_back(values);
-//    }
-//    spherical_coordinates.push_back(chain_coordinates);
-//  }
-//
-//  clock_t c_end = clock();
-//  auto t_end = high_resolution_clock::now();
-//  cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
-//  wall_time = duration_cast<seconds>(t_end-t_start).count();
-//}
-//
-///*!
-// *  \brief This function computes the spherical coordinate transformation to the
-// *  canonical form at a coordinate index
-// *  \param chain_index an integer
-// *  \param index an integer
-// *  \return the transformed list of four coordinates
-// */
-//vector<Point<double>> Protein::computeTransformation(int chain_index, int index)
-//{
-//  vector<Point<double>> four_mer(4,Point<double>());
-//  four_mer[0] = coordinates[chain_index][index-2];
-//  four_mer[1] = coordinates[chain_index][index-1];
-//  four_mer[2] = coordinates[chain_index][index];
-//  four_mer[3] = coordinates[chain_index][index+1];
-//  pair<vector<Point<double>>,Matrix<double>> 
-//  transformation = convertToCanonicalForm(four_mer);
-//  return transformation.first; 
-//}
-//
-///*!
-// *  \brief Loads the profile from an existing file.
-// *  \param identifier a reference to a string
-// */
-//void Protein::load(string &identifier)
-//{
-//  name = identifier;
-//  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
-//                     + name + ".profile";
-//  read_profile(file_name);
-//}
-//
-///*!
-// *  \brief Loads the profile from an existing file.
-// *  \param path_to_file a reference to path object 
-// */
-//void Protein::load(path &path_to_file)
-//{
-//  name = "example";
-//  string file_name = path_to_file.string();
-//  read_profile(file_name);
-//}
-//
-///*!
-// *  \brief This functions reads the profile from a regular file.
-// *  (theta,phi angles read are in degrees)
-// *  \param file_name a reference to a string
-// */
-//void Protein::read_profile(string &file_name)
-//{
-//  cout << "Reading " << file_name << " ..." << endl;
-//  ifstream profile(file_name.c_str());
-//  string line;
-//  spherical_coordinates.clear();
-//  all_spherical_coordinates.clear();
-//
-//  vector<array<double,3>> chain_coordinates;
-//  while(getline(profile,line)) {
-//    boost::char_separator<char> sep(",() ");
-//    boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
-//    int i = -1;
-//    array<double,3> values; 
-//    BOOST_FOREACH (const string& t, tokens) {
-//      if (i == -1) {
-//        if (chains.size() == 0) {
-//          chains.push_back(t);
-//        } else {
-//          if (chains[chains.size()-1].compare(t) != 0) {
-//            chains.push_back(t);
-//            spherical_coordinates.push_back(chain_coordinates);
-//            chain_coordinates.clear();
-//          }
-//        }
-//        i++;
-//      } else {
-//        istringstream iss(t);
-//        double x;
-//        iss >> x;
-//        values[i++] = x;
-//      }
-//    }
-//    chain_coordinates.push_back(values);
-//  }
-//  spherical_coordinates.push_back(chain_coordinates);
-//  profile.close();
-//}
-//
-///*!
-// *  \brief Saves the spherical system profile.
-// *  (theta,phi angles saved are in degrees)
-// */
-//void Protein::save()
-//{
-//  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
-//                     + name + ".profile";
-//  ofstream profile(file_name.c_str());
-//  for (int i=0; i<spherical_coordinates.size(); i++) {
-//    for (int j=0; j<spherical_coordinates[i].size(); j++) {
-//      profile << chains[i];
-//      for (int k=0; k<3; k++) {
-//        profile << fixed << setw(10) << setprecision(4) 
-//                << spherical_coordinates[i][j][k];
-//      }
-//      profile << endl;
-//    }
-//  }
-//  profile.close();
-//}
-//
+/*!
+ *  \brief This function translates the protein so that its first point
+ *  coincides with the origin
+ *  \param chain_coordinates a reference to a vector<vector<double>>
+ */
+void Protein::translateProteinToOrigin(vector<vector<double>> &chain_coordinates)
+{
+  // before translation
+  writeToFile(chain_coordinates,"before_translation");
+  initial_translation_vector = vector<double>(3,0);
+  for (int i=0; i<3; i++) {
+    initial_translation_vector[i] = -chain_coordinates[0][i];
+  }
+  cout << "Translation vector: ";
+  print(cout,initial_translation_vector);
+
+  // translate the protein
+  for (int i=0; i<chain_coordinates.size(); i++) {
+    for (int j=0; j<3; j++) {
+      chain_coordinates[i][j] += initial_translation_vector[j];
+    }
+  }
+  // after translation
+  writeToFile(chain_coordinates,"after_translation");
+}
+
+/*!
+ *  \brief This function checks if the pdb file has any chain breaks.
+ *  \param id a reference to a string
+ *  \param atoms a reference to a vector<Atoms> 
+ *  \return whether there are chain breks or not
+ */
+bool Protein::checkChainBreak(string &id, vector<Atom> &atoms)
+{
+  for (unsigned i = 1; i < atoms.size(); ++i) {
+    double dist = distance<double>(atoms[i-1], atoms[i]);
+    if (dist > 4) {
+      cout << "Break in chain " << id << " ...\n";
+      return 1;
+    }
+  }
+  return 0;
+}
+
+/*!
+ *  \brief This function returns the number of chain breaks. 
+ *  \param id a reference to a string
+ *  \param atoms a reference to a vector<Atoms> 
+ *  \return the number of chain breaks 
+ */
+int Protein::getNumberOfChainBreaks(string &id, vector<Atom> &atoms)
+{
+  int num_breaks = 0;
+  for (unsigned i = 1; i < atoms.size(); ++i) {
+    double dist = distance<double>(atoms[i-1], atoms[i]);
+    if (dist > 4) {
+      ++num_breaks;
+    }
+  }
+  cout << "There are " << num_breaks << " breaks in chain " 
+       << id << " of structure " << name  << endl;
+  return num_breaks;
+}
+
+/*!
+ *  \brief This function transforms the protein to a soherical coordinate
+ *  system.
+ */
+void Protein::computeSphericalTransformation()
+{
+  clock_t c_start = clock();
+  auto t_start = high_resolution_clock::now();
+
+  // initialize 4-mer and transformarion variables
+  vector<vector<double>> four_mer,transformed_four_mer,rotation_matrix;
+  initializeMatrix(four_mer,4,3);
+  initializeMatrix(transformed_four_mer,4,3);
+  initializeMatrix(rotation_matrix,3,3);
+
+  // transform all coordinates
+  for (int i=0; i<coordinates.size(); i++) {
+    vector<vector<double>> spherical_chain_coordinates;
+    vector<double> spherical(3,0);
+    for (int j=2; j<coordinates[i].size()-1; j++) {
+      computeTransformation(i,j,four_mer,transformed_four_mer,rotation_matrix);
+      //string file_index = "tmp/" + boost::lexical_cast<string>(j);
+      //writeToFile(transformed_coordinates,file_index.c_str());
+      cartesian2spherical(transformed_four_mer[3],spherical);
+      spherical_chain_coordinates.push_back(spherical);
+    }
+    spherical_coordinates.push_back(spherical_chain_coordinates);
+  }
+
+  clock_t c_end = clock();
+  auto t_end = high_resolution_clock::now();
+  cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
+  wall_time = duration_cast<seconds>(t_end-t_start).count();
+}
+
+/*!
+ *  \brief This function computes the spherical coordinate transformation to the
+ *  canonical form at a coordinate index
+ *  \param chain_index an integer
+ *  \param index an integer
+ *  \return the transformed list of four coordinates
+ */
+void Protein::computeTransformation(int chain_index, int index,
+                                    vector<vector<double>> &four_mer, 
+                                    vector<vector<double>> &transformed_four_mer,
+                                    vector<vector<double>> &rotation_matrix)
+{
+  // update four-mer
+  four_mer[0] = coordinates[chain_index][index-2];
+  four_mer[1] = coordinates[chain_index][index-1];
+  four_mer[2] = coordinates[chain_index][index];
+  four_mer[3] = coordinates[chain_index][index+1];
+  // transform
+  convertToCanonicalForm(four_mer,transformed_four_mer,rotation_matrix);
+}
+
+/*!
+ *  \brief Loads the profile from an existing file.
+ *  \param identifier a reference to a string
+ */
+void Protein::load(string &identifier)
+{
+  name = identifier;
+  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
+                     + name + ".profile";
+  read_profile(file_name);
+}
+
+/*!
+ *  \brief Loads the profile from an existing file.
+ *  \param path_to_file a reference to path object 
+ */
+void Protein::load(path &path_to_file)
+{
+  name = "example";
+  string file_name = path_to_file.string();
+  read_profile(file_name);
+}
+
+/*!
+ *  \brief This functions reads the profile from a regular file.
+ *  (theta,phi angles read are in radians)
+ *  \param file_name a reference to a string
+ */
+void Protein::read_profile(string &file_name)
+{
+  cout << "Reading " << file_name << " ..." << endl;
+  ifstream profile(file_name.c_str());
+  string line;
+  spherical_coordinates.clear();
+  all_spherical_coordinates.clear();
+
+  vector<vector<double>> chain_coordinates;
+  while(getline(profile,line)) {
+    boost::char_separator<char> sep(",() ");
+    boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
+    int i = -1;
+    vector<double> values; 
+    BOOST_FOREACH (const string& t, tokens) {
+      if (i == -1) {
+        if (chains.size() == 0) {
+          chains.push_back(t);
+        } else {
+          if (chains[chains.size()-1].compare(t) != 0) {
+            chains.push_back(t);
+            spherical_coordinates.push_back(chain_coordinates);
+            chain_coordinates.clear();
+          }
+        }
+        i++;
+      } else {
+        istringstream iss(t);
+        double x;
+        iss >> x;
+        values[i++] = x;
+      }
+    }
+    chain_coordinates.push_back(values);
+  }
+  spherical_coordinates.push_back(chain_coordinates);
+  profile.close();
+}
+
+/*!
+ *  \brief Saves the spherical system profile.
+ *  (theta,phi angles saved are in radians)
+ */
+void Protein::save()
+{
+  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
+                     + name + ".profile";
+  ofstream profile(file_name.c_str());
+  for (int i=0; i<spherical_coordinates.size(); i++) {
+    for (int j=0; j<spherical_coordinates[i].size(); j++) {
+      profile << chains[i];
+      for (int k=0; k<3; k++) {
+        profile << fixed << setw(10) << setprecision(4) 
+                << spherical_coordinates[i][j][k];
+      }
+      profile << endl;
+    }
+  }
+  profile.close();
+}
+
 ///*!
 // *  \brief This function gets the list of all spherical coordinates.
 // *  \return the lsit of all spherical coordinates.
 // */
-//vector<array<double,3>> Protein::getSphericalCoordinatesList()
+//vector<vector<double>> Protein::getSphericalCoordinatesList()
 //{
 //  if (all_spherical_coordinates.size() == 0) {
 //    for (int i=0; i<spherical_coordinates.size(); i++) {
@@ -287,13 +305,13 @@ Protein::Protein(ProteinStructure *structure, string &name) :
 // *  von Mises distribution.
 // *  \return the mean direction
 // */
-//array<double,3> Protein::computeMeanDirection()
+//vector<double> Protein::computeMeanDirection()
 //{
 //  if (all_spherical_coordinates.size() == 0) {
 //    getSphericalCoordinatesList();
 //  }
 //  double r,theta,phi;
-//  array<double,3> estimate({0,0,0}),x;
+//  vector<double> estimate({0,0,0}),x;
 //  
 //  for (int i=0; i<all_spherical_coordinates.size(); i++) {
 //    r = all_spherical_coordinates[i][0];

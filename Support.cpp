@@ -1,13 +1,16 @@
 #include "Support.h"
+#include "Geometry3D.h"
 //#include "VonMises3D.h"
 //#include "Mixture.h"
 //#include "Normal.h"
 
 int initialize_components_from_file;
 string HOME_DIRECTORY,CURRENT_DIRECTORY,STRUCTURE;
-double XAXIS[3] = {1,0,0};
-double YAXIS[3] = {0,1,0};
-double ZAXIS[3] = {0,0,1};
+vector<double> ORIGIN = {0,0,0};
+vector<double> XAXIS = {1,0,0};
+vector<double> NEGATIVE_XAXIS = {-1,0,0};
+vector<double> YAXIS = {0,1,0};
+vector<double> ZAXIS = {0,0,1};
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -239,43 +242,29 @@ void Usage(const char *exe, options_description &desc)
  */
 bool checkFile(string &file_name)
 {
-  ifstream file(fileName);
+  ifstream file(file_name);
   return file;
   //return boost::filesystem::exists(file_name);
 }
 
-///*!
-// *  \brief This module prints the list of coordinates to a file
-// *  \param coordinates a reference to vector<Point<double>>
-// *  \param file_name a pointer to a const char
-// */
-///*void writeToFile(vector<Point<double>> &coordinates, const char *file_name)
-//{
-//  ofstream file(file_name);
-//  for (int i=0; i<coordinates.size(); i++){
-//    file << coordinates[i] << endl;
-//  }
-//  file.close(); 
-//}*/
-//
-///*!
-// *  \brief This module prints the elements of a vector<vector<>> to a file
-// *  \param v a reference to vector<vector<double>>
-// *  \param file_name a pointer to a const char
-// */
-//void writeToFile(vector<vector<double>> &v, const char *file_name)
-//{
-//  ofstream file(file_name);
-//  for (int i=0; i<v.size(); i++) {
-//    file << "(";
-//    for (int j=0; j<v[i].size()-1; j++) {
-//      file << v[i][j] << ", ";
-//    }
-//    file << v[i][v[i].size()-1] << ")" << endl;
-//  }
-//  file.close(); 
-//}
-//
+/*!
+ *  \brief This module prints the elements of a vector<vector<>> to a file
+ *  \param v a reference to vector<vector<double>>
+ *  \param file_name a pointer to a const char
+ */
+void writeToFile(vector<vector<double>> &v, const char *file_name)
+{
+  ofstream file(file_name);
+  for (int i=0; i<v.size(); i++) {
+    file << "(";
+    for (int j=0; j<v[i].size()-1; j++) {
+      file << v[i][j] << ", ";
+    }
+    file << v[i][v[i].size()-1] << ")" << endl;
+  }
+  file.close(); 
+}
+
 /*!
  *  \brief This module extracts the file name from the path
  *  \param file a reference to a string
@@ -290,62 +279,82 @@ string extractName(string &file)
   return sub;
 }
 
-///*!
-// *  \brief This function computes the spherical coordinate values
-// *  \param point a reference to a Point<double>
-// *  \return the theta-phi values (in radians) corresponding to a point on the
-// *  sphere
-// */
-//void convertToSpherical(const double cartesian[3], double spherical[3])
-//{
-//  double d = vectorNorm();
-//  // theta is angle with Z-axis
-//  double theta = 
-//  array<double,3> values;
-//  Point<double> origin(0,0,0);
-//  values[0] = distance<double>(origin,point);
-//  Vector<double> i_plus_1 = point.positionVector();
-//  array<double,2> angles = angleWithAxes<double>(i_plus_1); // angles in radians
-//  values[1] = angles[0] * (180/PI);
-//  values[2] = angles[1] * (180/PI);
-//  return values;
-//}
-//
-///*!
-// *  \brief This function converts spherical coordinates into Cartesian
-// *  coordinates.
-// *  \param r a double
-// *  \param theta (in degrees) a double
-// *  \param phi (in degrees) a double
-// *  \return the Cartesian coordinates
-// */
-//array<double,3> convertToCartesian(double r, double theta, double phi)
-//{
-//  array<double,3> x;
-//  double theta_rad = theta * PI / 180;
-//  //scaleToAOM(&theta_rad);
-//  double phi_rad = phi * PI / 180;
-//  //scaleToAOM(&phi_rad);
-//  x[0] = r * sin(theta_rad) * cos(phi_rad);
-//  x[1] = r * sin(theta_rad) * sin(phi_rad);
-//  x[2] = r * cos(theta_rad);
-//  return x;
-//}
-//
-///*!
-// *  \brief This function converts a liblcb::Point object to a std::vector object
-// *  \param p a reference to a Point<double>
-// *  \return a vector
-// */
-//vector<double> point2vector(Point<double> &p)
-//{
-//  vector<double> v;
-//  v.push_back(p.x());
-//  v.push_back(p.y());
-//  v.push_back(p.z());
-//  return v;
-//}
-//
+/*!
+ *  \brief This function initializes a matrix.
+ *  \param matrix a reference to a vector<vector<double>>
+ *  \param rows an integers
+ *  \param cols an integer
+ */
+void initializeMatrix(vector<vector<double>> &matrix, int rows, int cols)
+{
+  vector<double> tmp(cols,0);
+  for (int i=0; i<rows; i++) {
+    matrix.push_back(tmp);
+  }
+}
+
+/*!
+ *  \brief This function converts the cartesian coordinates into spherical.
+ *  \param cartesian a reference to a vector<double> 
+ *  \param spherical a reference to a vector<double> 
+ */
+void cartesian2spherical(vector<double> &cartesian, vector<double> &spherical)
+{
+  double r = vectorNorm(cartesian);
+
+  double x = cartesian[0] / r;
+  double y = cartesian[1] / r;
+  double z = cartesian[2] / r;
+
+  // theta \in [0,PI]: angle with Z-axis
+  double theta = acos(z);
+
+  // phi \in[0,2 PI]: angle with positive X-axis
+  double angle = acos(x / sin(theta));
+  double phi = 0;
+  if (x == 0 && y == 0) {
+    phi = 0;
+  } else if (x == 0) {
+    if (y > 0) {
+      phi = angle;
+    } else {
+      phi = 2 * PI - angle;
+    }
+  } else if (y >= 0) {
+    phi = angle;
+  } else if (y < 0) {
+    phi = 2 * PI - angle;
+  }
+
+  spherical[0] = r;
+  spherical[1] = theta;
+  spherical[2] = phi;
+}
+
+/*!
+ *  \brief This function converts the spherical coordinates into cartesian.
+ *  \param spherical a reference to a vector<double> 
+ *  \param cartesian a reference to a vector<double> 
+ */
+void spherical2cartesian(vector<double> &spherical, vector<double> &cartesian)
+{
+  cartesian[0] = spherical[0] * sin(spherical[1]) * cos(spherical[2]);
+  cartesian[1] = spherical[0] * sin(spherical[1]) * sin(spherical[2]);
+  cartesian[2] = spherical[0] * cos(spherical[1]);
+}
+
+/*!
+ *  \brief This function converts a liblcb::Point object to a std::vector object
+ *  \param p a reference to a Point<double>
+ *  \param v a reference to a vector<double>
+ */
+void point2vector(Point<double> &p, vector<double> &v)
+{
+  v[0] = p.x();
+  v[1] = p.y();
+  v[2] = p.z();
+}
+
 ///*!
 // *  \brief This function scales the value to AOM.
 // *  \param angle_rad (in radians) a double
@@ -379,16 +388,16 @@ string extractName(string &file)
 //template double minimum(double,double);
 //template long double minimum(long double,long double);
 //
-///*!
-// *  \brief This function prints the elements of an array.
-// *  \param os a reference to a ostream
-// *  \param a a reference to an array<double,3>
-// */
-//void print(ostream &os, array<double,3> &a)
-//{
-//  os << "(" << a[0] << "," << a[1] << "," << a[2] << ")\n";
-//}
-//
+/*!
+ *  \brief This function prints the elements of an array.
+ *  \param os a reference to a ostream
+ *  \param v a reference to a vector<double>
+ */
+void print(ostream &os, vector<double> &v)
+{
+  os << "(" << v[0] << "," << v[1] << "," << v[2] << ")\n";
+}
+
 ///*!
 // *  \brief This function generates the heat map for theta vs phi
 // *  \param estimates a reference to a array<double,3>
@@ -622,66 +631,57 @@ ProteinStructure *parsePDBFile(string &pdb_file)
   }
 }
 
-///*!
-// *  \brief This function transforms a set of four points (p0,p1,p2,p3) to a 
-// *  canonical form such that p2 is the origin, p1 lies on the -ve X-axis and 
-// *  p0 lies on the XY plane.
-// *  \param four_mer a reference to a vector<Point<double>>
-// *  \return the transformed list of four coordinates and the transformation
-// *  matrix
-// */
-//pair<vector<Point<double>>,Matrix<double>>
-//convertToCanonicalForm(vector<Point<double>> &four_mer)
-//{
-//  assert(four_mer.size() == 4);
-//  vector<Point<double>> transformed_coordinates(4,Point<double>());
-//
-//  // translate p2 to origin
-//  double x = -four_mer[2].x();
-//  double y = -four_mer[2].y();
-//  double z = -four_mer[2].z();
-//  Matrix<double> translation = lcb::geometry::translationMatrix(x,y,z);
-//  for (int i=0; i<4; i++) {
-//    transformed_coordinates[i] = lcb::geometry::transform(four_mer[i],translation);
-//  }
-//  // rotate so that p1 is on -ve x-axis
-//  double angle;
-//  Vector<double> p1,negative_xaxis,rotation_axis;
-//  vector<double> vec1 = {-1,0,0};
-//  negative_xaxis = vec1;
-//  p1 = transformed_coordinates[1].positionVector();
-//  rotation_axis = Vector<double>::crossProduct(p1,negative_xaxis);
-//  angle = Vector<double>::angleBetween(p1,negative_xaxis);
-//  Matrix<double> rm1 = rotationMatrix<double>(rotation_axis,angle);
-//  for (int i=0; i<4; i++) {
-//    transformed_coordinates[i] = 
-//          lcb::geometry::transform(transformed_coordinates[i],rm1);
-//          //rotate<double>(transformed_coordinates[i],rotation_axis,angle);
-//  }
-//  // rotate so that p0 is on XY plane
-//  Vector<double> p0,normal,positive_zaxis;
-//  vector<double> vec2 = {0,0,1};
-//  positive_zaxis = vec2;
-//  p0 = transformed_coordinates[0].positionVector();
-//  normal = Vector<double>::crossProduct(p0,negative_xaxis);
-//  angle = Vector<double>::angleBetween(normal,positive_zaxis);
-//  rotation_axis = negative_xaxis;
-//  if (p0[2] < 0) {
-//    angle *= -1;
-//  }
-//  Matrix<double> rm2 = rotationMatrix<double>(rotation_axis,angle);
-//  for (int i=0; i<4; i++) {
-//    transformed_coordinates[i] =
-//          lcb::geometry::transform(transformed_coordinates[i],rm2);
-//          //rotate<double>(transformed_coordinates[i],rotation_axis,angle);
-//  }
-//  Matrix<double> rotation = rm2 * rm1;
-//  rotation.changeDimensions(4,4);
-//  rotation[3][3] = 1;
-//  Matrix<double> transformation = rotation * translation;
-//  return pair<vector<Point<double>>,Matrix<double>> (transformed_coordinates,transformation);
-//}
-//
+/*!
+ *  \brief This function transforms a set of four points (p0,p1,p2,p3) to a 
+ *  canonical form such that p2 is the origin, p1 lies on the -ve X-axis and 
+ *  p0 lies on the XY plane.
+ *  \param four_mer a reference to a vector<vector<double>>
+ *  \param transformed_four_mer a reference to a vector<vector<double>>
+ *  \param rotation1 a reference to a vector<vector<double>>
+ *  \param rotation2 a reference to a vector<vector<double>>
+ */
+void convertToCanonicalForm(vector<vector<double>> &four_mer,
+                            vector<vector<double>> &transformed_four_mer, 
+                            vector<vector<double>> &rotation_matrix)
+{
+  assert(four_mer.size() == 4);
+  vector<double> translate(four_mer[2]);
+  vector<vector<double>> interim_points;
+  
+  // translate p2 to origin
+  for (int i=0; i<4; i++) {
+    computeDirectionRatios(four_mer[i],translate,transformed_four_mer[i]);
+  }
+
+  vector<vector<double>> rotation1,rotation2;
+  initializeMatrix(rotation1,3,3);
+  initializeMatrix(rotation2,3,3);
+  double angle;
+  vector<double> normal(3,0);  // unit vector
+
+  // rotate so that p1 is on -ve x-axis
+  angle = computeAngle(transformed_four_mer[1],NEGATIVE_XAXIS);
+  computeNormal(transformed_four_mer[1],NEGATIVE_XAXIS,normal);
+  computeRotationMatrix(normal,angle,rotation1);
+  interim_points = transformed_four_mer;
+  for (int i=0; i<4; i++) {
+    rotateVector(rotation1,interim_points[i],transformed_four_mer[i]);
+  }
+
+  // rotate so that p0 is on XY plane
+  computeNormal(transformed_four_mer[0],NEGATIVE_XAXIS,normal);
+  angle = computeAngle(normal,ZAXIS);
+  if (transformed_four_mer[0][2] < 0) {
+    angle *= -1;
+  }
+  computeRotationMatrix(NEGATIVE_XAXIS,angle,rotation2);
+  interim_points = transformed_four_mer;
+  for (int i=0; i<4; i++) {
+    rotateVector(rotation2,interim_points[i],transformed_four_mer[i]);
+  }
+  multiplyVectors(rotation2,rotation1,rotation_matrix);
+}
+
 ///*!
 // *  \brief This function computes the transformation to align a given vector
 // *  with the Z-axis.
