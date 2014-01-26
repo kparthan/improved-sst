@@ -368,26 +368,26 @@ void point2vector(Point<double> &p, vector<double> &v)
 //  cout << *angle_rad << endl;
 //}
 //
-///*!
-// *  \brief This function finds the minimum of the two elements 
-// *  \param a an element of type Realtype 
-// *  \param b an element of type Realtype 
-// *  \return the minimum value 
-// */
-//template <typename RealType>
-//RealType minimum(RealType a, RealType b)
-//{
-//  if (a <= b) {
-//    return a;
-//  } else {
-//    return b;
-//  }
-//}
-//template int minimum(int,int);
-//template float minimum(float,float);
-//template double minimum(double,double);
-//template long double minimum(long double,long double);
-//
+/*!
+ *  \brief This function finds the minimum of the two elements 
+ *  \param a an element of type Realtype 
+ *  \param b an element of type Realtype 
+ *  \return the minimum value 
+ */
+template <typename RealType>
+RealType minimum(RealType a, RealType b)
+{
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+template int minimum(int,int);
+template float minimum(float,float);
+template double minimum(double,double);
+template long double minimum(long double,long double);
+
 /*!
  *  \brief This function prints the elements of an array.
  *  \param os a reference to a ostream
@@ -422,119 +422,119 @@ void print(ostream &os, vector<double> &v)
 //  log.close();
 //}
 //
-///*!
-// *  \brief This function computes the ratio of Bessel functions -- A3(k)
-// *  \param k a double
-// *  \return the value of the ratio at a given k
-// */
-//double ratioBesselFunction(double k)
-//{
-//  if (k < TOLERANCE) {
-//    return 0;
-//  } else {
-//    double k_inv = 1 / (double)k;
-//    double cothk = 1 / (double) tanh(k);
-//    return cothk - k_inv;
-//  }
-//}
-//
-///*!
-// *  \brief This function computes the first derivative of the 
-// *  ratio of Bessel functions -- A3'(k)
-// *  \param k a double
-// *  \return the value of the first derivative of the ratio at a given k
-// */
-//double ratioBesselFunction_firstDerivative(double k)
-//{
-//  if (k < TOLERANCE) {
-//    return 0;
-//  } else {
-//    double value = 0;
-//    double cschk = 1 / (double) sinh(k);
-//    value -= cschk * cschk;
-//    double k_inv = 1 / (double)k;
-//    value += k_inv * k_inv; 
-//    return value ;
-//  }
-//}
-//
-///*!
-// *  \brief This function computes the second derivative of the 
-// *  ratio of Bessel functions -- A3''(k)
-// *  \param k a double
-// *  \return the value of the second derivative of the ratio at a given k
-// */
-//double ratioBesselFunction_secondDerivative(double k)
-//{
-//  if (k < TOLERANCE) {
-//    return 0;
-//  } else {
-//    double value = 0;
-//    double cothk = 1 / (double) tanh(k);
-//    double cschk = 1 / (double) sinh(k);
-//    value += cothk * cschk * cschk;
-//    double k_inv = 1 / (double)k;
-//    value -= k_inv * k_inv * k_inv;
-//    return 2 * value ;
-//  }
-//}
-//
-///*!
-// *  \brief This function computes the third derivative of the 
-// *  ratio of Bessel functions -- A3'''(k)
-// *  \param k a double
-// *  \return the value of the third derivative of the ratio at a given k
-// */
-//double ratioBesselFunction_thirdDerivative(double k)
-//{
-//  double value = 0;
-//  double cothk = 1 / (double) tanh(k);
-//  double cothksq = cothk * cothk;
-//  double cschk = 1 / (double) sinh(k);
-//  double cschksq = cschk * cschk;
-//
-//  value += -2 * cschksq * (cothksq + cschksq);
-//  double k_inv = 1 / (double)k;
-//  value += 6 * k_inv * k_inv * k_inv * k_inv;
-//  return value ;
-//}
-//
-///*!
-// *  \brief This function computes the approximation of the constant term for
-// *  the constant term in the message length expression (pg. 257 Wallace)
-// *  \param d an integer
-// *  \return the constant term
-// */
-//double computeConstantTerm(int d)
-//{
-//  double ad = 0;
-//  ad -= 0.5 * d * log(2 * PI);
-//  ad += 0.5 * log(d * PI);
-//  return ad;
-//}
-//
-///*!
-// *  \brief This function computes the lattice constant for higher dimensions.
-// *  \param d an integer
-// *  \return the d-dimensional lattice constant
-// */
-//double getLatticeConstant(int d)
-//{
-//  double ad = computeConstantTerm(d);
-//  double tmp = ((2.0/d) * ad) - 1;
-//  return exp(tmp);
-//}
-//
-///*!
-// *  \brief This function converts the angle from degrees to radians.
-// *  \param theta (measured in degrees) a double
-// *  \return the value in radians
-// */
-//double angleInRadians(double theta)
-//{
-//  return theta * PI / 180;
-//}
-//
+/*!
+ *  \brief This function computes the ratio of Bessel functions -- A3(k)
+ *  \param k a double
+ *  \return the value of the ratio at a given k
+ */
+double ratioBesselFunction(double k)
+{
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double k_inv = 1 / (double)k;
+    double cothk = 1 / (double) tanh(k);
+    return cothk - k_inv;
+  }
+}
+
+/*!
+ *  \brief This function computes the first derivative of the 
+ *  ratio of Bessel functions -- A3'(k)
+ *  \param k a double
+ *  \return the value of the first derivative of the ratio at a given k
+ */
+double ratioBesselFunction_firstDerivative(double k)
+{
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double value = 0;
+    double cschk = 1 / (double) sinh(k);
+    value -= cschk * cschk;
+    double k_inv = 1 / (double)k;
+    value += k_inv * k_inv; 
+    return value ;
+  }
+}
+
+/*!
+ *  \brief This function computes the second derivative of the 
+ *  ratio of Bessel functions -- A3''(k)
+ *  \param k a double
+ *  \return the value of the second derivative of the ratio at a given k
+ */
+double ratioBesselFunction_secondDerivative(double k)
+{
+  if (k < TOLERANCE) {
+    return 0;
+  } else {
+    double value = 0;
+    double cothk = 1 / (double) tanh(k);
+    double cschk = 1 / (double) sinh(k);
+    value += cothk * cschk * cschk;
+    double k_inv = 1 / (double)k;
+    value -= k_inv * k_inv * k_inv;
+    return 2 * value ;
+  }
+}
+
+/*!
+ *  \brief This function computes the third derivative of the 
+ *  ratio of Bessel functions -- A3'''(k)
+ *  \param k a double
+ *  \return the value of the third derivative of the ratio at a given k
+ */
+double ratioBesselFunction_thirdDerivative(double k)
+{
+  double value = 0;
+  double cothk = 1 / (double) tanh(k);
+  double cothksq = cothk * cothk;
+  double cschk = 1 / (double) sinh(k);
+  double cschksq = cschk * cschk;
+
+  value += -2 * cschksq * (cothksq + cschksq);
+  double k_inv = 1 / (double)k;
+  value += 6 * k_inv * k_inv * k_inv * k_inv;
+  return value ;
+}
+
+/*!
+ *  \brief This function computes the approximation of the constant term for
+ *  the constant term in the message length expression (pg. 257 Wallace)
+ *  \param d an integer
+ *  \return the constant term
+ */
+double computeConstantTerm(int d)
+{
+  double ad = 0;
+  ad -= 0.5 * d * log(2 * PI);
+  ad += 0.5 * log(d * PI);
+  return ad;
+}
+
+/*!
+ *  \brief This function computes the lattice constant for higher dimensions.
+ *  \param d an integer
+ *  \return the d-dimensional lattice constant
+ */
+double getLatticeConstant(int d)
+{
+  double ad = computeConstantTerm(d);
+  double tmp = ((2.0/d) * ad) - 1;
+  return exp(tmp);
+}
+
+/*!
+ *  \brief This function converts the angle from degrees to radians.
+ *  \param theta (measured in degrees) a double
+ *  \return the value in radians
+ */
+double angleInRadians(double theta)
+{
+  return theta * PI / 180;
+}
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!

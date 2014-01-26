@@ -5,10 +5,10 @@ OBJECTS = main.o \
   Support.o \
   Geometry3D.o \
   Protein.o \
-  VonMises3D.o 
+  VonMises3D.o \
+  Component.o 
 #  Message.o \
 #  Normal.o  \
-#  Component.o \
 #  Mixture.o \
 #  Segment.o \
 #  OptimalFit.o  \
@@ -35,13 +35,13 @@ Protein.o: Protein.cpp Protein.h Support.h Header.h
 VonMises3D.o: VonMises3D.cpp VonMises3D.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
+Component.o: Component.cpp Component.h Support.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
 #Message.o: Message.cpp Message.h 
 #	g++ -c $(CFLAGS) $< -o $@
 #
 #Normal.o: Normal.cpp Normal.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#Component.o: Component.cpp Component.h Header.h 
 #	g++ -c $(CFLAGS) $< -o $@
 #
 #Mixture.o: Mixture.cpp Mixture.h Header.h 

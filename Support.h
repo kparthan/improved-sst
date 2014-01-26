@@ -51,19 +51,19 @@ void initializeMatrix(vector<vector<double>> &, int, int);
 void cartesian2spherical(vector<double> &, vector<double> &);
 void spherical2cartesian(vector<double> &, vector<double> &);
 void point2vector(Point<double> &, vector<double> &);
-//void scaleToAOM(double *);
-//template <typename RealType> RealType minimum(RealType, RealType);
+void scaleToAOM(double *);
+template <typename RealType> RealType minimum(RealType, RealType);
 void print(ostream &, vector<double> &);
 //void vonMisesDistribution_2DPlot(array<double,3> &);
-//double ratioBesselFunction(double);
-//double ratioBesselFunction_firstDerivative(double);
-//double ratioBesselFunction_secondDerivative(double);
-//double ratioBesselFunction_thirdDerivative(double);
-//double computeConstantTerm(int);
-//double getLatticeConstant(int);
-//double angleInRadians(double);
-//
-//// Protein functions
+double ratioBesselFunction(double);
+double ratioBesselFunction_firstDerivative(double);
+double ratioBesselFunction_secondDerivative(double);
+double ratioBesselFunction_thirdDerivative(double);
+double computeConstantTerm(int);
+double getLatticeConstant(int);
+double angleInRadians(double);
+
+// Protein functions
 string getPDBFilePath(string &);
 string getSCOPFilePath(string &);
 void buildAngularProfile(struct Parameters &);
@@ -71,7 +71,6 @@ bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
 void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
                             vector<vector<double>> &);
-//pair<vector<Point<double>>,Matrix<double>> convertToCanonicalForm(vector<Point<double>> &);
 //Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
 //array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);
 //
