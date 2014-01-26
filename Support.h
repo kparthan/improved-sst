@@ -74,7 +74,7 @@ void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
 //void modelMixture(struct Parameters &, vector<array<double,3>> &);
 //pair<array<double,3>,double> readProfiles(struct Parameters &);
 //vector<array<double,3>> gatherData(struct Parameters &);
-//void updateLogFile(string &, double, int);
+void updateLogFile(string &, double, int);
 //void updateMeanDirection(array<double,3> &, double *, Protein &);
 //void updateBins(vector<vector<int>> &, double, Protein &);
 //void outputBins(vector<vector<int>> &, double);

@@ -2,7 +2,7 @@
 //#include "Segment.h"
 //#include "Message.h"
 
-extern string CURRENT_DIRECTORY;
+extern string CURRENT_DIRECTORY,STRUCTURE;
 
 /*!
  *  \brief Null constructor module.
@@ -19,6 +19,7 @@ Protein::Protein()
 Protein::Protein(ProteinStructure *structure, string &name) : 
                  structure(structure), name(name)
 {
+  cout << "# of residues: " << structure->getNumberOfResidues() << endl;
   vector<string> chain_ids = structure->getChainIdentifiers();
   for (int i=0; i<chain_ids.size(); i++) {
     string id = chain_ids[i];
@@ -133,8 +134,8 @@ void Protein::computeSphericalTransformation()
     vector<double> spherical(3,0);
     for (int j=2; j<coordinates[i].size()-1; j++) {
       computeTransformation(i,j,four_mer,transformed_four_mer,rotation_matrix);
-      //string file_index = "tmp/" + boost::lexical_cast<string>(j);
-      //writeToFile(transformed_coordinates,file_index.c_str());
+      string file_index = "tmp/" + boost::lexical_cast<string>(j);
+      writeToFile(transformed_four_mer,file_index.c_str());
       cartesian2spherical(transformed_four_mer[3],spherical);
       spherical_chain_coordinates.push_back(spherical);
     }
@@ -175,7 +176,7 @@ void Protein::computeTransformation(int chain_index, int index,
 void Protein::load(string &identifier)
 {
   name = identifier;
-  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
+  string file_name = string(CURRENT_DIRECTORY) + "/spherical_system/profiles/"
                      + name + ".profile";
   read_profile(file_name);
 }
@@ -209,7 +210,7 @@ void Protein::read_profile(string &file_name)
     boost::char_separator<char> sep(",() ");
     boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
     int i = -1;
-    vector<double> values; 
+    vector<double> values(3,0); 
     BOOST_FOREACH (const string& t, tokens) {
       if (i == -1) {
         if (chains.size() == 0) {
@@ -241,8 +242,10 @@ void Protein::read_profile(string &file_name)
  */
 void Protein::save()
 {
-  string file_name = string(CURRENT_DIRECTORY) + "spherical_system/profiles/"
+  cout << "Saving profile of " << STRUCTURE << endl;
+  string file_name = string(CURRENT_DIRECTORY) + "/spherical_system/profiles/"
                      + name + ".profile";
+  cout << "New profile created: " << file_name << endl;
   ofstream profile(file_name.c_str());
   for (int i=0; i<spherical_coordinates.size(); i++) {
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
@@ -257,49 +260,49 @@ void Protein::save()
   profile.close();
 }
 
-///*!
-// *  \brief This function gets the list of all spherical coordinates.
-// *  \return the lsit of all spherical coordinates.
-// */
-//vector<vector<double>> Protein::getSphericalCoordinatesList()
-//{
-//  if (all_spherical_coordinates.size() == 0) {
-//    for (int i=0; i<spherical_coordinates.size(); i++) {
-//      for (int j=0; j<spherical_coordinates[i].size(); j++) {
-//        all_spherical_coordinates.push_back(spherical_coordinates[i][j]);
-//      }
-//    }
-//  }
-//  return all_spherical_coordinates;
-//}
-//
-///*!
-// *  \brief This function returns the size of transformed spherical coordinates.
-// *  \return the size
-// */
-//int Protein::getNumberOfSphericalCoordinates()
-//{
-//  return all_spherical_coordinates.size();
-//}
-//
-///*!
-// *  \brief This function gets the CPU time.
-// *  \return the CPU time
-// */
-//double Protein::getCPUTime()
-//{
-//  return cpu_time;
-//}
-//
-///*!
-// *  \brief This function returns the number of usable chains in the structure.
-// *  \return the number of chains
-// */
-//int Protein::getNumberOfChains()
-//{
-//  return chains.size();
-//}
-//
+/*!
+ *  \brief This function gets the list of all spherical coordinates.
+ *  \return the lsit of all spherical coordinates.
+ */
+vector<vector<double>> Protein::getSphericalCoordinatesList()
+{
+  if (all_spherical_coordinates.size() == 0) {
+    for (int i=0; i<spherical_coordinates.size(); i++) {
+      for (int j=0; j<spherical_coordinates[i].size(); j++) {
+        all_spherical_coordinates.push_back(spherical_coordinates[i][j]);
+      }
+    }
+  }
+  return all_spherical_coordinates;
+}
+
+/*!
+ *  \brief This function returns the size of transformed spherical coordinates.
+ *  \return the size
+ */
+int Protein::getNumberOfSphericalCoordinates()
+{
+  return all_spherical_coordinates.size();
+}
+
+/*!
+ *  \brief This function gets the CPU time.
+ *  \return the CPU time
+ */
+double Protein::getCPUTime()
+{
+  return cpu_time;
+}
+
+/*!
+ *  \brief This function returns the number of usable chains in the structure.
+ *  \return the number of chains
+ */
+int Protein::getNumberOfChains()
+{
+  return chains.size();
+}
+
 ///*!
 // *  \brief This function computes the mean direction vector as per the
 // *  von Mises distribution.

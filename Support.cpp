@@ -20,7 +20,7 @@ vector<double> ZAXIS = {0,0,1};
 void getHomeAndCurrentDirectory()
 {
   struct passwd *pw = getpwuid(getuid());
-  string HOME_DIRECTORY = pw->pw_dir;
+  HOME_DIRECTORY = pw->pw_dir;
   //cout << "home_dir: " << HOME_DIRECTORY << endl;
 
   char current_dir[256];
@@ -545,7 +545,7 @@ void print(ostream &os, vector<double> &v)
 string getPDBFilePath(string &pdb_id)
 {
   boost::algorithm::to_lower(pdb_id);
-  string path = string(HOME_DIRECTORY) + "Research/PDB/" ;
+  string path = string(HOME_DIRECTORY) + "/Research/PDB/" ;
   string directory(pdb_id,1,2);
   path += directory + "/pdb" + pdb_id + ".ent.gz";
   return path;
@@ -558,7 +558,7 @@ string getPDBFilePath(string &pdb_id)
  */
 string getSCOPFilePath(string &scop_id)
 {
-  string path = string(HOME_DIRECTORY) + "Research/SCOP/pdbstyle-1.75B/" ;
+  string path = string(HOME_DIRECTORY) + "/Research/SCOP/pdbstyle-1.75B/" ;
   string directory(scop_id,2,2);
   path += directory + "/" + scop_id + ".ent";
   return path;
@@ -578,9 +578,8 @@ void buildAngularProfile(struct Parameters &parameters)
     ProteinStructure *p = parsePDBFile(parameters.file);
     Protein protein(p,STRUCTURE);
     protein.computeSphericalTransformation();
-    cout << "Saving profile of " << STRUCTURE << endl;
     protein.save();
-    //updateLogFile(STRUCTURE,protein.getCPUTime(),protein.getNumberOfChains());
+    updateLogFile(STRUCTURE,protein.getCPUTime(),protein.getNumberOfChains());
   } else {  
     Protein protein;
     cout << "Profile of " << STRUCTURE << " exists ..." << endl;
@@ -597,7 +596,7 @@ void buildAngularProfile(struct Parameters &parameters)
 bool checkIfSphericalProfileExists(string &name)
 {
   string spherical_profile = string(CURRENT_DIRECTORY) 
-                             + "spherical_system/profiles/" + name + ".profile";
+                             + "/spherical_system/profiles/" + name + ".profile";
   return checkFile(spherical_profile); 
 }
 
@@ -899,21 +898,21 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 //  exit(1);
 //}
 //
-///*!
-// *  \brief This function updates the run time
-// *  \param name a reference to a string
-// *  \param time a double
-// */
-//void updateLogFile(string &name, double time, int num_chains)
-//{
-//  ofstream log("runtime_statistics",ios::app);
-//  log << name;
-//  log << fixed << setw(10) << setprecision(4) << time;
-//  log << fixed << setw(10) << num_chains;
-//  log << endl;
-//  log.close();
-//}
-//
+/*!
+ *  \brief This function updates the run time
+ *  \param name a reference to a string
+ *  \param time a double
+ */
+void updateLogFile(string &name, double time, int num_chains)
+{
+  ofstream log("runtime_statistics",ios::app);
+  log << name;
+  log << fixed << setw(10) << setprecision(4) << time;
+  log << fixed << setw(10) << num_chains;
+  log << endl;
+  log.close();
+}
+
 ///*!
 // *  \brief This function updates the mean estimator of the Von Mises
 // *  distribution.
