@@ -1,6 +1,6 @@
 #include "Support.h"
 #include "Geometry3D.h"
-//#include "VonMises3D.h"
+#include "VonMises3D.h"
 //#include "Mixture.h"
 //#include "Normal.h"
 
@@ -737,38 +737,38 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 //  y[2] = xtrans.z();
 //  return y;
 //}
-//
-///*!
-// *  \brief This function is used to read the angular profiles and use this data
-// *  to estimate parameters of a Von Mises distribution.
-// *  \param parameters a reference to a struct Parameters
-// */
-//void computeEstimators(struct Parameters &parameters)
-//{
-//  if (parameters.mixture_model == UNSET) {  // no mixture modelling
-//    pair<array<double,3>,double> data = readProfiles(parameters);
-//    modelOneComponent(parameters,data);
-//  } else if (parameters.mixture_model == SET) { // mixture modelling
-//    vector<array<double,3>> data = gatherData(parameters);
-//    modelMixture(parameters,data);
-//  }
-//}
-//
-///*!
-// *  \brief This function models a single component.
-// *  \param parameters a reference to a struct Parameters
-// *  \param data a reference to a pair<array<double,3>,double>
-// */
-//void modelOneComponent(struct Parameters &parameters,
-//                       pair<array<double,3>,double> &data)
-//{
-//  array<double,3> direction = data.first;
-//  double num_samples = data.second;
-//  //vonMisesDistribution_2DPlot(direction,parameters.res);
-//  Component component(direction,num_samples,parameters.constrain_kappa);
-//  component.minimizeMessageLength();
-//}
-//
+
+/*!
+ *  \brief This function is used to read the angular profiles and use this data
+ *  to estimate parameters of a Von Mises distribution.
+ *  \param parameters a reference to a struct Parameters
+ */
+void computeEstimators(struct Parameters &parameters)
+{
+  if (parameters.mixture_model == UNSET) {  // no mixture modelling
+    pair<array<double,3>,double> data = readProfiles(parameters);
+    modelOneComponent(parameters,data);
+  }/* else if (parameters.mixture_model == SET) { // mixture modelling
+    vector<array<double,3>> data = gatherData(parameters);
+    modelMixture(parameters,data);
+  }*/
+}
+
+/*!
+ *  \brief This function models a single component.
+ *  \param parameters a reference to a struct Parameters
+ *  \param data a reference to a pair<array<double,3>,double>
+ */
+void modelOneComponent(struct Parameters &parameters,
+                       pair<array<double,3>,double> &data)
+{
+  array<double,3> direction = data.first;
+  double num_samples = data.second;
+  //vonMisesDistribution_2DPlot(direction,parameters.res);
+  Component component(direction,num_samples,parameters.constrain_kappa);
+  component.minimizeMessageLength();
+}
+
 ///*!
 // *  \brief This function models a mixture of several components.
 // *  \param parameters a reference to a struct Parameters
@@ -802,65 +802,65 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 //  }
 //}
 //
-///*!
-// *  \brief This function reads through the profiles from a given directory.
-// *  \param parameters a reference to a struct Parameters
-// *  \return a pair of mean direction and the sample size
-// */
-//pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
-//{
-//  path p(parameters.profiles_dir);
-//  cout << "path: " << p.string() << endl;
-//  if (exists(p)) { 
-//    if (is_directory(p)) { 
-//      vector<path> files; // store paths,
-//      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
-//      cout << "# of profiles: " << files.size() << endl;
-//      vector<vector<int>> bins;
-//      if (parameters.heat_map == SET) {
-//        int num_rows = 180 / parameters.res;
-//        int num_cols = 360 / parameters.res;
-//        cout << "rows: " << num_rows << endl;
-//        cout << "cols: " << num_cols << endl;
-//        for (int i=0; i<num_rows; i++) {
-//          vector<int> tmp(num_cols,0);
-//          bins.push_back(tmp);
-//        }
-//      }
-//      array<double,3> direction({0,0,0});
-//      double n = 0;
-//      /*ofstream log("directions");
-//      for (int j=0; j<3; j++) {
-//        log << scientific << direction[j] << "\t";
-//      }
-//      log << endl;*/
-//      for (int i=0; i<files.size(); i++) {
-//        Protein protein;
-//        protein.load(files[i]);
-//        updateMeanDirection(direction,&n,protein);
-//        if (parameters.heat_map == SET) {
-//          updateBins(bins,parameters.res,protein);
-//        }
-//        /*log << files[i].string() << "\t";
-//        for (int j=0; j<3; j++) {
-//          log << scientific << direction[j] << "\t";
-//        }
-//        log << endl;*/
-//      }
-//      //log.close();
-//      if (parameters.heat_map == SET) {
-//        outputBins(bins,parameters.res);
-//      }
-//      return pair<array<double,3>,double>(direction,n);
-//    } else {
-//      cout << p << " exists, but is neither a regular file nor a directory\n";
-//    }
-//  } else {
-//    cout << p << " does not exist\n";
-//  }
-//  exit(1);
-//}
-//
+/*!
+ *  \brief This function reads through the profiles from a given directory.
+ *  \param parameters a reference to a struct Parameters
+ *  \return a pair of mean direction and the sample size
+ */
+pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
+{
+  path p(parameters.profiles_dir);
+  cout << "path: " << p.string() << endl;
+  if (exists(p)) { 
+    if (is_directory(p)) { 
+      vector<path> files; // store paths,
+      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
+      cout << "# of profiles: " << files.size() << endl;
+      vector<vector<int>> bins;
+      if (parameters.heat_map == SET) {
+        int num_rows = 180 / parameters.res;
+        int num_cols = 360 / parameters.res;
+        cout << "rows: " << num_rows << endl;
+        cout << "cols: " << num_cols << endl;
+        vector<int> tmp(num_cols,0);
+        for (int i=0; i<num_rows; i++) {
+          bins.push_back(tmp);
+        }
+      }
+      array<double,3> direction({0,0,0});
+      double n = 0;
+      /*ofstream log("directions");
+      for (int j=0; j<3; j++) {
+        log << scientific << direction[j] << "\t";
+      }
+      log << endl;*/
+      for (int i=0; i<files.size(); i++) {
+        Protein protein;
+        protein.load(files[i]);
+        updateMeanDirection(direction,&n,protein);
+        if (parameters.heat_map == SET) {
+          updateBins(bins,parameters.res,protein);
+        }
+        /*log << files[i].string() << "\t";
+        for (int j=0; j<3; j++) {
+          log << scientific << direction[j] << "\t";
+        }
+        log << endl;*/
+      }
+      //log.close();
+      if (parameters.heat_map == SET) {
+        outputBins(bins,parameters.res);
+      }
+      return pair<array<double,3>,double>(direction,n);
+    } else {
+      cout << p << " exists, but is neither a regular file nor a directory\n";
+    }
+  } else {
+    cout << p << " does not exist\n";
+  }
+  exit(1);
+}
+
 ///*!
 // *  \brief This function reads through the profiles from a given directory
 // *  and collects the data to do mixture modelling.
@@ -913,85 +913,85 @@ void updateLogFile(string &name, double time, int num_chains)
   log.close();
 }
 
-///*!
-// *  \brief This function updates the mean estimator of the Von Mises
-// *  distribution.
-// *  \param direction a reference to a array<double,3>
-// *  \param n a pointer to an integer 
-// *  \param protein a reference to a Protein object.
-// */
-//void updateMeanDirection(array<double,3> &direction, double *n, Protein &protein)
-//{
-//  array<double,3> mean = protein.computeMeanDirection();
-//  for (int i=0; i<3; i++) {
-//    direction[i] += mean[i];
-//  }
-//  *n += protein.getNumberOfSphericalCoordinates();
-//  //cout << *n << endl;
-//}
-//
-///*!
-// *  \brief This function updates the frequencies of angles.
-// *  \param bins a reference to a vector<vector<int>>
-// *  \param res a double
-// *  \param protein a reference to a Protein object.
-// */
-//void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
-//{
-//  vector<array<double,3>> spherical_coordinates = protein.getSphericalCoordinatesList();
-//  double theta,phi;
-//  int row,col;
-//  for (int i=0; i<spherical_coordinates.size(); i++) {
-//    theta = spherical_coordinates[i][1];
-//    if (fabs(theta) <= ZERO) {
-//      row = 0;
-//    } else {
-//      row = (int)(ceil(theta/res) - 1);
-//    }
-//    phi = spherical_coordinates[i][2];
-//    if (fabs(phi) <= ZERO) {
-//      col = 0;
-//    } else {
-//      col = (int)(ceil(phi/res) - 1);
-//    }
-//    if (row >= bins.size() || col >= bins[0].size()) {
-//      cout << "outside bounds: " << row << " " << col << "\n";
-//      cout << "theta: " << theta << " phi: " << phi << endl;
-//      cout.flush();
-//    }
-//    bins[row][col]++;
-//    //cout << "row,col: " << row << "," << col << endl;
-//  }
-//}
-//
-///*!
-// *  \brief This function outputs the bin data.
-// *  \param bins a reference to a vector<vector<int>>
-// *  \param res a double
-// */
-//void outputBins(vector<vector<int>> &bins, double res)
-//{
-//  double theta=0,phi;
-//  ofstream fbins("matlab/bins_2D");
-//  ofstream fbins3D("matlab/bins_3D");
-//  for (int i=0; i<bins.size(); i++) {
-//    phi = 0;
-//    for (int j=0; j<bins[i].size(); j++) {
-//      fbins << fixed << setw(10) << bins[i][j];
-//      phi += res;
-//      array<double,3> point = convertToCartesian(1,theta,phi);
-//      for (int k=0; k<3; k++) {
-//        fbins3D << fixed << setw(10) << setprecision(4) << point[k];
-//      }
-//      fbins3D << fixed << setw(10) << bins[i][j] << endl;
-//    }
-//    theta += res;
-//    fbins << endl;
-//  }
-//  fbins.close();
-//  fbins3D.close();
-//}
-//
+/*!
+ *  \brief This function updates the mean estimator of the Von Mises
+ *  distribution.
+ *  \param direction a reference to a array<double,3>
+ *  \param n a pointer to an integer 
+ *  \param protein a reference to a Protein object.
+ */
+void updateMeanDirection(array<double,3> &direction, double *n, Protein &protein)
+{
+  array<double,3> mean = protein.computeMeanDirection();
+  for (int i=0; i<3; i++) {
+    direction[i] += mean[i];
+  }
+  *n += protein.getNumberOfSphericalCoordinates();
+  //cout << *n << endl;
+}
+
+/*!
+ *  \brief This function updates the frequencies of angles.
+ *  \param bins a reference to a vector<vector<int>>
+ *  \param res a double
+ *  \param protein a reference to a Protein object.
+ */
+void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
+{
+  vector<array<double,3>> spherical_coordinates = protein.getSphericalCoordinatesList();
+  double theta,phi;
+  int row,col;
+  for (int i=0; i<spherical_coordinates.size(); i++) {
+    theta = spherical_coordinates[i][1];
+    if (fabs(theta) <= ZERO) {
+      row = 0;
+    } else {
+      row = (int)(ceil(theta/res) - 1);
+    }
+    phi = spherical_coordinates[i][2];
+    if (fabs(phi) <= ZERO) {
+      col = 0;
+    } else {
+      col = (int)(ceil(phi/res) - 1);
+    }
+    if (row >= bins.size() || col >= bins[0].size()) {
+      cout << "outside bounds: " << row << " " << col << "\n";
+      cout << "theta: " << theta << " phi: " << phi << endl;
+      cout.flush();
+    }
+    bins[row][col]++;
+    //cout << "row,col: " << row << "," << col << endl;
+  }
+}
+
+/*!
+ *  \brief This function outputs the bin data.
+ *  \param bins a reference to a vector<vector<int>>
+ *  \param res a double
+ */
+void outputBins(vector<vector<int>> &bins, double res)
+{
+  double theta=0,phi;
+  ofstream fbins("matlab/bins_2D");
+  ofstream fbins3D("matlab/bins_3D");
+  for (int i=0; i<bins.size(); i++) {
+    phi = 0;
+    for (int j=0; j<bins[i].size(); j++) {
+      fbins << fixed << setw(10) << bins[i][j];
+      phi += res;
+      array<double,3> point = convertToCartesian(1,theta,phi);
+      for (int k=0; k<3; k++) {
+        fbins3D << fixed << setw(10) << setprecision(4) << point[k];
+      }
+      fbins3D << fixed << setw(10) << bins[i][j] << endl;
+    }
+    theta += res;
+    fbins << endl;
+  }
+  fbins.close();
+  fbins3D.close();
+}
+
 ///*!
 // *  \brief This function generates the data to visualize the mixture components.
 // *  \param parameters a reference to a struct Parameters

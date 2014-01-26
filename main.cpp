@@ -12,11 +12,12 @@ int main(int argc, char **argv)
       && parameters.mixture_model == UNSET) {
     buildAngularProfile(parameters);
   }
-/*
+
   if (parameters.read_profiles == SET) {
     computeEstimators(parameters);
   } 
 
+/*
   if (parameters.simulation == SET) {
     simulateMixtureModel(parameters);
   }

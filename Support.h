@@ -3,7 +3,7 @@
 
 #include "Header.h"
 #include "Protein.h"
-//#include "Component.h"
+#include "Component.h"
 //#include "IdealModel.h"
 
 struct Parameters
@@ -38,7 +38,7 @@ struct Estimates
 {
   vector<double> unit_mean;
   double kappa;
-}
+};
 
 // general functions
 void getHomeAndCurrentDirectory();
@@ -73,16 +73,16 @@ void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
                             vector<vector<double>> &);
 //Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
 //array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);
-//
-//void computeEstimators(struct Parameters &);
-//void modelOneComponent(struct Parameters &, pair<array<double,3>,double> &);
+
+void computeEstimators(struct Parameters &);
+void modelOneComponent(struct Parameters &, pair<array<double,3>,double> &);
 //void modelMixture(struct Parameters &, vector<array<double,3>> &);
-//pair<array<double,3>,double> readProfiles(struct Parameters &);
+pair<array<double,3>,double> readProfiles(struct Parameters &);
 //vector<array<double,3>> gatherData(struct Parameters &);
 void updateLogFile(string &, double, int);
-//void updateMeanDirection(array<double,3> &, double *, Protein &);
-//void updateBins(vector<vector<int>> &, double, Protein &);
-//void outputBins(vector<vector<int>> &, double);
+void updateMeanDirection(array<double,3> &, double *, Protein &);
+void updateBins(vector<vector<int>> &, double, Protein &);
+void outputBins(vector<vector<int>> &, double);
 //void visualizeMixtureComponents(struct Parameters &);
 //void simulateMixtureModel(struct Parameters &);
 //vector<double> generateRandomWeights(int, double);

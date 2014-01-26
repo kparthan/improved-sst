@@ -303,33 +303,28 @@ int Protein::getNumberOfChains()
   return chains.size();
 }
 
-///*!
-// *  \brief This function computes the mean direction vector as per the
-// *  von Mises distribution.
-// *  \return the mean direction
-// */
-//vector<double> Protein::computeMeanDirection()
-//{
-//  if (all_spherical_coordinates.size() == 0) {
-//    getSphericalCoordinatesList();
-//  }
-//  double r,theta,phi;
-//  vector<double> estimate({0,0,0}),x;
-//  
-//  for (int i=0; i<all_spherical_coordinates.size(); i++) {
-//    r = all_spherical_coordinates[i][0];
-//    theta = all_spherical_coordinates[i][1];
-//    phi = all_spherical_coordinates[i][2];
-//
-//    x = convertToCartesian(1,theta,phi);
-//
-//    for (int j=0; j<3; j++) {
-//      estimate[j] += x[j];
-//    }
-//  }
-//  return estimate;
-//}
-//
+/*!
+ *  \brief This function computes the mean direction vector as per the
+ *  von Mises distribution.
+ *  \return the mean direction
+ */
+vector<double> Protein::computeMeanDirection()
+{
+  if (all_spherical_coordinates.size() == 0) {
+    getSphericalCoordinatesList();
+  }
+  vector<double> estimate(3,0);
+  vector<double> x(3,0);
+  
+  for (int i=0; i<all_spherical_coordinates.size(); i++) {
+    spherical2cartesian(all_spherical_coordinates[i],x);
+    for (int j=0; j<3; j++) {
+      estimate[j] += x[j];
+    }
+  }
+  return estimate;
+}
+
 ///*!
 // *  \brief This function is used to compute the distance between successive
 // *  residues of the protein.
