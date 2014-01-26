@@ -9,26 +9,26 @@ Component::Component()
 
 /*!
  *  \brief This is a constructor function.
- *  \param mean_direction a reference to an array<double,3>
+ *  \param mean_direction a reference to an vector<double>
  *  \param N a double
  *  \param constrain_kappa an integer
  */
-Component::Component(array<double,3> &mean_direction, double N, 
+Component::Component(vector<double> &mean_direction, double N, 
                      int constrain_kappa) : mean_direction(mean_direction),
                      N(N), constrain_kappa(constrain_kappa)
 {}
 
 /*!
  *  \brief This is a constructor function.
- *  \param mu a reference to an array<double,2>
+ *  \param mu a reference to an vector<double>
  *  \param kappa a double
  *  \param constrain_kappa an integer
  */
-Component::Component(array<double,2> &mu, double kappa,
-                     int constrain_kappa) : mu(mu), kappa_ml(kappa),
-                     kappa_mml(kappa), constrain_kappa(constrain_kappa)
+Component::Component(struct Estimates &estimates, int constrain_kappa):
+                     unit_mean(estimates.unit_mean), kappa_ml(estimates.kappa),
+                     kappa_mml(estimates.kappa), constrain_kappa(constrain_kappa)
 {
-  von_mises = VonMises3D(mu,kappa_mml);
+  von_mises = VonMises3D(unit_mean,kappa_mml);
 }
 
 /*!
@@ -40,7 +40,7 @@ Component Component::operator=(const Component &source)
 {
   if (this != &source) {
     mean_direction = source.mean_direction;
-    mu = source.mu;
+    unit_mean = source.unit_mean;
     N = source.N;
     rbar = source.rbar;
     R = source.R;
@@ -71,10 +71,11 @@ void Component::minimizeMessageLength()
  */
 void Component::estimateVonMisesMean()
 {
-  cout << "\nCartesian coordinates of mean direction vector: ";
+  cout << "\nCartesian coordinates of resultant mean direction vector: ";
   print(cout,mean_direction);
-  Point<double> point(mean_direction);
-  array<double,3> spherical_coordinates = convertToSpherical(point);
+  vector<double> spherical_coordinates(3,0);
+  cartesian2spherical(mean_direction,spherical_coordinates);
+
   cout << "Spherical coordinates of mean direction vector: ";
   print(cout,spherical_coordinates);
 
@@ -82,19 +83,16 @@ void Component::estimateVonMisesMean()
   R = spherical_coordinates[0];
 
   // normalize the mean direction vector to obtain an unit vector
+  unit_mean = vector<double>(3,0);
   for (int i=0; i<3; i++) {
-    mean_direction[i] /= R;
+    unit_mean[i] = mean_direction[i] / R;
   }
   cout << "Cartesian coordinates of unit mean direction vector: ";
-  print(cout,mean_direction);
-  point = Point<double>(mean_direction);
-  spherical_coordinates = convertToSpherical(point);
+  print(cout,unit_mean);
+
+  cartesian2spherical(unit_mean,spherical_coordinates);
   cout << "Spherical coordinates of unit mean direction vector: ";
   print(cout,spherical_coordinates);
-
-  // Estimates of theta, phi (in degrees)
-  mu[0] = spherical_coordinates[1];
-  mu[1] = spherical_coordinates[2];
 
   rbar = R / (double)N ;
   cout << "R of direction vector: " << R << endl;
@@ -103,8 +101,8 @@ void Component::estimateVonMisesMean()
 
   // print the estimates of theta, phi
   cout << "\nEstimates:\n";
-  cout << "(theta,phi) = (" << spherical_coordinates[1] << ", " 
-       << spherical_coordinates[2] << ")" << endl;
+  cout << "(theta,phi) = (" << spherical_coordinates[1]*180/PI << ", " 
+       << spherical_coordinates[2]*180/PI << ")" << endl;
 }
 
 /*!
@@ -270,21 +268,21 @@ double Component::computeSecondDerivative(double kappa)
 
 /*!
  *  \brief This function computes the likelihood of a datum.
- *  \param x a reference to an array<double,2>
+ *  \param x a reference to an vector<double,2>
  *  \return the likelihood value
  */
-double Component::likelihood(array<double,2> &x)
+double Component::likelihood(vector<double,2> &x)
 {
   return von_mises.density(x[0],x[1]);
 }
 
 /*!
  *  \brief This function computes the likelihood of a datum for a given kappa.
- *  \param x a reference to an array<double,2>
+ *  \param x a reference to an vector<double,2>
  *  \param kappa a double
  *  \return the likelihood value
  */
-double Component::likelihood(array<double,2> &x, double kappa)
+double Component::likelihood(vector<double,2> &x, double kappa)
 {
   return von_mises.density(x[0],x[1]);
 }
@@ -357,7 +355,7 @@ void Component::printParameters(ostream &os)
  *  \brief This function returns the mean direction of the distribution.
  *  \return the angular mean
  */
-array<double,2> Component::getMeanDirection()
+vector<double,2> Component::getMeanDirection()
 {
   return mu;
 }
@@ -376,7 +374,7 @@ double Component::getKappa()
  *  \param num_points an integer
  *  \return the list of generated points
  */
-vector<array<double,3>> Component::generate(int num_points)
+vector<vector<double,3>> Component::generate(int num_points)
 {
   von_mises = VonMises3D(mu,kappa_mml);
   return von_mises.generateCoordinates(num_points);
@@ -389,20 +387,20 @@ vector<array<double,3>> Component::generate(int num_points)
  */
 Component Component::conflate(Component &component)
 {
-  array<double,2> mu1 = mu;
-  array<double,3> mean1 = convertToCartesian(1,mu1[0],mu1[1]);
-  array<double,2> mu2 = component.getMeanDirection();
-  array<double,3> mean2 = convertToCartesian(1,mu2[0],mu2[1]);
+  vector<double,2> mu1 = mu;
+  vector<double,3> mean1 = convertToCartesian(1,mu1[0],mu1[1]);
+  vector<double,2> mu2 = component.getMeanDirection();
+  vector<double,3> mean2 = convertToCartesian(1,mu2[0],mu2[1]);
   double k1 = kappa_mml;
   double k2 = component.getKappa();
 
-  array<double,3> resultant;
+  vector<double,3> resultant;
   for (int i=0; i<3; i++) {
     resultant[i] = k1 * mean1[i] + k2 * mean2[i];
   }
-  Point<double> p(resultant);
-  array<double,3> resultant_spherical = convertToSpherical(p);
-  array<double,2> conflated_mu;
+  vector<double> p(resultant);
+  vector<double,3> resultant_spherical = convertToSpherical(p);
+  vector<double,2> conflated_mu;
   conflated_mu[0] = resultant_spherical[1];
   conflated_mu[1] = resultant_spherical[2];
   double conflated_kappa = resultant_spherical[0];

@@ -34,6 +34,12 @@ struct Parameters
                                 // encoding scheme
 };
 
+struct Estimates
+{
+  vector<double> unit_mean;
+  double kappa;
+}
+
 // general functions
 void getHomeAndCurrentDirectory();
 struct Parameters parseCommandLineInput (int, char **); 

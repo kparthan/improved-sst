@@ -1,5 +1,7 @@
-#include "Geometry3D.h"
-
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <vector>
 using namespace std;
 
 void print(double x[3])
@@ -37,16 +39,21 @@ main()
   rm[2][2] = 1;
   cout << "rm:\n";
   print(rm[2]);
-  cout << "norm: " << vectorNorm(xaxis) << endl;
+  //cout << "norm: " << vectorNorm(xaxis) << endl;
   vector<double*>v;
   v.push_back(y);
   cout << "v[0]: "; print(v[0]);
 
   vector<double> v2 = {1,2,3};
-  cout << "v2: ";
+  cout << "v2: \n";
   //print(v2);
   vector<vector<double>> v3(4,vector<double>());
   v3[0] = v2;
+  vector<double>v4({1,7,8}),v5;
+  cout << v4[0] << " " << v4[1] << " " << v4[2] << endl;
+  v5 = vector<double>({1,3,4,5});
+  cout << v5.size() << endl;
+  cout << v5[0] << " " << v5[1] << " " << v5[2] << " " << v5[3] << endl;
 }
 
 

@@ -7,12 +7,8 @@
 class Component
 {
   private:
-    //! Unit mean direction (Cartesian)
-    array<double,3> mean_direction;
-
-    //! Mean direction on a unit sphere
-    //! (measured in degrees)
-    array<double,2> mu;
+    //! Resultant mean direction (Cartesian)
+    vector<double> mean_direction;
 
     //! Sample size
     double N;
@@ -22,6 +18,9 @@ class Component
 
     //! Flag to constrain kappa
     int constrain_kappa;
+
+    //! ML/MML estimate of (unit) mean direction
+    vector<double> unit_mean;
 
     //! ML and MML estimates of kappa
     double kappa_ml,kappa_mml;
@@ -34,10 +33,10 @@ class Component
     Component();
 
     //! Constructor
-    Component(array<double,3> &, double, int);
+    Component(vector<double> &, double, int);
 
     //! Constructor
-    Component(array<double,2> &, double, int);
+    Component(struct Estimates &, int);
 
     //! Overloading = operator
     Component operator=(const Component &);
@@ -70,10 +69,10 @@ class Component
     double computeSecondDerivative(double);
 
     //! Computes the likelihood value
-    double likelihood(array<double,2> &);
+    double likelihood(vector<double,2> &);
 
     //! Computes the likelihood value
-    double likelihood(array<double,2> &, double);
+    double likelihood(vector<double,2> &, double);
 
     //! Computes the probability of the component parameters
     double computeParametersProbability();
@@ -88,13 +87,13 @@ class Component
     void printParameters(ostream &);
 
     //! Returns the mean direction
-    array<double,2> getMeanDirection();
+    vector<double,2> getMeanDirection();
 
     //! Return kappa 
     double getKappa();
 
     //! Generate random samples from this component
-    vector<array<double,3>> generate(int);
+    vector<vector<double,3>> generate(int);
 
     //! Conflates two components
     Component conflate(Component &);

@@ -140,7 +140,7 @@ void rotateVector(vector<vector<double>> &rotation_matrix,
 	}	
 }
 
-/*his function multiplies two matrices. */
+/* This function multiplies two matrices. */
 void multiplyVectors(vector<vector<double>> &A, vector<vector<double>> &B,
                      vector<vector<double>> &product) 
 {

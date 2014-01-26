@@ -30,7 +30,8 @@
 #define AOM 0.001
 #define AOM_angle 0.2
 #define LARGE_NUMBER 1000000000
-#define PI boost::math::constants::pi<double>()
+//#define PI boost::math::constants::pi<double>()
+#define PI M_PI 
 #define LOG_PI log(PI)
 #define LOG2_PI log2(PI)
 #define ZERO std::numeric_limits<double>::epsilon()
