@@ -12,13 +12,9 @@ class Mixture
     //! List of components
     vector<Component> components;
     
-    //! Sample (x_i) -- spherical coordinates with unit radius
-    //! (measured in degrees)
-    vector<array<double,2>> angles;
-
     //! Sample (x_i) -- Cartesian coordinates
     //! (on a sphere of unit radius)
-    vector<array<double,3>> data;
+    vector<double> data;
 
     //! Sample size
     int N;
@@ -58,10 +54,7 @@ class Mixture
     Mixture(int, vector<Component> &, vector<double> &);
 
     //! Constructor
-    Mixture(int, vector<array<double,2>> &, int, int, int);
-
-    //! Constructor
-    Mixture(int, vector<array<double,3>> &, int, int, int);
+    Mixture(int, vector<vector<double>> &, int, int, int);
 
     //! Constructor
     Mixture(int , vector<double> &, vector<Component> &);

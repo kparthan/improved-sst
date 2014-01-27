@@ -244,7 +244,6 @@ bool checkFile(string &file_name)
 {
   ifstream file(file_name);
   return file;
-  //return boost::filesystem::exists(file_name);
 }
 
 /*!
@@ -355,19 +354,18 @@ void point2vector(Point<double> &p, vector<double> &v)
   v[2] = p.z();
 }
 
-///*!
-// *  \brief This function scales the value to AOM.
-// *  \param angle_rad (in radians) a double
-// *  \return angle to AOM radians
-// */
-//void scaleToAOM(double *angle_rad)
-//{
-//  int scale = 1 / (double) AOM_angle;
-//  int angle = (*angle_rad) * scale;
-//  *angle_rad = angle / (double) scale;
-//  cout << *angle_rad << endl;
-//}
-//
+/*!
+ *  \brief This function scales the value to AOM.
+ *  \param angle_rad (in radians) a reference to a double
+ */
+void scaleToAOM(double &angle_rad)
+{
+  int scale = 1 / (double) AOM_angle;
+  int angle = (angle_rad) * scale;
+  angle_rad = angle / (double) scale;
+  cout << angle_rad << endl;
+}
+
 /*!
  *  \brief This function finds the minimum of the two elements 
  *  \param a an element of type Realtype 
@@ -546,8 +544,6 @@ string getSCOPFilePath(string &scop_id)
  */
 void buildAngularProfile(struct Parameters &parameters)
 {
-  //string name = extractName(parameters.file);
-  // check if spherical profile exists
   bool exist = checkIfSphericalProfileExists(STRUCTURE);
   if (!exist || parameters.force == SET) {
     /* Obtain protein coordinates */
@@ -612,8 +608,7 @@ ProteinStructure *parsePDBFile(string &pdb_file)
  *  p0 lies on the XY plane.
  *  \param four_mer a reference to a vector<vector<double>>
  *  \param transformed_four_mer a reference to a vector<vector<double>>
- *  \param rotation1 a reference to a vector<vector<double>>
- *  \param rotation2 a reference to a vector<vector<double>>
+ *  \param rotation_matrix a reference to a vector<vector<double>>
  */
 void convertToCanonicalForm(vector<vector<double>> &four_mer,
                             vector<vector<double>> &transformed_four_mer, 
@@ -728,16 +723,20 @@ void computeEstimators(struct Parameters &parameters)
     if (success) {
       modelOneComponent(parameters,resultant_direction,n);
     }
-  }/* else if (parameters.mixture_model == SET) { // mixture modelling
-    vector<vector<double,3>> data = gatherData(parameters);
-    modelMixture(parameters,data);
-  }*/
+  } else if (parameters.mixture_model == SET) { // mixture modelling
+    vector<vector<double>> unit_coordinates;
+    bool success = gatherData(parameters,unit_coordinates);
+    if (success) {
+      modelMixture(parameters,unit_coordinates);
+    }
+  }
 }
 
 /*!
  *  \brief This function models a single component.
  *  \param parameters a reference to a struct Parameters
- *  \param data a reference to a pair<vector<double,3>,double>
+ *  \param direction a reference to a vector<double>
+ *  \param num_samples a reference to a double
  */
 void modelOneComponent(struct Parameters &parameters, vector<double> &direction,
                        double &num_samples)
@@ -746,43 +745,45 @@ void modelOneComponent(struct Parameters &parameters, vector<double> &direction,
   component.minimizeMessageLength();
 }
 
-///*!
-// *  \brief This function models a mixture of several components.
-// *  \param parameters a reference to a struct Parameters
-// *  \param data a reference to a vector<vector<double,3>>
-// */
-//void modelMixture(struct Parameters &parameters, vector<vector<double,3>> &data)
-//{
-//  // if the optimal number of components need to be determined
-//  if (parameters.infer_num_components == SET) {
-//    vector<double> msglens;
-//    vector<int> components;
-//    for (int i=1; i<=20; i++) {
-//      //if (i % 2 == 1) {
-//        int k = 10 * i;
-//        cout << "Running for K: " << k << endl;
-//        components.push_back(k);
-//        Mixture mixture(k,data,parameters.update_weights_new,
-//                        parameters.constrain_kappa,parameters.simulation);
-//        double msg = mixture.estimateParameters();
-//        msglens.push_back(msg);
-//      //}
-//    }
-//    plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
-//  } else if (parameters.infer_num_components == UNSET) {
-//    // for a given value of number of components
-//    // do the mixture modelling
-//    Mixture mixture(parameters.fit_num_components,data,
-//                    parameters.update_weights_new,parameters.constrain_kappa,
-//                    parameters.simulation);
-//    mixture.estimateParameters();
-//  }
-//}
-//
+/*!
+ *  \brief This function models a mixture of several components.
+ *  \param parameters a reference to a struct Parameters
+ *  \param data a reference to a vector<vector<double,3>>
+ */
+void modelMixture(struct Parameters &parameters, vector<vector<double,3>> &data)
+{
+  // if the optimal number of components need to be determined
+  if (parameters.infer_num_components == SET) {
+    vector<double> msglens;
+    vector<int> components;
+    for (int i=1; i<=20; i++) {
+      //if (i % 2 == 1) {
+        int k = 10 * i;
+        cout << "Running for K: " << k << endl;
+        components.push_back(k);
+        Mixture mixture(k,data,parameters.update_weights_new,
+                        parameters.constrain_kappa,parameters.simulation);
+        double msg = mixture.estimateParameters();
+        msglens.push_back(msg);
+      //}
+    }
+    plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
+  } else if (parameters.infer_num_components == UNSET) {
+    // for a given value of number of components
+    // do the mixture modelling
+    Mixture mixture(parameters.fit_num_components,data,
+                    parameters.update_weights_new,parameters.constrain_kappa,
+                    parameters.simulation);
+    mixture.estimateParameters();
+  }
+}
+
 /*!
  *  \brief This function reads through the profiles from a given directory.
  *  \param parameters a reference to a struct Parameters
- *  \return a pair of mean direction and the sample size
+ *  \param direction a reference to a vector<double>
+ *  \param n a reference to a double
+ *  \return success or failure of browsing through the profiles
  */
 bool readProfiles(struct Parameters &parameters, vector<double> &direction,
                   double &n)
@@ -839,43 +840,40 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
   return 0;
 }
 
-///*!
-// *  \brief This function reads through the profiles from a given directory
-// *  and collects the data to do mixture modelling.
-// *  \param parameters a reference to a struct Parameters
-// *  \return a pair of mean direction and the sample size
-// */
-//vector<vector<double,3>> gatherData(struct Parameters &parameters)
-//{
-//  path p(parameters.profiles_dir);
-//  cout << "path: " << p.string() << endl;
-//  if (exists(p)) { 
-//    if (is_directory(p)) { 
-//      vector<path> files; // store paths,
-//      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
-//      cout << "# of profiles: " << files.size() << endl;
-//      vector<vector<double,3>> coordinates;
-//      for (int i=0; i<files.size(); i++) {
-//        Protein protein;
-//        protein.load(files[i]);
-//        vector<vector<double,3>> coords = protein.getSphericalCoordinatesList();
-//        for (int j=0; j<coords.size(); j++) {
-//          double theta = coords[j][1];
-//          double phi = coords[j][2];
-//          vector<double,3> x = convertToCartesian(1,theta,phi);
-//          coordinates.push_back(x);
-//        }
-//      }
-//      return coordinates;
-//    } else {
-//      cout << p << " exists, but is neither a regular file nor a directory\n";
-//    }
-//  } else {
-//    cout << p << " does not exist\n";
-//  }
-//  exit(1);
-//}
-//
+/*!
+ *  \brief This function reads through the profiles from a given directory
+ *  and collects the data to do mixture modelling.
+ *  \param parameters a reference to a struct Parameters
+ *  \param unit_coordinates a reference to a vector<vector<double>>
+ */
+bool gatherData(struct Parameters &parameters, 
+                vector<vector<double>> &unit_coordinates)
+{
+  path p(parameters.profiles_dir);
+  cout << "path: " << p.string() << endl;
+  if (exists(p)) { 
+    if (is_directory(p)) { 
+      vector<path> files; // store paths,
+      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
+      cout << "# of profiles: " << files.size() << endl;
+      for (int i=0; i<files.size(); i++) {
+        Protein protein;
+        protein.load(files[i]);
+        vector<vector<double>> coords = protein.getUnitCoordinatesList();
+        for (int j=0; j<coords.size(); j++) {
+          unit_coordinates.push_back(coords[j]);
+        }
+      }
+      return 1;
+    } else {
+      cout << p << " exists, but is neither a regular file nor a directory\n";
+    }
+  } else {
+    cout << p << " does not exist\n";
+  }
+  return 0;
+}
+
 /*!
  *  \brief This function updates the run time
  *  \param name a reference to a string
@@ -916,17 +914,17 @@ void updateMeanDirection(vector<double> &direction, double &n, Protein &protein)
  */
 void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
 {
-  vector<vector<double>> spherical_coordinates = protein.getSphericalCoordinatesList();
+  vector<vector<double>> unit_coordinates = protein.getUnitCoordinatesList();
   double theta,phi;
   int row,col;
-  for (int i=0; i<spherical_coordinates.size(); i++) {
-    theta = spherical_coordinates[i][1] * 180 / PI;
+  for (int i=0; i<unit_coordinates.size(); i++) {
+    theta = unit_coordinates[i][1] * 180 / PI;
     if (fabs(theta) <= ZERO) {
       row = 0;
     } else {
       row = (int)(ceil(theta/res) - 1);
     }
-    phi = spherical_coordinates[i][2] * 180 / PI;
+    phi = unit_coordinates[i][2] * 180 / PI;
     if (fabs(phi) <= ZERO) {
       col = 0;
     } else {

@@ -20,19 +20,21 @@ class Protein
     //! Translation point
     vector<double> initial_translation_vector;
 
-    //! Stores the coordinates
-    vector<vector<vector<double>>> coordinates;
+    //! Stores the coordinates (x,y,z \in R)
+    vector<vector<vector<double>>> cartesian_coordinates;
+
+    //! List of spherical coordinates (r \neq 1,theta,phi)
+    //! theta,phi measured in radians 
+    vector<vector<vector<double>>> spherical_coordinates;
+
+    //! Cartesian coordinates that lie on the unit sphere 
+    vector<vector<vector<double>>> unit_coordinates;
+
+    //! Gets the list of all unit coordinates
+    vector<vector<double>> all_unit_coordinates;
 
     //! Distances between the successive residues
     vector<vector<double>> distances;
-
-    //! List of spherical coordinates (r \neq 1,theta,phi)
-    //! theta,phi measured in degrees
-    vector<vector<vector<double>>> spherical_coordinates;
-
-    //! Gets the list of all spherical coordinates
-    //! theta,phi measured in degrees
-    vector<vector<double>> all_spherical_coordinates;
 
     //! Times taken
     double cpu_time,wall_time;
@@ -89,7 +91,7 @@ class Protein
     void save();
 
     //! Gets the list of all spherical coordinates
-    vector<vector<double>> getSphericalCoordinatesList();
+    vector<vector<double>> getUnitCoordinatesList();
 
     //! Get the CPU time
     double getCPUTime();

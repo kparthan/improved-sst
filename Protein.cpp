@@ -36,11 +36,11 @@ Protein::Protein(ProteinStructure *structure, string &name) :
         chain_coordinates.push_back(v);
       }
       //translateProteinToOrigin(chain_coordinates);
-      coordinates.push_back(chain_coordinates);
+      cartesian_coordinates.push_back(chain_coordinates);
     }
   }
-  cout << "# of suitable chains: " << coordinates.size() << endl;
-  if (coordinates.size() == 0) {
+  cout << "# of suitable chains: " << cartesian_coordinates.size() << endl;
+  if (cartesian_coordinates.size() == 0) {
     cout << name << " is an unsuitable structure ..." << endl;
     ofstream log("unsuitable_structures.log",ios::app);
     log << name << endl;
@@ -129,17 +129,17 @@ void Protein::computeSphericalTransformation()
   initializeMatrix(rotation_matrix,3,3);
 
   // transform all coordinates
-  for (int i=0; i<coordinates.size(); i++) {
-    vector<vector<double>> spherical_chain_coordinates;
+  for (int i=0; i<cartesian_coordinates.size(); i++) {
+    vector<vector<double>> chain_coordinates;
     vector<double> spherical(3,0);
-    for (int j=2; j<coordinates[i].size()-1; j++) {
+    for (int j=2; j<cartesian_coordinates[i].size()-1; j++) {
       computeTransformation(i,j,four_mer,transformed_four_mer,rotation_matrix);
       string file_index = "tmp/" + boost::lexical_cast<string>(j);
       writeToFile(transformed_four_mer,file_index.c_str());
       cartesian2spherical(transformed_four_mer[3],spherical);
-      spherical_chain_coordinates.push_back(spherical);
+      chain_coordinates.push_back(spherical);
     }
-    spherical_coordinates.push_back(spherical_chain_coordinates);
+    spherical_coordinates.push_back(chain_coordinates);
   }
 
   clock_t c_end = clock();
@@ -161,10 +161,10 @@ void Protein::computeTransformation(int chain_index, int index,
                                     vector<vector<double>> &rotation_matrix)
 {
   // update four-mer
-  four_mer[0] = coordinates[chain_index][index-2];
-  four_mer[1] = coordinates[chain_index][index-1];
-  four_mer[2] = coordinates[chain_index][index];
-  four_mer[3] = coordinates[chain_index][index+1];
+  four_mer[0] = cartesian_coordinates[chain_index][index-2];
+  four_mer[1] = cartesian_coordinates[chain_index][index-1];
+  four_mer[2] = cartesian_coordinates[chain_index][index];
+  four_mer[3] = cartesian_coordinates[chain_index][index+1];
   // transform
   convertToCanonicalForm(four_mer,transformed_four_mer,rotation_matrix);
 }
@@ -194,7 +194,8 @@ void Protein::load(path &path_to_file)
 
 /*!
  *  \brief This functions reads the profile from a regular file.
- *  (theta,phi angles read are in radians)
+ *  Each line in the file should contain the chain index followed by
+ *  radius (\neq 1), theta, phi (measured in radians) values.
  *  \param file_name a reference to a string
  */
 void Protein::read_profile(string &file_name)
@@ -202,8 +203,10 @@ void Protein::read_profile(string &file_name)
   cout << "Reading " << file_name << " ..." << endl;
   ifstream profile(file_name.c_str());
   string line;
+  cartesian_coordinates.clear();
   spherical_coordinates.clear();
-  all_spherical_coordinates.clear();
+  unit_coordinates.clear();
+  all_unit_coordinates.clear();
 
   vector<vector<double>> chain_coordinates;
   while(getline(profile,line)) {
@@ -238,7 +241,8 @@ void Protein::read_profile(string &file_name)
 
 /*!
  *  \brief Saves the spherical system profile.
- *  (theta,phi angles saved are in radians)
+ *  Each line in the file contains the chain index followed by
+ *  radius (\neq 1), theta, phi (measured in radians) values.
  */
 void Protein::save()
 {
@@ -264,16 +268,24 @@ void Protein::save()
  *  \brief This function gets the list of all spherical coordinates.
  *  \return the lsit of all spherical coordinates.
  */
-vector<vector<double>> Protein::getSphericalCoordinatesList()
+vector<vector<double>> Protein::getUnitCoordinatesList()
 {
-  if (all_spherical_coordinates.size() == 0) {
+  if (all_unit_coordinates.size() == 0) {
+    vector<double> x(3,1);
+    vector<double> cartesian(3,0);
     for (int i=0; i<spherical_coordinates.size(); i++) {
+      vector<vector<double>> chain_coordinates;
       for (int j=0; j<spherical_coordinates[i].size(); j++) {
-        all_spherical_coordinates.push_back(spherical_coordinates[i][j]);
+        x[1] = spherical_coordinates[i][j][1];
+        x[2] = spherical_coordinates[i][j][2];
+        spherical2cartesian(x,cartesian);
+        chain_coordinates.push_back(cartesian);
+        all_unit_coordinates.push_back(cartesian);
       }
+      unit_coordinates.push_back(chain_coordinates);
     }
   }
-  return all_spherical_coordinates;
+  return all_unit_coordinates;
 }
 
 /*!
@@ -282,7 +294,7 @@ vector<vector<double>> Protein::getSphericalCoordinatesList()
  */
 int Protein::getNumberOfSphericalCoordinates()
 {
-  return all_spherical_coordinates.size();
+  return all_unit_coordinates.size();
 }
 
 /*!
@@ -310,17 +322,14 @@ int Protein::getNumberOfChains()
  */
 vector<double> Protein::computeMeanDirection()
 {
-  if (all_spherical_coordinates.size() == 0) {
-    getSphericalCoordinatesList();
+  if (all_unit_coordinates.size() == 0) {
+    getUnitCoordinatesList();
   }
   vector<double> estimate(3,0);
-  vector<double> x(3,0);
   
-  for (int i=0; i<all_spherical_coordinates.size(); i++) {
-    all_spherical_coordinates[i][0] = 1;
-    spherical2cartesian(all_spherical_coordinates[i],x);
+  for (int i=0; i<all_unit_coordinates.size(); i++) {
     for (int j=0; j<3; j++) {
-      estimate[j] += x[j];
+      estimate[j] += all_unit_coordinates[i][j];
     }
   }
   return estimate;
@@ -332,10 +341,10 @@ vector<double> Protein::computeMeanDirection()
 // */
 //void Protein::computeSuccessiveDistances()
 //{
-//  for (int i=0; i<coordinates.size(); i++) {
+//  for (int i=0; i<cartesian_coordinates.size(); i++) {
 //    vector<double> dist;
-//    for (int j=0; j<coordinates[i].size()-1; j++) {
-//      double d = lcb::geometry::distance<double>(coordinates[i][j],coordinates[i][j+1]);
+//    for (int j=0; j<cartesian_coordinates[i].size()-1; j++) {
+//      double d = lcb::geometry::distance<double>(cartesian_coordinates[i][j],cartesian_coordinates[i][j+1]);
 //      dist.push_back(d);
 //    }
 //    distances.push_back(dist);
@@ -423,7 +432,7 @@ vector<double> Protein::computeMeanDirection()
 //  }
 //  optimal_model.clear();
 //  optimal_code_length.clear();
-//  int n = coordinates[chain_index].size();
+//  int n = cartesian_coordinates[chain_index].size();
 //  vector<OptimalFit> optimal(n,OptimalFit());
 //  vector<double> code_length(n,LARGE_NUMBER);
 //  for (int i=0; i<n; i++) {
@@ -440,15 +449,15 @@ vector<double> Protein::computeMeanDirection()
 //void Protein::compressUsingIdealModels(Mixture &mixture, int orientation)
 //{
 //  vector<IdealModel> ideal_models = loadIdealModels();
-//  for (int i=0; i<coordinates.size(); i++) {
-//    /*cout << "cartesian coordinates size: " << coordinates[i].size() << endl;
+//  for (int i=0; i<cartesian_coordinates.size(); i++) {
+//    /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
 //    cout << "distances size: " << distances[i].size() << endl;
 //    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
 //    computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
 //    pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
 //    vector<int> segments = segmentation.second;
 //    cout << "Compression fit: " << segmentation.first << " bits." << endl;
-//    cout << "Bits per residue: " << segmentation.first/coordinates[i].size() 
+//    cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
 //             << endl << endl; 
 //    cout << "# of segments: " << segments.size()-1 << endl << endl;
 //    cout << "Internal segmentation:" << endl;
@@ -473,12 +482,12 @@ vector<double> Protein::computeMeanDirection()
 //                                      int chain)
 //{
 //  initializeCodeLengthMatrices(chain);
-//  int chain_size = coordinates[chain].size();
+//  int chain_size = cartesian_coordinates[chain].size();
 //  for (int i=0; i<chain_size-1; i++) {
 //    int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
 //    for (int j=i+1; j<chain_size; j++) {
 //      cout << i << ":" << j << endl;
-//      Segment segment(i,j,coordinates[chain],spherical_coordinates[chain]);
+//      Segment segment(i,j,cartesian_coordinates[chain],spherical_cartesian_coordinates[chain]);
 //      if (i == 0) {
 //        segment.setInitialDistances(distances[chain][0],distances[chain][1]);
 //      }
@@ -513,7 +522,7 @@ vector<double> Protein::computeMeanDirection()
 //pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
 //{
 //  pair <double,vector<int>> segmentation;
-//  int chain_size = coordinates[chain].size();
+//  int chain_size = cartesian_coordinates[chain].size();
 //  vector<double> optimal_msglen(chain_size,100000);
 //  vector<int> optimal_index(chain_size,-1);
 //

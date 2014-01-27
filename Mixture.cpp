@@ -25,33 +25,12 @@ Mixture::Mixture(int K, vector<Component> &components, vector<double> &weights):
 /*!
  *  \brief This is a constructor function.
  *  \param num_components an integer
- *  \param angles a reference to a vector<array<double,2>>
- *  (measured in degrees)
+ *  \param data a reference to a vector<vector<double>>
  *  \param update_weights_new an integer
  *  \param constrain_kappa an integer
  *  \param simulation an integer
  */
-Mixture::Mixture(int num_components, vector<array<double,2>> &angles,
-                 int update_weights_new, int constrain_kappa, int simulation) : 
-                 K(num_components), angles(angles), simulation(simulation),
-                 update_weights_new(update_weights_new),
-                 constrain_kappa(constrain_kappa)
-{
-  for (int i=0; i<angles.size(); i++) {
-    array<double,3> x = convertToCartesian(1,angles[i][0],angles[i][1]);
-    data.push_back(x);
-  }
-}
-
-/*!
- *  \brief This is a constructor function.
- *  \param num_components an integer
- *  \param data a reference to a vector<array<double,3>>
- *  \param update_weights_new an integer
- *  \param constrain_kappa an integer
- *  \param simulation an integer
- */
-Mixture::Mixture(int num_components, vector<array<double,3>> &data,
+Mixture::Mixture(int num_components, vector<vector<double>> &data,
                  int update_weights_new, int constrain_kappa, int simulation) : 
                  K(num_components), data(data), simulation(simulation),
                  update_weights_new(update_weights_new),

@@ -51,7 +51,7 @@ void initializeMatrix(vector<vector<double>> &, int, int);
 void cartesian2spherical(vector<double> &, vector<double> &);
 void spherical2cartesian(vector<double> &, vector<double> &);
 void point2vector(Point<double> &, vector<double> &);
-void scaleToAOM(double *);
+void scaleToAOM(double &);
 template <typename RealType> RealType minimum(RealType, RealType);
 void print(ostream &, vector<double> &);
 double ratioBesselFunction(double);
@@ -75,9 +75,9 @@ void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
 
 void computeEstimators(struct Parameters &);
 void modelOneComponent(struct Parameters &, vector<double> &, double &);
-//void modelMixture(struct Parameters &, vector<array<double,3>> &);
+void modelMixture(struct Parameters &, vector<vector<double>> &);
 bool readProfiles(struct Parameters &, vector<double> &, double &);
-//vector<array<double,3>> gatherData(struct Parameters &);
+bool gatherData(struct Parameters &, vector<vector<double>> &);
 void updateLogFile(string &, double, int);
 void updateMeanDirection(vector<double> &, double &, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
