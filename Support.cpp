@@ -766,7 +766,7 @@ void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=1; i<=20; i++) {
+    for (int i=1; i<=10; i++) {
       //if (i % 2 == 1) {
         int k = 10 * i;
         cout << "Running for K: " << k << endl;
