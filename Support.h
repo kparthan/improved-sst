@@ -54,7 +54,6 @@ void point2vector(Point<double> &, vector<double> &);
 void scaleToAOM(double *);
 template <typename RealType> RealType minimum(RealType, RealType);
 void print(ostream &, vector<double> &);
-//void vonMisesDistribution_2DPlot(array<double,3> &);
 double ratioBesselFunction(double);
 double ratioBesselFunction_firstDerivative(double);
 double ratioBesselFunction_secondDerivative(double);
@@ -75,12 +74,12 @@ void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
 //array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);
 
 void computeEstimators(struct Parameters &);
-void modelOneComponent(struct Parameters &, pair<array<double,3>,double> &);
+void modelOneComponent(struct Parameters &, vector<double> &, double &);
 //void modelMixture(struct Parameters &, vector<array<double,3>> &);
-pair<array<double,3>,double> readProfiles(struct Parameters &);
+bool readProfiles(struct Parameters &, vector<double> &, double &);
 //vector<array<double,3>> gatherData(struct Parameters &);
 void updateLogFile(string &, double, int);
-void updateMeanDirection(array<double,3> &, double *, Protein &);
+void updateMeanDirection(vector<double> &, double &, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
 void outputBins(vector<vector<int>> &, double);
 //void visualizeMixtureComponents(struct Parameters &);

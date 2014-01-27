@@ -317,6 +317,7 @@ vector<double> Protein::computeMeanDirection()
   vector<double> x(3,0);
   
   for (int i=0; i<all_spherical_coordinates.size(); i++) {
+    all_spherical_coordinates[i][0] = 1;
     spherical2cartesian(all_spherical_coordinates[i],x);
     for (int j=0; j<3; j++) {
       estimate[j] += x[j];

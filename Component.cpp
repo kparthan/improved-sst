@@ -16,7 +16,9 @@ Component::Component()
 Component::Component(vector<double> &mean_direction, double N, 
                      int constrain_kappa) : mean_direction(mean_direction),
                      N(N), constrain_kappa(constrain_kappa)
-{}
+{
+  updateMu(mean_direction);
+}
 
 /*!
  *  \brief This is a constructor function.
@@ -29,6 +31,19 @@ Component::Component(struct Estimates &estimates, int constrain_kappa):
                      kappa_mml(estimates.kappa), constrain_kappa(constrain_kappa)
 {
   von_mises = VonMises3D(unit_mean,kappa_mml);
+  updateMu(unit_mean);
+}
+
+/*!
+ *  \brief This function updates Mu the directions (theta/phi) in radians
+ *  \param mean a reference to an vector<double>
+ */
+void Component::updateMu(vector<double> &mean)
+{
+  vector<double> spherical(3,0);
+  cartesian2spherical(mean,spherical);
+  mu[0] = spherical[1];
+  mu[1] = spherical[2];
 }
 
 /*!
@@ -41,6 +56,7 @@ Component Component::operator=(const Component &source)
   if (this != &source) {
     mean_direction = source.mean_direction;
     unit_mean = source.unit_mean;
+    mu = source.mu;
     N = source.N;
     rbar = source.rbar;
     R = source.R;
@@ -60,10 +76,9 @@ void Component::minimizeMessageLength()
 {
   estimateVonMisesMean();
   kappa_ml = estimateKappa_ML();
-  //kappa_mml = estimateKappa_MML(kappa_ml);
-  kappa_mml = kappa_ml;
+  kappa_mml = estimateKappa_MML(kappa_ml);
   cout << "Kappa (MML): " << kappa_mml << endl;
-  von_mises = VonMises3D(mu,kappa_mml);
+  von_mises = VonMises3D(unit_mean,kappa_mml);
 }
 
 /*!
@@ -91,6 +106,8 @@ void Component::estimateVonMisesMean()
   print(cout,unit_mean);
 
   cartesian2spherical(unit_mean,spherical_coordinates);
+  mu[0] = spherical_coordinates[1];
+  mu[1] = spherical_coordinates[2];
   cout << "Spherical coordinates of unit mean direction vector: ";
   print(cout,spherical_coordinates);
 
@@ -271,9 +288,9 @@ double Component::computeSecondDerivative(double kappa)
  *  \param x a reference to an vector<double,2>
  *  \return the likelihood value
  */
-double Component::likelihood(vector<double,2> &x)
+double Component::likelihood(vector<double> &x)
 {
-  return von_mises.density(x[0],x[1]);
+  return von_mises.density(x);
 }
 
 /*!
@@ -282,9 +299,9 @@ double Component::likelihood(vector<double,2> &x)
  *  \param kappa a double
  *  \return the likelihood value
  */
-double Component::likelihood(vector<double,2> &x, double kappa)
+double Component::likelihood(vector<double> &x, double kappa)
 {
-  return von_mises.density(x[0],x[1]);
+  return von_mises.density(x);
 }
 
 /*!
@@ -310,8 +327,7 @@ double Component::computeParametersProbability()
 double Component::computePriorDensity()
 {
   double kappa_sq = kappa_mml * kappa_mml;
-  double theta_rad = angleInRadians(mu[0]);
-  double num = kappa_sq * fabs(sin(theta_rad));
+  double num = kappa_sq * fabs(sin(mu[0]));
   if (constrain_kappa == SET) {
     double tmp = atan(MAX_KAPPA) - (MAX_KAPPA/(1+MAX_KAPPA*MAX_KAPPA));
     double constant = PI / (2 * tmp);
@@ -336,8 +352,7 @@ double Component::computeFisherInformation()
     log_fisher += 2 * log(kappa_mml);
     log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
     log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
-    double theta_rad = angleInRadians(mu[0]);
-    log_fisher += 2 * log(fabs(sin(theta_rad)));
+    log_fisher += 2 * log(fabs(sin(mu[0])));
     return exp(log_fisher);
   }
 }
@@ -355,9 +370,9 @@ void Component::printParameters(ostream &os)
  *  \brief This function returns the mean direction of the distribution.
  *  \return the angular mean
  */
-vector<double,2> Component::getMeanDirection()
+vector<double> Component::getMeanDirection()
 {
-  return mu;
+  return unit_mean;
 }
 
 /*!
@@ -374,9 +389,9 @@ double Component::getKappa()
  *  \param num_points an integer
  *  \return the list of generated points
  */
-vector<vector<double,3>> Component::generate(int num_points)
+vector<vector<double>> Component::generate(int num_points)
 {
-  von_mises = VonMises3D(mu,kappa_mml);
+  von_mises = VonMises3D(unit_mean,kappa_mml);
   return von_mises.generateCoordinates(num_points);
 }
 
@@ -385,7 +400,7 @@ vector<vector<double,3>> Component::generate(int num_points)
  *  \param component a reference to a Component
  *  \return the conflated component
  */
-Component Component::conflate(Component &component)
+/*Component Component::conflate(Component &component)
 {
   vector<double,2> mu1 = mu;
   vector<double,3> mean1 = convertToCartesian(1,mu1[0],mu1[1]);
@@ -407,4 +422,4 @@ Component Component::conflate(Component &component)
   
   return Component(conflated_mu,conflated_kappa,constrain_kappa); 
 }
-
+*/

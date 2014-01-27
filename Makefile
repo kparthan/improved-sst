@@ -1,4 +1,4 @@
-CFLAGS=-std=c++0x -pg -g $(shell pkg-config --cflags liblcb-experimental) 
+CFLAGS=-std=c++0x -pg -O3 -g $(shell pkg-config --cflags liblcb-experimental) 
 LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -pg -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \

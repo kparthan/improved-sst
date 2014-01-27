@@ -22,6 +22,9 @@ class Component
     //! ML/MML estimate of (unit) mean direction
     vector<double> unit_mean;
 
+    //! Directions (theta,phi) in radians of the unit mean
+    array<double,2> mu;
+
     //! ML and MML estimates of kappa
     double kappa_ml,kappa_mml;
 
@@ -37,6 +40,9 @@ class Component
 
     //! Constructor
     Component(struct Estimates &, int);
+
+    // Update mu
+    void updateMu(vector<double> &);
 
     //! Overloading = operator
     Component operator=(const Component &);
@@ -69,10 +75,10 @@ class Component
     double computeSecondDerivative(double);
 
     //! Computes the likelihood value
-    double likelihood(vector<double,2> &);
+    double likelihood(vector<double> &);
 
     //! Computes the likelihood value
-    double likelihood(vector<double,2> &, double);
+    double likelihood(vector<double> &, double);
 
     //! Computes the probability of the component parameters
     double computeParametersProbability();
@@ -87,13 +93,13 @@ class Component
     void printParameters(ostream &);
 
     //! Returns the mean direction
-    vector<double,2> getMeanDirection();
+    vector<double> getMeanDirection();
 
     //! Return kappa 
     double getKappa();
 
     //! Generate random samples from this component
-    vector<vector<double,3>> generate(int);
+    vector<vector<double>> generate(int);
 
     //! Conflates two components
     Component conflate(Component &);

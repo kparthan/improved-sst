@@ -1,5 +1,9 @@
 #include "VonMises3D.h"
 #include "Support.h"
+#include "Geometry3D.h"
+
+extern vector<double> YAXIS;
+extern vector<double> ZAXIS;
 
 /*!
  *  \brief This is a null constructor module
@@ -76,7 +80,7 @@ double VonMises3D::density(vector<double> &x)
   } else {
     double dot_product;
     computeDotProduct(unit_mean,x,dot_product);
-    double exponent = kappa * (dotproduct - 1);
+    double exponent = kappa * (dot_product - 1);
     double pr = norm_constant * exp(exponent);
     /*if (pr < ZERO) {
       pr = ZERO;

@@ -32,7 +32,7 @@ void getHomeAndCurrentDirectory()
  *  \brief This function checks to see if valid arguments are given to the 
  *  command line output.
  *  \param argc an integer
- *  \param argv an array of strings
+ *  \param argv an vector of strings
  *  \return the parameters of the model
  */
 struct Parameters parseCommandLineInput(int argc, char **argv)
@@ -389,7 +389,7 @@ template double minimum(double,double);
 template long double minimum(long double,long double);
 
 /*!
- *  \brief This function prints the elements of an array.
+ *  \brief This function prints the elements of an vector.
  *  \param os a reference to a ostream
  *  \param v a reference to a vector<double>
  */
@@ -398,30 +398,6 @@ void print(ostream &os, vector<double> &v)
   os << "(" << v[0] << "," << v[1] << "," << v[2] << ")\n";
 }
 
-///*!
-// *  \brief This function generates the heat map for theta vs phi
-// *  \param estimates a reference to a array<double,3>
-// *  \param res a double
-// */
-//void vonMisesDistribution_2DPlot(array<double,3> &estimates, double res)
-//{
-//  double kappa = estimates[0];
-//  array<double,2> mu({estimates[1],estimates[2]});
-//  VonMises3D von_mises(mu,kappa);
-//  ofstream log("matlab/distribution_heat_map_2D.data");
-//  double density;
-//  for (double theta=0; theta<=180; theta+=res) {
-//    for (double phi=0; phi<=360; phi+=res) {
-//      //log << fixed << setw(10) << setprecision(2) << theta;
-//      //log << fixed << setw(10) << setprecision(2) << phi;
-//      density = von_mises.density(theta,phi);
-//      log << fixed << setw(10) << setprecision(4) << density;
-//    }
-//    log << endl;
-//  }
-//  log.close();
-//}
-//
 /*!
  *  \brief This function computes the ratio of Bessel functions -- A3(k)
  *  \param k a double
@@ -696,8 +672,8 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 //    v[i] = ep[i] - sp[i];
 //  }
 //  Point<double> dir(v);
-//  array<double,3> spherical = convertToSpherical(dir);
-//  array<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
+//  vector<double,3> spherical = convertToSpherical(dir);
+//  vector<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
 //  double theta = angleInRadians(spherical[1]);
 //  double phi = angleInRadians(spherical[2]);
 //  Point<double> x(unit_vec);
@@ -721,17 +697,17 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 // *  \param ep a reference to a vector<double>
 // *  \return the transformed unit vector
 // */
-//array<double,3> applyIdealModelTransformation(Matrix<double> &matrix, 
+//vector<double,3> applyIdealModelTransformation(Matrix<double> &matrix, 
 //                vector<double> &sp, vector<double> &ep)
 //{
 //  Point<double> s(sp);
 //  Point<double> e(ep);
 //  Point<double> dir = e - s;
-//  array<double,3> spherical = convertToSpherical(dir);
-//  array<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
+//  vector<double,3> spherical = convertToSpherical(dir);
+//  vector<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
 //  Point<double> x(unit_vec);
 //  Point<double> xtrans = lcb::geometry::transform<double>(x,matrix);
-//  array<double,3> y;
+//  vector<double,3> y;
 //  y[0] = xtrans.x();
 //  y[1] = xtrans.y();
 //  y[2] = xtrans.z();
@@ -746,10 +722,14 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
 void computeEstimators(struct Parameters &parameters)
 {
   if (parameters.mixture_model == UNSET) {  // no mixture modelling
-    pair<array<double,3>,double> data = readProfiles(parameters);
-    modelOneComponent(parameters,data);
+    vector<double> resultant_direction(3,0);
+    double n = 0;
+    bool success = readProfiles(parameters,resultant_direction,n);
+    if (success) {
+      modelOneComponent(parameters,resultant_direction,n);
+    }
   }/* else if (parameters.mixture_model == SET) { // mixture modelling
-    vector<array<double,3>> data = gatherData(parameters);
+    vector<vector<double,3>> data = gatherData(parameters);
     modelMixture(parameters,data);
   }*/
 }
@@ -757,14 +737,11 @@ void computeEstimators(struct Parameters &parameters)
 /*!
  *  \brief This function models a single component.
  *  \param parameters a reference to a struct Parameters
- *  \param data a reference to a pair<array<double,3>,double>
+ *  \param data a reference to a pair<vector<double,3>,double>
  */
-void modelOneComponent(struct Parameters &parameters,
-                       pair<array<double,3>,double> &data)
+void modelOneComponent(struct Parameters &parameters, vector<double> &direction,
+                       double &num_samples)
 {
-  array<double,3> direction = data.first;
-  double num_samples = data.second;
-  //vonMisesDistribution_2DPlot(direction,parameters.res);
   Component component(direction,num_samples,parameters.constrain_kappa);
   component.minimizeMessageLength();
 }
@@ -772,9 +749,9 @@ void modelOneComponent(struct Parameters &parameters,
 ///*!
 // *  \brief This function models a mixture of several components.
 // *  \param parameters a reference to a struct Parameters
-// *  \param data a reference to a vector<array<double,3>>
+// *  \param data a reference to a vector<vector<double,3>>
 // */
-//void modelMixture(struct Parameters &parameters, vector<array<double,3>> &data)
+//void modelMixture(struct Parameters &parameters, vector<vector<double,3>> &data)
 //{
 //  // if the optimal number of components need to be determined
 //  if (parameters.infer_num_components == SET) {
@@ -807,7 +784,8 @@ void modelOneComponent(struct Parameters &parameters,
  *  \param parameters a reference to a struct Parameters
  *  \return a pair of mean direction and the sample size
  */
-pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
+bool readProfiles(struct Parameters &parameters, vector<double> &direction,
+                  double &n)
 {
   path p(parameters.profiles_dir);
   cout << "path: " << p.string() << endl;
@@ -827,8 +805,8 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
           bins.push_back(tmp);
         }
       }
-      array<double,3> direction({0,0,0});
-      double n = 0;
+      //vector<double> direction(3,0);
+      //double n = 0;
       /*ofstream log("directions");
       for (int j=0; j<3; j++) {
         log << scientific << direction[j] << "\t";
@@ -837,7 +815,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
       for (int i=0; i<files.size(); i++) {
         Protein protein;
         protein.load(files[i]);
-        updateMeanDirection(direction,&n,protein);
+        updateMeanDirection(direction,n,protein);
         if (parameters.heat_map == SET) {
           updateBins(bins,parameters.res,protein);
         }
@@ -851,14 +829,14 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
       if (parameters.heat_map == SET) {
         outputBins(bins,parameters.res);
       }
-      return pair<array<double,3>,double>(direction,n);
+      return 1;
     } else {
       cout << p << " exists, but is neither a regular file nor a directory\n";
     }
   } else {
     cout << p << " does not exist\n";
   }
-  exit(1);
+  return 0;
 }
 
 ///*!
@@ -867,7 +845,7 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
 // *  \param parameters a reference to a struct Parameters
 // *  \return a pair of mean direction and the sample size
 // */
-//vector<array<double,3>> gatherData(struct Parameters &parameters)
+//vector<vector<double,3>> gatherData(struct Parameters &parameters)
 //{
 //  path p(parameters.profiles_dir);
 //  cout << "path: " << p.string() << endl;
@@ -876,15 +854,15 @@ pair<array<double,3>,double> readProfiles(struct Parameters &parameters)
 //      vector<path> files; // store paths,
 //      copy(directory_iterator(p), directory_iterator(), back_inserter(files));
 //      cout << "# of profiles: " << files.size() << endl;
-//      vector<array<double,3>> coordinates;
+//      vector<vector<double,3>> coordinates;
 //      for (int i=0; i<files.size(); i++) {
 //        Protein protein;
 //        protein.load(files[i]);
-//        vector<array<double,3>> coords = protein.getSphericalCoordinatesList();
+//        vector<vector<double,3>> coords = protein.getSphericalCoordinatesList();
 //        for (int j=0; j<coords.size(); j++) {
 //          double theta = coords[j][1];
 //          double phi = coords[j][2];
-//          array<double,3> x = convertToCartesian(1,theta,phi);
+//          vector<double,3> x = convertToCartesian(1,theta,phi);
 //          coordinates.push_back(x);
 //        }
 //      }
@@ -916,17 +894,17 @@ void updateLogFile(string &name, double time, int num_chains)
 /*!
  *  \brief This function updates the mean estimator of the Von Mises
  *  distribution.
- *  \param direction a reference to a array<double,3>
+ *  \param direction a reference to a vector<double,3>
  *  \param n a pointer to an integer 
  *  \param protein a reference to a Protein object.
  */
-void updateMeanDirection(array<double,3> &direction, double *n, Protein &protein)
+void updateMeanDirection(vector<double> &direction, double &n, Protein &protein)
 {
-  array<double,3> mean = protein.computeMeanDirection();
+  vector<double> mean = protein.computeMeanDirection();
   for (int i=0; i<3; i++) {
     direction[i] += mean[i];
   }
-  *n += protein.getNumberOfSphericalCoordinates();
+  n += protein.getNumberOfSphericalCoordinates();
   //cout << *n << endl;
 }
 
@@ -938,17 +916,17 @@ void updateMeanDirection(array<double,3> &direction, double *n, Protein &protein
  */
 void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
 {
-  vector<array<double,3>> spherical_coordinates = protein.getSphericalCoordinatesList();
+  vector<vector<double>> spherical_coordinates = protein.getSphericalCoordinatesList();
   double theta,phi;
   int row,col;
   for (int i=0; i<spherical_coordinates.size(); i++) {
-    theta = spherical_coordinates[i][1];
+    theta = spherical_coordinates[i][1] * 180 / PI;
     if (fabs(theta) <= ZERO) {
       row = 0;
     } else {
       row = (int)(ceil(theta/res) - 1);
     }
-    phi = spherical_coordinates[i][2];
+    phi = spherical_coordinates[i][2] * 180 / PI;
     if (fabs(phi) <= ZERO) {
       col = 0;
     } else {
@@ -974,14 +952,18 @@ void outputBins(vector<vector<int>> &bins, double res)
   double theta=0,phi;
   ofstream fbins("matlab/bins_2D");
   ofstream fbins3D("matlab/bins_3D");
+  vector<double> cartesian(3,0);
+  vector<double> spherical(3,1);
   for (int i=0; i<bins.size(); i++) {
     phi = 0;
+    spherical[1] = theta * PI / 180;
     for (int j=0; j<bins[i].size(); j++) {
       fbins << fixed << setw(10) << bins[i][j];
       phi += res;
-      array<double,3> point = convertToCartesian(1,theta,phi);
+      spherical[2] = phi * PI / 180;
+      spherical2cartesian(spherical,cartesian);
       for (int k=0; k<3; k++) {
-        fbins3D << fixed << setw(10) << setprecision(4) << point[k];
+        fbins3D << fixed << setw(10) << setprecision(4) << cartesian[k];
       }
       fbins3D << fixed << setw(10) << bins[i][j] << endl;
     }
@@ -1017,7 +999,7 @@ void outputBins(vector<vector<int>> &bins, double res)
 // */
 //void simulateMixtureModel(struct Parameters &parameters)
 //{
-//  vector<array<double,3>> data;
+//  vector<vector<double,3>> data;
 //  if (parameters.load_mixture == SET) {
 //    Mixture original;
 //    original.load(parameters.mixture_file);
@@ -1090,7 +1072,7 @@ void outputBins(vector<vector<int>> &bins, double res)
 //  vector<Component> components;
 //  for (int i=0; i<num_components; i++) {
 //    // initialize component parameters
-//    array<double,2> mu;
+//    vector<double,2> mu;
 //    mu[0] = (rand()/(double)RAND_MAX)*180;
 //    mu[1] = (rand()/(double)RAND_MAX)*360;
 //    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
