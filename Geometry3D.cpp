@@ -149,3 +149,12 @@ void multiplyVectors(vector<vector<double>> &A, vector<vector<double>> &B,
   }
 }
 
+double computeEuclideanDistance(vector<double> &v1, vector<double> &v2)
+{
+  d = 0;
+  for (int i=0; i<3; i++) {
+    d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
+  }
+  return sqrt(d);
+}
+

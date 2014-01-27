@@ -40,5 +40,7 @@ void rotateVector(vector<vector<double>> &, vector<double> &, vector<double> &);
 void multiplyVectors(vector<vector<double>> &, vector<vector<double>> &,
                      vector<vector<double>> &); 
 
+double computeEuclideanDistance(vector<double> &, vector<double> &);
+
 #endif
 

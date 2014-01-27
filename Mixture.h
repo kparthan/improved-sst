@@ -14,7 +14,7 @@ class Mixture
     
     //! Sample (x_i) -- Cartesian coordinates
     //! (on a sphere of unit radius)
-    vector<double> data;
+    vector<vector<double>> data;
 
     //! Sample size
     int N;
@@ -56,8 +56,8 @@ class Mixture
     //! Constructor
     Mixture(int, vector<vector<double>> &, int, int, int);
 
-    //! Constructor
-    Mixture(int , vector<double> &, vector<Component> &);
+    //! Sets the simulation flag 
+    void setSimulationFlag();
 
     //! Initialize parameters
     void initialize();
@@ -84,10 +84,10 @@ class Mixture
     void updateResponsibilityMatrix();
 
     //! Probability of a datum
-    double probability(array<double,2> &);
+    double probability(vector<double> &);
 
     //! Computes the negative log likelihood
-    double negativeLogLikelihood(vector<array<double,2>> &);
+    double negativeLogLikelihood(vector<vector<double>> &);
 
     //! Computes the minimum message length
     double computeMinimumMessageLength();
@@ -114,13 +114,13 @@ class Mixture
     int randomComponent();
 
     //! Saves the data generated from a component
-    void saveComponentData(int, vector<array<double,3>> &);
+    void saveComponentData(int, vector<vector<double>> &);
 
     //! Generate random data using arbitrary sample size
-    vector<array<double,3>> generateRandomSampleSize(bool);
+    vector<vector<double>> generateRandomSampleSize(bool);
 
     //! Generate random data from the distribution using mixture proportions
-    vector<array<double,3>> generateProportionally(int, bool);
+    vector<vector<double>> generateProportionally(int, bool);
 
     //! Generate heat map data
     void generateHeatmapData(double);

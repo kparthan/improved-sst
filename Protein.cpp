@@ -1,6 +1,7 @@
 #include "Support.h"
-//#include "Segment.h"
-//#include "Message.h"
+#include "Segment.h"
+#include "Message.h"
+#include "Geometry3D.h"
 
 extern string CURRENT_DIRECTORY,STRUCTURE;
 
@@ -335,241 +336,242 @@ vector<double> Protein::computeMeanDirection()
   return estimate;
 }
 
-///*!
-// *  \brief This function is used to compute the distance between successive
-// *  residues of the protein.
-// */
-//void Protein::computeSuccessiveDistances()
-//{
-//  for (int i=0; i<cartesian_coordinates.size(); i++) {
-//    vector<double> dist;
-//    for (int j=0; j<cartesian_coordinates[i].size()-1; j++) {
-//      double d = lcb::geometry::distance<double>(cartesian_coordinates[i][j],cartesian_coordinates[i][j+1]);
-//      dist.push_back(d);
-//    }
-//    distances.push_back(dist);
-//  }
-//}
-//
-///*!
-// *  \brief This function computes the message length to communicate the protein
-// *  coordinates using the sphere model.
-// *  \return the message length
-// */
-//double Protein::computeMessageLengthUsingSphereModel()
-//{
-//  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
-//  Message message;
-//  double msglen = 0;
-//
-//  // message length to state the number of chains
-//  int num_chains = chains.size(); // alternately spherical_coordinates.size()
-//  msglen += message.encodeUsingLogStarModel(num_chains);
-//
-//  for (int i=0; i<distances.size(); i++) {
-//    // for each chain state the number of residues
-//    int num_residues = distances[i].size();
-//    msglen += message.encodeUsingLogStarModel(num_residues);
-//
-//    for (int j=0; j<distances[i].size(); j++) {
-//      msglen += message.encodeUsingSphereModel(distances[i][j],normal);
-//    }
-//  }  
-//  return msglen;
-//}
-//
-///*!
-// *  \brief This function computes the message length to communicate the protein
-// *  coordinates using the null model.
-// *  \param mixture a reference to a Mixture
-// *  \return the message length
-// */
-//double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
-//{
-//  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
-//  Message message;
-//  double msglen = 0;
-//
-//  // message length to state the number of chains
-//  int num_chains = chains.size(); // alternately spherical_coordinates.size()
-//  msglen += message.encodeUsingLogStarModel(num_chains);
-//
-//  for (int i=0; i<spherical_coordinates.size(); i++) {
-//    // for each chain state the number of residues
-//    int num_residues = spherical_coordinates[i].size();
-//    msglen += message.encodeUsingLogStarModel(num_residues);
-//
-//    // first point is origin
-//    // state the second & third points using the sphere model
-//    msglen += message.encodeUsingSphereModel(distances[i][0],normal);
-//    msglen += message.encodeUsingSphereModel(distances[i][1],normal);
-//
-//    // state the remaining points using the mixture model
-//    double r;
-//    array<double,2> x;
-//    for (int j=0; j<spherical_coordinates[i].size(); j++) {
-//      // state radius
-//      r = spherical_coordinates[i][j][0];
-//      msglen += message.encodeUsingNormalModel(r,normal);
-//      // state theta,phi
-//      x[0] = spherical_coordinates[i][j][1];  // theta
-//      x[1] = spherical_coordinates[i][j][2];  // phi
-//      msglen += message.encodeUsingMixtureModel(x,mixture);
-//    }
-//  }
-//  return msglen;
-//}
-//
-///*!
-// *  \brief This function is used to initialize code length matrices.
-// *  \param chain_index an integer
-// */
-//void Protein::initializeCodeLengthMatrices(int chain_index)
-//{
-//  for (int i=0; i<optimal_model.size(); i++) {
-//    optimal_model[i].clear();
-//    optimal_code_length[i].clear();
-//  }
-//  optimal_model.clear();
-//  optimal_code_length.clear();
-//  int n = cartesian_coordinates[chain_index].size();
-//  vector<OptimalFit> optimal(n,OptimalFit());
-//  vector<double> code_length(n,LARGE_NUMBER);
-//  for (int i=0; i<n; i++) {
-//    optimal_model.push_back(optimal);
-//    optimal_code_length.push_back(code_length);
-//  }
-//}
-//
-///*!
-// *  \brief This function compresses the protein using the expert ideal models.
-// *  \param mixture a reference to a Mixture
-// *  \param orientation an integer
-// */
-//void Protein::compressUsingIdealModels(Mixture &mixture, int orientation)
-//{
-//  vector<IdealModel> ideal_models = loadIdealModels();
-//  for (int i=0; i<cartesian_coordinates.size(); i++) {
-//    /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
-//    cout << "distances size: " << distances[i].size() << endl;
-//    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
-//    computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
-//    pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
-//    vector<int> segments = segmentation.second;
-//    cout << "Compression fit: " << segmentation.first << " bits." << endl;
-//    cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
-//             << endl << endl; 
-//    cout << "# of segments: " << segments.size()-1 << endl << endl;
-//    cout << "Internal segmentation:" << endl;
-//    int j;
-//    for (j=0; j<segments.size()-1; j++) {
-//      cout << segments[j] << "-->";
-//    }
-//    cout << segments[j] << endl << endl;
-//  }
-//}
-//
-///*!
-// *  \brief This function computes the code length matrix of individual
-// *  pairs in the protein structure.
-// *  \param ideal_models a reference to a vector<IdealModel> 
-// *  \param mixture a reference to a Mixture
-// *  \param orientation an integer
-// *  \param chain an integer
-// */
-//void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
-//                                      Mixture &mixture, int orientation, 
-//                                      int chain)
-//{
-//  initializeCodeLengthMatrices(chain);
-//  int chain_size = cartesian_coordinates[chain].size();
-//  for (int i=0; i<chain_size-1; i++) {
-//    int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
-//    for (int j=i+1; j<chain_size; j++) {
-//      cout << i << ":" << j << endl;
-//      Segment segment(i,j,cartesian_coordinates[chain],spherical_cartesian_coordinates[chain]);
-//      if (i == 0) {
-//        segment.setInitialDistances(distances[chain][0],distances[chain][1]);
-//      }
-//      int segment_length = j - i + 1; 
-//      OptimalFit fit,ideal_fit;
-//      // fit null model to the segment
-//      ideal_fit = segment.fitNullModel(mixture);
-//      if (j < bound) {
-//        for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-//          if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
-//              (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
-//            fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
-//            if (fit < ideal_fit) {
-//              ideal_fit = fit;
-//            }
-//          }
-//        }
-//      }
-//      optimal_model[i][j] = ideal_fit;
-//      optimal_code_length[i][j] = ideal_fit.getMessageLength();
-//    }
-//  }
-//  printCodeLengthMatrix(chain);
-//}
-//
-///*!
-// *  \brief This module computes the optimal segmentation using
-// *  dynamic programming
-// *  \param chain an integer
-// *  \return the indices of the segments
-// */
-//pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
-//{
-//  pair <double,vector<int>> segmentation;
-//  int chain_size = cartesian_coordinates[chain].size();
-//  vector<double> optimal_msglen(chain_size,100000);
-//  vector<int> optimal_index(chain_size,-1);
-//
-//  for (int i=0; i<chain_size; i++){
-//    optimal_msglen[i] = optimal_code_length[0][i];
-//    optimal_index[i] = i;
-//    for (int j=1; j<i; j++){
-//      if (optimal_code_length[j][i] + optimal_msglen[j] < optimal_msglen[i]){
-//        optimal_msglen[i] = optimal_code_length[j][i] + optimal_msglen[j];
-//        optimal_index[i] = j;
-//      }
-//    }
-//  }
-//  segmentation.first = optimal_msglen[chain_size-1];
-//  int index = chain_size - 1;
-//  vector<int> backtrack; 
-//  backtrack.push_back(chain_size-1);
-//  while (1){
-//    if (index == optimal_index[index]){
-//      break;
-//    }
-//    index = optimal_index[index];
-//    backtrack.push_back(index);
-//  }
-//  backtrack.push_back(0);
-//  vector<int> segments;
-//  for (int i=backtrack.size()-1; i>=0; i--){
-//    segments.push_back(backtrack[i]);
-//  }
-//  segmentation.second = segments;
-//  return segmentation;
-//}
-///*!
-// *  \brief This function outputs the code length matrix to a file.
-// *  \param chain_index an integer
-// */
-//void Protein::printCodeLengthMatrix(int chain_index)
-//{
-//  string name = "code_length_matrix_chain_";
-//  name += boost::lexical_cast<string>(chain_index+1);
-//  ofstream file(name.c_str());
-//  for (int i=0; i<optimal_code_length.size(); i++) {
-//    for (int j=0; j<optimal_code_length[i].size(); j++) {
-//      file << fixed << scientific << optimal_code_length[i][j] << "\t";
-//    }
-//    file << endl;
-//  }
-//  file.close();
-//}
-//
+/*!
+ *  \brief This function is used to compute the distance between successive
+ *  residues of the protein.
+ */
+void Protein::computeSuccessiveDistances()
+{
+  for (int i=0; i<cartesian_coordinates.size(); i++) {
+    vector<double> dist;
+    for (int j=0; j<cartesian_coordinates[i].size()-1; j++) {
+      double d = computeEuclideanDistance(cartesian_coordinates[i][j],cartesian_coordinates[i][j+1]);
+      dist.push_back(d);
+    }
+    distances.push_back(dist);
+  }
+}
+
+/*!
+ *  \brief This function computes the message length to communicate the protein
+ *  coordinates using the sphere model.
+ *  \return the message length
+ */
+double Protein::computeMessageLengthUsingSphereModel()
+{
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  double msglen = 0;
+
+  // message length to state the number of chains
+  int num_chains = chains.size(); // alternately spherical_coordinates.size()
+  msglen += message.encodeUsingLogStarModel(num_chains);
+
+  for (int i=0; i<distances.size(); i++) {
+    // for each chain state the number of residues
+    int num_residues = distances[i].size();
+    msglen += message.encodeUsingLogStarModel(num_residues);
+
+    for (int j=0; j<distances[i].size(); j++) {
+      msglen += message.encodeUsingSphereModel(distances[i][j],normal);
+    }
+  }  
+  return msglen;
+}
+
+/*!
+ *  \brief This function computes the message length to communicate the protein
+ *  coordinates using the null model.
+ *  \param mixture a reference to a Mixture
+ *  \return the message length
+ */
+double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
+{
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  double msglen = 0;
+
+  // message length to state the number of chains
+  int num_chains = chains.size(); // alternately spherical_coordinates.size()
+  msglen += message.encodeUsingLogStarModel(num_chains);
+
+  for (int i=0; i<spherical_coordinates.size(); i++) {
+    // for each chain state the number of residues
+    int num_residues = spherical_coordinates[i].size();
+    msglen += message.encodeUsingLogStarModel(num_residues);
+
+    // first point is origin
+    // state the second & third points using the sphere model
+    msglen += message.encodeUsingSphereModel(distances[i][0],normal);
+    msglen += message.encodeUsingSphereModel(distances[i][1],normal);
+
+    // state the remaining points using the mixture model
+    double r;
+    array<double,2> x;
+    for (int j=0; j<spherical_coordinates[i].size(); j++) {
+      // state radius
+      r = spherical_coordinates[i][j][0];
+      msglen += message.encodeUsingNormalModel(r,normal);
+      // state theta,phi
+      x[0] = spherical_coordinates[i][j][1];  // theta
+      x[1] = spherical_coordinates[i][j][2];  // phi
+      msglen += message.encodeUsingMixtureModel(x,mixture);
+    }
+  }
+  return msglen;
+}
+
+/*!
+ *  \brief This function is used to initialize code length matrices.
+ *  \param chain_index an integer
+ */
+void Protein::initializeCodeLengthMatrices(int chain_index)
+{
+  for (int i=0; i<optimal_model.size(); i++) {
+    optimal_model[i].clear();
+    optimal_code_length[i].clear();
+  }
+  optimal_model.clear();
+  optimal_code_length.clear();
+  int n = cartesian_coordinates[chain_index].size();
+  vector<OptimalFit> optimal(n,OptimalFit());
+  vector<double> code_length(n,LARGE_NUMBER);
+  for (int i=0; i<n; i++) {
+    optimal_model.push_back(optimal);
+    optimal_code_length.push_back(code_length);
+  }
+}
+
+/*!
+ *  \brief This function compresses the protein using the expert ideal models.
+ *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
+ */
+void Protein::compressUsingIdealModels(Mixture &mixture, int orientation)
+{
+  vector<IdealModel> ideal_models = loadIdealModels();
+  for (int i=0; i<cartesian_coordinates.size(); i++) {
+    /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
+    cout << "distances size: " << distances[i].size() << endl;
+    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
+    computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
+    pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
+    vector<int> segments = segmentation.second;
+    cout << "Compression fit: " << segmentation.first << " bits." << endl;
+    cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
+             << endl << endl; 
+    cout << "# of segments: " << segments.size()-1 << endl << endl;
+    cout << "Internal segmentation:" << endl;
+    int j;
+    for (j=0; j<segments.size()-1; j++) {
+      cout << segments[j] << "-->";
+    }
+    cout << segments[j] << endl << endl;
+  }
+}
+
+/*!
+ *  \brief This function computes the code length matrix of individual
+ *  pairs in the protein structure.
+ *  \param ideal_models a reference to a vector<IdealModel> 
+ *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
+ *  \param chain an integer
+ */
+void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
+                                      Mixture &mixture, int orientation, 
+                                      int chain)
+{
+  initializeCodeLengthMatrices(chain);
+  int chain_size = cartesian_coordinates[chain].size();
+  for (int i=0; i<chain_size-1; i++) {
+    int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
+    for (int j=i+1; j<chain_size; j++) {
+      cout << i << ":" << j << endl;
+      Segment segment(i,j,cartesian_coordinates[chain],
+                      spherical_coordinates[chain],unit_coordinates[chain]);
+      if (i == 0) {
+        segment.setInitialDistances(distances[chain][0],distances[chain][1]);
+      }
+      int segment_length = j - i + 1; 
+      OptimalFit fit,ideal_fit;
+      // fit null model to the segment
+      ideal_fit = segment.fitNullModel(mixture);
+      if (j < bound) {
+        for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+          if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+              (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
+            fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
+            if (fit < ideal_fit) {
+              ideal_fit = fit;
+            }
+          }
+        }
+      }
+      optimal_model[i][j] = ideal_fit;
+      optimal_code_length[i][j] = ideal_fit.getMessageLength();
+    }
+  }
+  printCodeLengthMatrix(chain);
+}
+
+/*!
+ *  \brief This module computes the optimal segmentation using
+ *  dynamic programming
+ *  \param chain an integer
+ *  \return the indices of the segments
+ */
+pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
+{
+  pair <double,vector<int>> segmentation;
+  int chain_size = cartesian_coordinates[chain].size();
+  vector<double> optimal_msglen(chain_size,100000);
+  vector<int> optimal_index(chain_size,-1);
+
+  for (int i=0; i<chain_size; i++){
+    optimal_msglen[i] = optimal_code_length[0][i];
+    optimal_index[i] = i;
+    for (int j=1; j<i; j++){
+      if (optimal_code_length[j][i] + optimal_msglen[j] < optimal_msglen[i]){
+        optimal_msglen[i] = optimal_code_length[j][i] + optimal_msglen[j];
+        optimal_index[i] = j;
+      }
+    }
+  }
+  segmentation.first = optimal_msglen[chain_size-1];
+  int index = chain_size - 1;
+  vector<int> backtrack; 
+  backtrack.push_back(chain_size-1);
+  while (1){
+    if (index == optimal_index[index]){
+      break;
+    }
+    index = optimal_index[index];
+    backtrack.push_back(index);
+  }
+  backtrack.push_back(0);
+  vector<int> segments;
+  for (int i=backtrack.size()-1; i>=0; i--){
+    segments.push_back(backtrack[i]);
+  }
+  segmentation.second = segments;
+  return segmentation;
+}
+/*!
+ *  \brief This function outputs the code length matrix to a file.
+ *  \param chain_index an integer
+ */
+void Protein::printCodeLengthMatrix(int chain_index)
+{
+  string name = "code_length_matrix_chain_";
+  name += boost::lexical_cast<string>(chain_index+1);
+  ofstream file(name.c_str());
+  for (int i=0; i<optimal_code_length.size(); i++) {
+    for (int j=0; j<optimal_code_length[i].size(); j++) {
+      file << fixed << scientific << optimal_code_length[i][j] << "\t";
+    }
+    file << endl;
+  }
+  file.close();
+}
+

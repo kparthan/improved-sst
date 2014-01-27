@@ -39,7 +39,7 @@ class Component
     Component(vector<double> &, double, int);
 
     //! Constructor
-    Component(struct Estimates &, int);
+    Component(vector<double> &, double);
 
     // Update mu
     void updateMu(vector<double> &);

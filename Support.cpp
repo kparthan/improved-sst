@@ -1,8 +1,8 @@
 #include "Support.h"
 #include "Geometry3D.h"
 #include "VonMises3D.h"
-//#include "Mixture.h"
-//#include "Normal.h"
+#include "Mixture.h"
+#include "Normal.h"
 
 int initialize_components_from_file;
 string HOME_DIRECTORY,CURRENT_DIRECTORY,STRUCTURE;
@@ -501,12 +501,11 @@ double getLatticeConstant(int d)
 
 /*!
  *  \brief This function converts the angle from degrees to radians.
- *  \param theta (measured in degrees) a double
- *  \return the value in radians
+ *  \param theta (measured in degrees) a reference to a double
  */
-double angleInRadians(double theta)
+void angleInRadians(double &theta)
 {
-  return theta * PI / 180;
+  theta *= PI / 180;
 }
 
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -750,13 +749,13 @@ void modelOneComponent(struct Parameters &parameters, vector<double> &direction,
  *  \param parameters a reference to a struct Parameters
  *  \param data a reference to a vector<vector<double,3>>
  */
-void modelMixture(struct Parameters &parameters, vector<vector<double,3>> &data)
+void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
 {
   // if the optimal number of components need to be determined
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=1; i<=20; i++) {
+    for (int i=1; i<=10; i++) {
       //if (i % 2 == 1) {
         int k = 10 * i;
         cout << "Running for K: " << k << endl;
@@ -972,288 +971,291 @@ void outputBins(vector<vector<int>> &bins, double res)
   fbins3D.close();
 }
 
-///*!
-// *  \brief This function generates the data to visualize the mixture components.
-// *  \param parameters a reference to a struct Parameters
-// */
-//void visualizeMixtureComponents(struct Parameters &parameters)
-//{
-//  Mixture mixture;
-//  mixture.load(parameters.mixture_file);
-//  bool save = 1;
-//  if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
-//    mixture.generateProportionally(parameters.num_samples,save);
-//  } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
-//    mixture.generateRandomSampleSize(save);
-//  }
-//  if (parameters.heat_map == SET) {
-//    mixture.generateHeatmapData(parameters.res);
-//  }
-//}
-//
-///*!
-// *  \brief This function is used to simulate the mixture model.
-// *  \param parameters a reference to a struct Parameters
-// */
-//void simulateMixtureModel(struct Parameters &parameters)
-//{
-//  vector<vector<double,3>> data;
-//  if (parameters.load_mixture == SET) {
-//    Mixture original;
-//    original.load(parameters.mixture_file);
-//    bool save = 0;
-//    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
-//      data = original.generateProportionally(parameters.num_samples,save);
-//    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
-//      data = original.generateRandomSampleSize(save);
-//    }
-//  } else {
-//    // # of components
-//    int K = parameters.simulate_num_components;
-//
-//    // generate random weights
-//    vector<double> weights = generateRandomWeights(K,1);
-//
-//    // generate random components
-//    vector<Component> 
-//    components = generateRandomComponents(K,parameters.constrain_kappa);
-//
-//    // original mixture model
-//    Mixture original(K,weights,components);
-//    data = original.generateProportionally(parameters.num_samples,0);
-//    original.printParameters();
-//  }
-//
-//  // model a mixture using the original data
-//  modelMixture(parameters,data);
-//}
-//
-///*!
-// *  \brief This function is used to generate a list of random weights.
-// *  \param num_weights an integer
-// *  \param range a double
-// *  \return the list of weights
-// */
-//vector<double> generateRandomWeights(int num_weights, double range)
-//{
-//  auto ts = high_resolution_clock::now();
-//  usleep(10);
-//  auto te = high_resolution_clock::now();
-//  double t = duration_cast<nanoseconds>(ts-te).count();
-//  srand(t);
-//  vector<double> weights;
-//  //double range = 1;
-//  for (int i=0; i<num_weights-1; i++) {
-//    double w = (rand() / (double) RAND_MAX) * range;
-//    assert(w > 0 && w < range);
-//    range -= w;
-//    weights.push_back(w);
-//  }
-//  weights.push_back(range);
-//  return weights;
-//}
-//
-///*!
-// *  \brief This function is used to generate random components.
-// *  \param num_components an integer
-// *  \return the list of components
-// *  \param constrain_kappa an integer
-// */
-//vector<Component>
-//generateRandomComponents(int num_components, int constrain_kappa)
-//{
-//  auto ts = high_resolution_clock::now();
-//  usleep(10);
-//  auto te = high_resolution_clock::now();
-//  double t = duration_cast<nanoseconds>(ts-te).count();
-//  srand(t);
-//  vector<Component> components;
-//  for (int i=0; i<num_components; i++) {
-//    // initialize component parameters
-//    vector<double,2> mu;
-//    mu[0] = (rand()/(double)RAND_MAX)*180;
-//    mu[1] = (rand()/(double)RAND_MAX)*360;
-//    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
-//    Component component(mu,kappa,constrain_kappa);
-//    component.printParameters(cout);
-//    components.push_back(component);
-//  }
-//  return components;
-//}
-//
-///*!
-// *  \brief This function is used to plot the message lengths for different
-// *  number of components.
-// *  \param components a reference to a vector<int>
-// *  \param msglens a reference to a vector<double>
-// *  \param simulation an integer
-// */
-//void plotMessageLengthAgainstComponents(vector<int> &components,
-//                                        vector<double> &msglens, int simulation)
-//{
-//  assert(components.size() == msglens.size());
-//  // output the data to a file
-//  string data_file = string(CURRENT_DIRECTORY) + "mixture/";
-//  if (simulation == SET) {
-//    data_file += "simulation/";
-//  }
-//  data_file += "msglens-infer.dat";
-//  ofstream file(data_file.c_str());
-//  for (int i=0; i<msglens.size(); i++) {
-//    file << components[i] << "\t" << msglens[i] << endl;
-//  }
-//  file.close();
-//
-//  // prepare gnuplot script file
-//  string output_file = string(CURRENT_DIRECTORY) + "mixture/";
-//  if (simulation == SET) {
-//    output_file += "simulation/";
-//  }
-//  output_file += "msglens-infer.eps";
-//  ofstream script("script.p");
-//	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
-//	script << "set terminal post eps" << endl ;
-//	script << "set autoscale\t" ;
-//	script << "# scale axes automatically" << endl ;
-//	script << "set xtic auto\t" ;
-//	script << "# set xtics automatically" << endl ;
-//	script << "set ytic auto\t" ;
-//	script << "# set ytics automatically" << endl ;
-//  script << "set xr [0:]" << endl;
-//	//script << "set title \"# of components: " << K << "\"" << endl ;
-//	script << "set xlabel \"# of components\"" << endl ;
-//	script << "set ylabel \"message length (in bits)\"" << endl ;
-//	script << "set output \"" << output_file << "\"" << endl ;
-//	script << "plot \"" << data_file << "\" using 1:2 notitle " 
-//         << "with linespoints lc rgb \"red\"" << endl ;
-//  script.close();
-//  system("gnuplot -persist script.p") ;	
-//}
-//
+/*!
+ *  \brief This function generates the data to visualize the mixture components.
+ *  \param parameters a reference to a struct Parameters
+ */
+void visualizeMixtureComponents(struct Parameters &parameters)
+{
+  Mixture mixture;
+  mixture.load(parameters.mixture_file);
+  bool save = 1;
+  if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+    mixture.generateProportionally(parameters.num_samples,save);
+  } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+    mixture.generateRandomSampleSize(save);
+  }
+  if (parameters.heat_map == SET) {
+    mixture.generateHeatmapData(parameters.res);
+  }
+}
+
+/*!
+ *  \brief This function is used to simulate the mixture model.
+ *  \param parameters a reference to a struct Parameters
+ */
+void simulateMixtureModel(struct Parameters &parameters)
+{
+  vector<vector<double>> data;
+  if (parameters.load_mixture == SET) {
+    Mixture original;
+    original.load(parameters.mixture_file);
+    bool save = 0;
+    if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
+      data = original.generateProportionally(parameters.num_samples,save);
+    } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
+      data = original.generateRandomSampleSize(save);
+    }
+  } else {
+    // # of components
+    int K = parameters.simulate_num_components;
+
+    // generate random weights
+    vector<double> weights = generateRandomWeights(K,1);
+
+    // generate random components
+    vector<Component> 
+    components = generateRandomComponents(K,parameters.constrain_kappa);
+
+    // original mixture model
+    Mixture original(K,components,weights);
+    original.setSimulationFlag();
+    data = original.generateProportionally(parameters.num_samples,0);
+    original.printParameters();
+  }
+
+  // model a mixture using the original data
+  modelMixture(parameters,data);
+}
+
+/*!
+ *  \brief This function is used to generate a list of random weights.
+ *  \param num_weights an integer
+ *  \param range a double
+ *  \return the list of weights
+ */
+vector<double> generateRandomWeights(int num_weights, double range)
+{
+  auto ts = high_resolution_clock::now();
+  usleep(10);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
+  vector<double> weights;
+  //double range = 1;
+  for (int i=0; i<num_weights-1; i++) {
+    double w = (rand() / (double) RAND_MAX) * range;
+    assert(w > 0 && w < range);
+    range -= w;
+    weights.push_back(w);
+  }
+  weights.push_back(range);
+  return weights;
+}
+
+/*!
+ *  \brief This function is used to generate random components.
+ *  \param num_components an integer
+ *  \return the list of components
+ *  \param constrain_kappa an integer
+ */
+vector<Component>
+generateRandomComponents(int num_components, int constrain_kappa)
+{
+  auto ts = high_resolution_clock::now();
+  usleep(10);
+  auto te = high_resolution_clock::now();
+  double t = duration_cast<nanoseconds>(ts-te).count();
+  srand(t);
+  vector<double> spherical_mean(3,1);
+  vector<double> unit_mean(3,0);
+  vector<Component> components;
+  for (int i=0; i<num_components; i++) {
+    // initialize component parameters
+    spherical_mean[1] = (rand()/(double)RAND_MAX)*PI;
+    spherical_mean[2] = (rand()/(double)RAND_MAX)*2*PI;
+    spherical2cartesian(spherical_mean,unit_mean);
+    double kappa = (rand() / (double) RAND_MAX) * MAX_KAPPA;
+    Component component(unit_mean,kappa);
+    component.printParameters(cout);
+    components.push_back(component);
+  }
+  return components;
+}
+
+/*!
+ *  \brief This function is used to plot the message lengths for different
+ *  number of components.
+ *  \param components a reference to a vector<int>
+ *  \param msglens a reference to a vector<double>
+ *  \param simulation an integer
+ */
+void plotMessageLengthAgainstComponents(vector<int> &components,
+                                        vector<double> &msglens, int simulation)
+{
+  assert(components.size() == msglens.size());
+  // output the data to a file
+  string data_file = string(CURRENT_DIRECTORY) + "/mixture/";
+  if (simulation == SET) {
+    data_file += "simulation/";
+  }
+  data_file += "msglens-infer.dat";
+  ofstream file(data_file.c_str());
+  for (int i=0; i<msglens.size(); i++) {
+    file << components[i] << "\t" << msglens[i] << endl;
+  }
+  file.close();
+
+  // prepare gnuplot script file
+  string output_file = string(CURRENT_DIRECTORY) + "/mixture/";
+  if (simulation == SET) {
+    output_file += "simulation/";
+  }
+  output_file += "msglens-infer.eps";
+  ofstream script("script.p");
+	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
+	script << "set terminal post eps" << endl ;
+	script << "set autoscale\t" ;
+	script << "# scale axes automatically" << endl ;
+	script << "set xtic auto\t" ;
+	script << "# set xtics automatically" << endl ;
+	script << "set ytic auto\t" ;
+	script << "# set ytics automatically" << endl ;
+  script << "set xr [0:]" << endl;
+	//script << "set title \"# of components: " << K << "\"" << endl ;
+	script << "set xlabel \"# of components\"" << endl ;
+	script << "set ylabel \"message length (in bits)\"" << endl ;
+	script << "set output \"" << output_file << "\"" << endl ;
+	script << "plot \"" << data_file << "\" using 1:2 notitle " 
+         << "with linespoints lc rgb \"red\"" << endl ;
+  script.close();
+  system("gnuplot -persist script.p");	
+}
+
 ////////////////////////// SST FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
-//
-///*!
-// *  \brief This function assigns the secondary structure to a protein.
-// *  \param mixture_file a string
-// *  \param structure_file a string
-// *  \param orientation an integer
-// */
-//void assignSecondaryStructure(string mixture_file, string structure_file,
-//                              int orientation)
-//{
-//  cout << "Assigning secondary structure to " << structure_file << endl;
-//
-//  // read protein coordinate data
-//  string name = extractName(structure_file);
-//  ProteinStructure *p = parsePDBFile(structure_file);
-//  Protein protein(p,name);
-//  int num_residues = p->getNumberOfResidues();
-//  cout << "Number of residues: " << num_residues << endl;
-//
-//  // compute the message length to transmit using the sphere approach
-//  protein.computeSuccessiveDistances();
-//  double msglen = protein.computeMessageLengthUsingSphereModel();
-//  cout << "Sphere model message length: " << msglen << " bits. (" 
-//       << msglen / (double)num_residues << " bpr)" << endl;
-//
-//  // compute the message length to tansmit using the null model
-//  // null model: mixture model
-//  // read mixture data
-//  Mixture mixture;
-//  mixture.load(mixture_file);
-//  protein.computeSphericalTransformation();
-//  msglen = protein.computeMessageLengthUsingNullModel(mixture);
-//  cout << "Null model message length: " << msglen << " bits. (" 
-//       << msglen / (double)num_residues << " bpr)" << endl;
-//
-//
-//  // compute the message length using the compression model
-//  // using ideal models
-//  clock_t c_start = clock();
-//  auto t_start = std::chrono::high_resolution_clock::now();
-//  protein.compressUsingIdealModels(mixture,orientation);
-//  clock_t c_end = clock();
-//  auto t_end = std::chrono::high_resolution_clock::now();
-//  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
-//  double wall_time = std::chrono::duration_cast<std::chrono::seconds>(t_end-t_start).count();
-//  cout << "CPU time: " << cpu_time << " secs." << endl;
-//  cout << "Wall time: " << wall_time << " secs." << endl;
-//}
-//
-///*!
-// *  \brief This function loads the ideal models to be used in the compression
-// *  model.
-// *  \return the vector of ideal models
-// */
-//vector<IdealModel> loadIdealModels()
-//{
-//  vector<IdealModel> ideal_models;
-//  string name,path;
-//  int num_residues;
-//
-//  // load idealAlphaHelix_LH
-//  name = "AlphaHelix_LH";
-//  path = "./ideal_models/idealAlphaHelix_LH.pdb";
-//  ProteinStructure *alpha_lh = parsePDBFile(path);
-//  num_residues = alpha_lh->getNumberOfResidues();
-//  //cout << "# residues (alpha_lh): " << num_residues << endl;
-//  IdealModel m0(alpha_lh,name);
-//  ideal_models.push_back(m0);
-//
-//  // load idealAlphaHelix_RH
-//  name = "AlphaHelix_RH";
-//  path = "./ideal_models/idealAlphaHelix_RH.pdb";
-//  ProteinStructure *alpha_rh = parsePDBFile(path);
-//  num_residues = alpha_rh->getNumberOfResidues();
-//  //cout << "# residues (alpha_rh): " << num_residues << endl;
-//  IdealModel m1(alpha_rh,name);
-//  ideal_models.push_back(m1);
-//
-//  // load idealPiHelix_LH
-//  name = "PiHelix_LH";
-//  path = "./ideal_models/idealPiHelix_LH.pdb";
-//  ProteinStructure *pi_lh = parsePDBFile(path);
-//  num_residues = pi_lh->getNumberOfResidues();
-//  //cout << "# residues (pi_lh): " << num_residues << endl;
-//  IdealModel m2(pi_lh,name);
-//  ideal_models.push_back(m2);
-//
-//  // load idealPiHelix_RH
-//  name = "PiHelix_RH";
-//  path = "./ideal_models/idealPiHelix_RH.pdb";
-//  ProteinStructure *pi_rh = parsePDBFile(path);
-//  num_residues = pi_rh->getNumberOfResidues();
-//  //cout << "# residues (pi_rh): " << num_residues << endl;
-//  IdealModel m3(pi_rh,name);
-//  ideal_models.push_back(m3);
-//
-//  // load ideal310Helix_LH
-//  name = "310Helix_LH";
-//  path = "./ideal_models/ideal310Helix_LH.pdb";
-//  ProteinStructure *three10_lh = parsePDBFile(path);
-//  num_residues = three10_lh->getNumberOfResidues();
-//  //cout << "# residues (three10_lh): " << num_residues << endl;
-//  IdealModel m4(three10_lh,name);
-//  ideal_models.push_back(m4);
-//
-//  // load ideal310Helix_RH
-//  name = "310Helix_RH";
-//  path = "./ideal_models/ideal310Helix_RH.pdb";
-//  ProteinStructure *three10_rh = parsePDBFile(path);
-//  num_residues = three10_rh->getNumberOfResidues();
-//  //cout << "# residues (three10_rh): " << num_residues << endl;
-//  IdealModel m5(three10_rh,name);
-//  ideal_models.push_back(m5);
-//
-//  // load idealParallelBetaStrand
-//  name = "ParallelBetaStrand";
-//  path = "./ideal_models/idealParallelBetaStrand.pdb";
-//  ProteinStructure *beta_strand = parsePDBFile(path);
-//  num_residues = beta_strand->getNumberOfResidues();
-//  //cout << "# residues (beta_strand): " << num_residues << endl;
-//  IdealModel m6(beta_strand,name);
-//  ideal_models.push_back(m6);
-//
-//  return ideal_models;
-//}
-//
+
+/*!
+ *  \brief This function assigns the secondary structure to a protein.
+ *  \param mixture_file a string
+ *  \param structure_file a string
+ *  \param orientation an integer
+ */
+void assignSecondaryStructure(string mixture_file, string structure_file,
+                              int orientation)
+{
+  cout << "Assigning secondary structure to " << structure_file << endl;
+
+  // read protein coordinate data
+  string name = extractName(structure_file);
+  ProteinStructure *p = parsePDBFile(structure_file);
+  Protein protein(p,name);
+  int num_residues = p->getNumberOfResidues();
+  cout << "Number of residues: " << num_residues << endl;
+
+  // compute the message length to transmit using the sphere approach
+  protein.computeSuccessiveDistances();
+  double msglen = protein.computeMessageLengthUsingSphereModel();
+  cout << "Sphere model message length: " << msglen << " bits. (" 
+       << msglen / (double)num_residues << " bpr)" << endl;
+
+  // compute the message length to tansmit using the null model
+  // null model: mixture model
+  // read mixture data
+  Mixture mixture;
+  mixture.load(mixture_file);
+  protein.computeSphericalTransformation();
+  msglen = protein.computeMessageLengthUsingNullModel(mixture);
+  cout << "Null model message length: " << msglen << " bits. (" 
+       << msglen / (double)num_residues << " bpr)" << endl;
+
+
+  // compute the message length using the compression model
+  // using ideal models
+  clock_t c_start = clock();
+  auto t_start = std::chrono::high_resolution_clock::now();
+  protein.compressUsingIdealModels(mixture,orientation);
+  clock_t c_end = clock();
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
+  double wall_time = std::chrono::duration_cast<std::chrono::seconds>(t_end-t_start).count();
+  cout << "CPU time: " << cpu_time << " secs." << endl;
+  cout << "Wall time: " << wall_time << " secs." << endl;
+}
+
+/*!
+ *  \brief This function loads the ideal models to be used in the compression
+ *  model.
+ *  \return the vector of ideal models
+ */
+vector<IdealModel> loadIdealModels()
+{
+  vector<IdealModel> ideal_models;
+  string name,path;
+  int num_residues;
+
+  // load idealAlphaHelix_LH
+  name = "AlphaHelix_LH";
+  path = "./ideal_models/idealAlphaHelix_LH.pdb";
+  ProteinStructure *alpha_lh = parsePDBFile(path);
+  num_residues = alpha_lh->getNumberOfResidues();
+  //cout << "# residues (alpha_lh): " << num_residues << endl;
+  IdealModel m0(alpha_lh,name);
+  ideal_models.push_back(m0);
+
+  // load idealAlphaHelix_RH
+  name = "AlphaHelix_RH";
+  path = "./ideal_models/idealAlphaHelix_RH.pdb";
+  ProteinStructure *alpha_rh = parsePDBFile(path);
+  num_residues = alpha_rh->getNumberOfResidues();
+  //cout << "# residues (alpha_rh): " << num_residues << endl;
+  IdealModel m1(alpha_rh,name);
+  ideal_models.push_back(m1);
+
+  // load idealPiHelix_LH
+  name = "PiHelix_LH";
+  path = "./ideal_models/idealPiHelix_LH.pdb";
+  ProteinStructure *pi_lh = parsePDBFile(path);
+  num_residues = pi_lh->getNumberOfResidues();
+  //cout << "# residues (pi_lh): " << num_residues << endl;
+  IdealModel m2(pi_lh,name);
+  ideal_models.push_back(m2);
+
+  // load idealPiHelix_RH
+  name = "PiHelix_RH";
+  path = "./ideal_models/idealPiHelix_RH.pdb";
+  ProteinStructure *pi_rh = parsePDBFile(path);
+  num_residues = pi_rh->getNumberOfResidues();
+  //cout << "# residues (pi_rh): " << num_residues << endl;
+  IdealModel m3(pi_rh,name);
+  ideal_models.push_back(m3);
+
+  // load ideal310Helix_LH
+  name = "310Helix_LH";
+  path = "./ideal_models/ideal310Helix_LH.pdb";
+  ProteinStructure *three10_lh = parsePDBFile(path);
+  num_residues = three10_lh->getNumberOfResidues();
+  //cout << "# residues (three10_lh): " << num_residues << endl;
+  IdealModel m4(three10_lh,name);
+  ideal_models.push_back(m4);
+
+  // load ideal310Helix_RH
+  name = "310Helix_RH";
+  path = "./ideal_models/ideal310Helix_RH.pdb";
+  ProteinStructure *three10_rh = parsePDBFile(path);
+  num_residues = three10_rh->getNumberOfResidues();
+  //cout << "# residues (three10_rh): " << num_residues << endl;
+  IdealModel m5(three10_rh,name);
+  ideal_models.push_back(m5);
+
+  // load idealParallelBetaStrand
+  name = "ParallelBetaStrand";
+  path = "./ideal_models/idealParallelBetaStrand.pdb";
+  ProteinStructure *beta_strand = parsePDBFile(path);
+  num_residues = beta_strand->getNumberOfResidues();
+  //cout << "# residues (beta_strand): " << num_residues << endl;
+  IdealModel m6(beta_strand,name);
+  ideal_models.push_back(m6);
+
+  return ideal_models;
+}
+

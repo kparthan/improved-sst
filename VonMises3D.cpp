@@ -114,7 +114,9 @@ vector<vector<double>> VonMises3D::generateCanonical(int N)
 
     // generate a number (z coordinate) \in [-1,1]
     x[2] = 1 + k_inv * log(p + ((1-p) * exponent));
+    if (fabs(x[2]) > 1) {cout << "x[2]: " << x[2] << endl;}
     assert(fabs(x[2]) <= 1);
+    fflush(stdout);
     double theta = acos(x[2]);
     //scaleToAOM(&theta);
 

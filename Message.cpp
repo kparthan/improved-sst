@@ -57,11 +57,11 @@ double Message::encodeUsingSphereModel(double radius, Normal &normal)
 /*!
  *  \brief This function is used to compute the encoding length of a direction
  *  using a mixture model.
- *  \param direction a reference to a array<double,2>
+ *  \param direction a reference to a vector<double>
  *  \param mixture a reference to a Mixture
  *  \return the message length (in bits)
  */
-double Message::encodeUsingMixtureModel(array<double,2> &direction, 
+double Message::encodeUsingMixtureModel(vector<double> &direction, 
                                         Mixture &mixture)
 {
   double density = mixture.probability(direction); 

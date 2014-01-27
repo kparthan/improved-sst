@@ -1,4 +1,4 @@
-CFLAGS=-std=c++0x -pg -O3 -g $(shell pkg-config --cflags liblcb-experimental) 
+CFLAGS=-std=c++0x -pg -g $(shell pkg-config --cflags liblcb-experimental) 
 LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -pg -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \
@@ -6,14 +6,14 @@ OBJECTS = main.o \
   Geometry3D.o \
   Protein.o \
   VonMises3D.o \
-  Component.o 
-#  Message.o \
-#  Normal.o  \
-#  Mixture.o \
-#  Segment.o \
-#  OptimalFit.o  \
-#  IdealModel.o  \
-#  Superpose3D.o
+  Component.o \
+  Mixture.o \
+  Message.o \
+  Normal.o  \
+  Segment.o \
+  OptimalFit.o  \
+  IdealModel.o  \
+  Superpose3D.o
 
 all: main 
 
@@ -38,26 +38,26 @@ VonMises3D.o: VonMises3D.cpp VonMises3D.h Header.h
 Component.o: Component.cpp Component.h Support.h Header.h 
 	g++ -c $(CFLAGS) $< -o $@
 
-#Message.o: Message.cpp Message.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#Normal.o: Normal.cpp Normal.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#Mixture.o: Mixture.cpp Mixture.h Header.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#Segment.o: Segment.cpp Segment.h Header.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#OptimalFit.o: OptimalFit.cpp OptimalFit.h Header.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#IdealModel.o: IdealModel.cpp IdealModel.h Header.h 
-#	g++ -c $(CFLAGS) $< -o $@
-#
-#Superpose3D.o: Superpose3D.cpp Superpose3D.h suffstat.h 
-#	g++ -c $(CFLAGS) $< -o $@
+Mixture.o: Mixture.cpp Mixture.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Message.o: Message.cpp Message.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Normal.o: Normal.cpp Normal.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Segment.o: Segment.cpp Segment.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+OptimalFit.o: OptimalFit.cpp OptimalFit.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+IdealModel.o: IdealModel.cpp IdealModel.h Header.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Superpose3D.o: Superpose3D.cpp Superpose3D.h suffstat.h 
+	g++ -c $(CFLAGS) $< -o $@
 
 clean:
 	rm -f *.o *~ main 

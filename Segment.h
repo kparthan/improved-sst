@@ -14,21 +14,25 @@ class Segment
     //! Length of the segment
     int num_residues;
 
-    //! Cartesian coordinates of the protein 
-    vector<Point<double>> cartesian;
+    //! Cartesian coordinates of the protein chain
+    vector<vector<double>> cartesian_coordinates;
 
-    //! Cartesian coordinates of the segment
+    //! Cartesian coordinates of the current segment
     vector<vector<double>> observed_residues;
 
-    //! Spherical coordinates of the protein 
-    vector<array<double,3>> spherical;
+    //! Spherical coordinates of the protein chain
+    vector<vector<double>> spherical_coordinates;
+
+    //! Unit coordinates of the protein chain
+    vector<vector<double>> unit_coordinates;
 
     //! Initial two distances
     vector<double> radii;
 
   public:
     //! Constructor
-    Segment(int, int, vector<Point<double>> &, vector<array<double,3>> &);
+    Segment(int, int, vector<vector<double>> &, vector<vector<double>> &,
+            vector<vector<double>> &);
 
     //! Set initial two distances
     void setInitialDistances(double, double);
@@ -40,8 +44,8 @@ class Segment
     OptimalFit fitIdealModel(IdealModel &, Mixture &, int);
 
     //! Computes the current mean and direction in the adaptive superposition
-    pair<array<double,2>,array<double,2>> 
-    getCurrentMeanAndDirection(pair<vector<Point<double>>,Matrix<double>> &,
+    pair<vector<double,2>,vector<double,2>> 
+    getCurrentMeanAndDirection(pair<vector<vector<double>>,Matrix<double>> &,
                                vector<double> &, vector<double> &, int);
           
 };

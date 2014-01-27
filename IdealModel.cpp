@@ -30,9 +30,10 @@ IdealModel::IdealModel(ProteinStructure *structure, string name):
   //assert(chain_ids.size() == 1);
   Chain chain = structure->getDefaultModel()[chain_ids[0]];
   vector<Atom> atoms = chain.getAtoms();
+  vector<double> res(3,0);
   for (int j=0; j<atoms.size(); j++) {
     Point<double> p = atoms[j].point<double>();
-    vector<double> res = point2vector(p);
+    point2vector(p,res);
     residues.push_back(res);
   }
   //assert(residues.size() == length);

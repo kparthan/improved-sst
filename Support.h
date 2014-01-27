@@ -4,7 +4,7 @@
 #include "Header.h"
 #include "Protein.h"
 #include "Component.h"
-//#include "IdealModel.h"
+#include "IdealModel.h"
 
 struct Parameters
 {
@@ -60,7 +60,7 @@ double ratioBesselFunction_secondDerivative(double);
 double ratioBesselFunction_thirdDerivative(double);
 double computeConstantTerm(int);
 double getLatticeConstant(int);
-double angleInRadians(double);
+void angleInRadians(double &);
 
 // Protein functions
 string getPDBFilePath(string &);
@@ -82,15 +82,15 @@ void updateLogFile(string &, double, int);
 void updateMeanDirection(vector<double> &, double &, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
 void outputBins(vector<vector<int>> &, double);
-//void visualizeMixtureComponents(struct Parameters &);
-//void simulateMixtureModel(struct Parameters &);
-//vector<double> generateRandomWeights(int, double);
-//vector<Component> generateRandomComponents(int, int);
-//void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
-//
+void visualizeMixtureComponents(struct Parameters &);
+void simulateMixtureModel(struct Parameters &);
+vector<double> generateRandomWeights(int, double);
+vector<Component> generateRandomComponents(int, int);
+void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
+
 //// sst functions
-//void assignSecondaryStructure(string, string, int);
-//vector<IdealModel> loadIdealModels();
-//
+void assignSecondaryStructure(string, string, int);
+vector<IdealModel> loadIdealModels();
+
 #endif
 

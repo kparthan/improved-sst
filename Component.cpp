@@ -22,14 +22,14 @@ Component::Component(vector<double> &mean_direction, double N,
 
 /*!
  *  \brief This is a constructor function.
- *  \param mu a reference to an vector<double>
+ *  \param unit_mean a reference to an vector<double>
  *  \param kappa a double
- *  \param constrain_kappa an integer
  */
-Component::Component(struct Estimates &estimates, int constrain_kappa):
-                     unit_mean(estimates.unit_mean), kappa_ml(estimates.kappa),
-                     kappa_mml(estimates.kappa), constrain_kappa(constrain_kappa)
+Component::Component(vector<double> &unit_mean, double kappa):
+                     unit_mean(unit_mean), kappa_ml(kappa),
+                     kappa_mml(kappa)
 {
+  constrain_kappa = SET;
   von_mises = VonMises3D(unit_mean,kappa_mml);
   updateMu(unit_mean);
 }
@@ -327,7 +327,7 @@ double Component::computeParametersProbability()
 double Component::computePriorDensity()
 {
   double kappa_sq = kappa_mml * kappa_mml;
-  double num = kappa_sq * fabs(sin(mu[0]));
+  double num = kappa_sq;// * fabs(sin(mu[0]));
   if (constrain_kappa == SET) {
     double tmp = atan(MAX_KAPPA) - (MAX_KAPPA/(1+MAX_KAPPA*MAX_KAPPA));
     double constant = PI / (2 * tmp);
@@ -352,7 +352,7 @@ double Component::computeFisherInformation()
     log_fisher += 2 * log(kappa_mml);
     log_fisher += 2 * log(ratioBesselFunction(kappa_mml));
     log_fisher += log(ratioBesselFunction_firstDerivative(kappa_mml));
-    log_fisher += 2 * log(fabs(sin(mu[0])));
+    //log_fisher += 2 * log(fabs(sin(mu[0])));
     return exp(log_fisher);
   }
 }
@@ -363,7 +363,7 @@ double Component::computeFisherInformation()
  */
 void Component::printParameters(ostream &os)
 {
-  os << "[mu,kappa]: [(" << mu[0] << "," << mu[1]<< ")," << kappa_mml << "]\n";
+  os << "[mu,kappa]: [(" << mu[0] * 180/PI << "," << mu[1] * 180/PI << ")," << kappa_mml << "]\n";
 }
 
 /*!
@@ -400,26 +400,26 @@ vector<vector<double>> Component::generate(int num_points)
  *  \param component a reference to a Component
  *  \return the conflated component
  */
-/*Component Component::conflate(Component &component)
+Component Component::conflate(Component &component)
 {
-  vector<double,2> mu1 = mu;
-  vector<double,3> mean1 = convertToCartesian(1,mu1[0],mu1[1]);
-  vector<double,2> mu2 = component.getMeanDirection();
-  vector<double,3> mean2 = convertToCartesian(1,mu2[0],mu2[1]);
+  vector<double> mean1 = unit_mean; 
+  vector<double> mean2 = component.getMeanDirection();
   double k1 = kappa_mml;
   double k2 = component.getKappa();
 
-  vector<double,3> resultant;
+  vector<double> resultant(3,0);
   for (int i=0; i<3; i++) {
     resultant[i] = k1 * mean1[i] + k2 * mean2[i];
   }
-  vector<double> p(resultant);
-  vector<double,3> resultant_spherical = convertToSpherical(p);
-  vector<double,2> conflated_mu;
-  conflated_mu[0] = resultant_spherical[1];
-  conflated_mu[1] = resultant_spherical[2];
+  vector<double> resultant_spherical(3,0);
+  cartesian2spherical(resultant,resultant_spherical);
   double conflated_kappa = resultant_spherical[0];
+  vector<double> spherical_mean(3,1);
+  vector<double> conflated_mean(3,0);  // conflated
+  spherical_mean[1] = resultant_spherical[1];
+  spherical_mean[2] = resultant_spherical[2];
+  spherical2cartesian(spherical_mean,conflated_mean);
   
-  return Component(conflated_mu,conflated_kappa,constrain_kappa); 
+  return Component(conflated_mean,conflated_kappa,constrain_kappa); 
 }
-*/
+

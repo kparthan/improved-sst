@@ -17,7 +17,6 @@ int main(int argc, char **argv)
     computeEstimators(parameters);
   } 
 
-/*
   if (parameters.simulation == SET) {
     simulateMixtureModel(parameters);
   }
@@ -30,7 +29,7 @@ int main(int argc, char **argv)
     assignSecondaryStructure(parameters.mixture_file,parameters.file,
                              parameters.orientation);
   }
-*/
+
   return 0;
 }
 

@@ -6,17 +6,19 @@
  *  \brief This is a constructor function.
  *  \param start an integer 
  *  \param end an integer
- *  \param cartesian a reference to a vector<Point<double>>
- *  \param spherical a reference to a vector<array<double,2>>
+ *  \param cartesian a reference to a vector<vector<double>>
+ *  \param spherical a reference to a vector<vector<double,2>>
  */
-Segment::Segment(int start, int end, vector<Point<double>> &cartesian,
-                 vector<array<double,3>> &spherical) : start(start), end(end),
-                 cartesian(cartesian) , spherical(spherical)
+Segment::Segment(int start, int end, vector<vector<double>> &cartesian_coordinates,
+                 vector<vector<double>> &spherical_coordinates, 
+                 vector<vector<double>> &unit_coordinates) : start(start), end(end),
+                 cartesian_coordinates(cartesian_coordinates) , 
+                 spherical_coordinates(spherical_coordinates),
+                 unit_coordinates(unit_coordinates)
 {
   num_residues = end - start + 1;
   for (int i=start; i<=end; i++) {
-    vector<double> point = point2vector(cartesian[i]);
-    observed_residues.push_back(point);
+    observed_residues.push_back(cartesian_coordinates[i]);
   }
 }
 
@@ -57,15 +59,12 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
   }
   // state the remaining points using the mixture model
   double r;
-  array<double,2> x;
   for (int i=begin_loop; i<end; i++) {
     // state radius
-    double r = spherical[i-2][0];
+    r = spherical_coordinates[i-2][0];
     msglen += message.encodeUsingNormalModel(r,normal);
-    // state theta.phi
-    x[0] = spherical[i-2][1];
-    x[1] = spherical[i-2][2];
-    msglen += message.encodeUsingMixtureModel(x,mixture);
+    // state direction
+    msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
   }
 
   string name = "NullModel";
@@ -100,15 +99,12 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
     double r;
-    array<double,2> x;
     for (int i=start; i<start+2; i++) {
       // state radius
-      double r = spherical[i-2][0];
+      r = spherical_coordinates[i-2][0];
       msglen += message.encodeUsingNormalModel(r,normal);
-      // state theta.phi
-      x[0] = spherical[i-2][1];
-      x[1] = spherical[i-2][2];
-      msglen += message.encodeUsingMixtureModel(x,mixture);
+      // state direction
+      msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
     }
   }
 
@@ -120,12 +116,12 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
                                           // coordinates
   vector<vector<double>> observed_copy,ideal_copy;
   suffStatClass suff_stats;
-  pair<vector<Point<double>>,Matrix<double>> canonical_transformation;
+  pair<vector<vector<double>>,Matrix<double>> canonical_transformation;
   Matrix<double> canonical_transformation_matrix;
-  vector<Point<double>> four_mer(4,Point<double>());
-  pair<array<double,2>,array<double,2>> mu_x;
-  array<double,2> mu,x;
-  array<double,3> vonmises_suffstats;
+  vector<vector<double>> four_mer(4,vector<double>());
+  pair<vector<double,2>,vector<double,2>> mu_x;
+  vector<double,2> mu,x;
+  vector<double> vonmises_suffstats;
   double kappa = 5;
   double density;
   Mixture conflated_mixture;
@@ -142,7 +138,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
   observed_copy.push_back(observed_residues[3]);
   superpose.transformVectors(observed_copy);
   for (int i=0; i<4; i++) {
-    four_mer[i] = Point<double>(observed_copy[i]);
+    four_mer[i] = vector<double>(observed_copy[i]);
   }
   canonical_transformation = convertToCanonicalForm(four_mer);
   canonical_transformation_matrix = canonical_transformation.second;
@@ -182,7 +178,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     //writeToFile(ideal_copy,"ideal_copy_after");
     // get the current four_mer
     for (int i=0; i<4; i++) {
-      four_mer[i] = Point<double>(observed_copy[N+i]);
+      four_mer[i] = vector<double>(observed_copy[N+i]);
     }
     canonical_transformation = convertToCanonicalForm(four_mer);
     canonical_transformation_matrix = canonical_transformation.second;
@@ -202,10 +198,10 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
     // update von mises suff stats
     zaxis_transform = alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1]);
-    array<double,3> dir = applyIdealModelTransformation(zaxis_transform,
+    vector<double> dir = applyIdealModelTransformation(zaxis_transform,
                         observed_residues[om-start],observed_residues[om-start+1]);
     N++;
-    //array<double,3> tmp = convertToCartesian(1,x[0],x[1]);
+    //vector<double> tmp = convertToCartesian(1,x[0],x[1]);
     for (int i=0; i<3; i++) {
       vonmises_suffstats[i] += dir[i];
     }
@@ -221,30 +217,30 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 /*!
  *  \brief This function computes the current mean of the VMF component and 
  *  computes the direction from the mean to be used in the density function.
- *  \param canonical_transformation a reference to a pair<vector<Point<double>>,Matrix<double>>
+ *  \param canonical_transformation a reference to a pair<vector<vector<double>>,Matrix<double>>
  *  \param im a reference to a vector<double>
  *  \param im_plus_1 a reference to a vector<double>
  *  \param orientation an integer
  *  \return the pair of mean and direction
  */
-pair<array<double,2>,array<double,2>> 
+pair<vector<double,2>,vector<double,2>> 
 Segment::getCurrentMeanAndDirection
-         (pair<vector<Point<double>>,Matrix<double>> &canonical_transformation,
+         (pair<vector<vector<double>>,Matrix<double>> &canonical_transformation,
           vector<double> &im, vector<double> &im_plus_1, int orientation)
 {
   // transform im and i_{m+1}
-  Point<double> im_new =
+  vector<double> im_new =
   lcb::geometry::transform<double>(im,canonical_transformation.second);
-  Point<double> im_plus_1_new =
+  vector<double> im_plus_1_new =
   lcb::geometry::transform<double>(im_plus_1,canonical_transformation.second);
   
   // get the transformed om and o_{m+1}
-  Point<double> om_new = canonical_transformation.first[2];
-  Point<double> om_plus_1_new = canonical_transformation.first[3];
+  vector<double> om_new = canonical_transformation.first[2];
+  vector<double> om_plus_1_new = canonical_transformation.first[3];
 
-  array<double,2> mu,x;
-  array<double,3> difference;
-  Point<double> diff;
+  vector<double,2> mu,x;
+  vector<double> difference;
+  vector<double> diff;
   switch(orientation) {
     case 1:
       diff = im_plus_1_new - im_new;
@@ -279,6 +275,6 @@ Segment::getCurrentMeanAndDirection
       x[1] = difference[2];
       break;
   }
-  return pair<array<double,2>,array<double,2>>(mu,x);
+  return pair<vector<double,2>,vector<double,2>>(mu,x);
 }
 

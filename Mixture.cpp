@@ -2,6 +2,7 @@
 #include "Support.h"
 
 extern int initialize_components_from_file;
+extern string CURRENT_DIRECTORY;
 
 /*!
  *  \brief Null constructor module
@@ -35,23 +36,12 @@ Mixture::Mixture(int num_components, vector<vector<double>> &data,
                  K(num_components), data(data), simulation(simulation),
                  update_weights_new(update_weights_new),
                  constrain_kappa(constrain_kappa)
-{
-  for (int i=0; i<data.size(); i++) {
-    Point<double> point(data[i]);
-    array<double,3> d = convertToSpherical(point);
-    array<double,2> a({d[1],d[2]});
-    angles.push_back(a);
-  }
-}
+{}
 
 /*!
- *  \brief This is a constructor function.
- *  \param k an integer
- *  \param w a reference to a vector<double>
- *  \param c a reference to a vector<Component>
+ *  \brief This function sets the simulation flag.
  */
-Mixture::Mixture(int k, vector<double> &w, vector<Component> &c):
-                K(k), weights(w), components(c)
+void Mixture::setSimulationFlag()
 {
   simulation = SET;
 }
@@ -61,7 +51,7 @@ Mixture::Mixture(int k, vector<double> &w, vector<Component> &c):
  */
 void Mixture::initialize()
 {
-  N = angles.size();
+  N = data.size();
   cout << "sample size: " << N << endl;
   // initialize weights of components
   /*double w = 1 / (double) K;
@@ -72,12 +62,12 @@ void Mixture::initialize()
   if (initialize_components_from_file == UNSET) {
     // initialize responsibility matrix
     auto ts = high_resolution_clock::now();
-    usleep(1000);
+    usleep(1);
     auto te = high_resolution_clock::now();
     double t = duration_cast<nanoseconds>(ts-te).count();
     srand(t);
+    vector<double> tmp(K,0);
     for (int i=0; i<N; i++) {
-      vector<double> tmp(K,0);
       responsibility.push_back(tmp);
       int index = rand() % K;
       //cout << index << endl;
@@ -92,8 +82,8 @@ void Mixture::initialize()
     // initialize parameters of each component
     initializeComponentParameters();
   } else if (initialize_components_from_file == SET) {
+    vector<double> tmp(K,0);
     for (int i=0; i<N; i++) {
-      vector<double> tmp(K,0);
       responsibility.push_back(tmp);
       //int index = rand() % K;
       //cout << index << endl;
@@ -104,6 +94,8 @@ void Mixture::initialize()
     ifstream file("mixture/initialize_components_file");
     string line;
     vector<double> numbers;
+    vector<double> spherical_mean(3,1);
+    vector<double> unit_mean(3,0);
     while (getline(file,line)) {
       count++;
       boost::char_separator<char> sep("mukap,:()[] \t");
@@ -118,8 +110,12 @@ void Mixture::initialize()
       weights.push_back(numbers[1]);
       w += numbers[1];
       array<double,2> mu({numbers[2],numbers[3]});
+      angleInRadians(mu[0]);
+      angleInRadians(mu[1]);
+      spherical_mean[1] = mu[0]; spherical_mean[2] = mu[1];
+      spherical2cartesian(spherical_mean,unit_mean);
       double kappa = numbers[4];
-      Component component(mu,kappa,constrain_kappa);
+      Component component(unit_mean,kappa);
       components.push_back(component);
       numbers.clear();
     }
@@ -142,7 +138,7 @@ void Mixture::initialize()
  */
 void Mixture::initialize2()
 {
-  N = angles.size();
+  N = data.size();
   cout << "sample size: " << N << endl;
 
   // initialize weights of components
@@ -152,8 +148,8 @@ void Mixture::initialize2()
   components = generateRandomComponents(K,constrain_kappa);
 
   // set the dimensions of r_{ik}, n_k and alpha_k matrices
+  vector<double> tmp(K,0);
   for (int i=0; i<N; i++) {
-    vector<double> tmp(K,0);
     responsibility.push_back(tmp);
   }
   sample_size = vector<double>(K,0);
@@ -167,10 +163,10 @@ void Mixture::initialize2()
 void Mixture::initializeComponentParameters()
 {
   for (int i=0; i<K; i++) {
-    array<double,3> mean({0,0,0});
+    vector<double> mean(3,0);
     for (int j=0; j<N; j++) {
       if (responsibility[j][i] > 0.5) {
-        array<double,3> x = data[j]; 
+        vector<double> x = data[j]; 
         for (int k=0; k<3; k++) {
           mean[k] += x[k];
         }
@@ -244,7 +240,7 @@ void Mixture::updateComponents()
 {
   components.clear();
   for (int i=0; i<K; i++) {
-    array<double,3> sum({0,0,0});
+    vector<double> sum(3,0);
     for (int j=0; j<N; j++) {
       for (int k=0; k<3; k++) {
         sum[k] += responsibility[j][i] * data[j][k];
@@ -269,7 +265,7 @@ void Mixture::updateResponsibilityMatrix()
   for (int i=0; i<N; i++) {
     px = 0;
     for (int j=0; j<K; j++) {
-      density[j] = components[j].likelihood(angles[i]);
+      density[j] = components[j].likelihood(data[i]);
       px += weights[j] * density[j]; 
     }
     for (int j=0; j<K; j++) {
@@ -284,7 +280,7 @@ void Mixture::updateResponsibilityMatrix()
  *  \param x a reference to an array<double,2>
  *  \return the probability value
  */
-double Mixture::probability(array<double,2> &x)
+double Mixture::probability(vector<double> &x)
 {
   double px = 0;
   vector<double> density(K,0);
@@ -309,7 +305,7 @@ double Mixture::probability(array<double,2> &x)
  *  \param a reference to a vector<array<double,2>>
  *  \return the negative log likelihood (base e)
  */
-double Mixture::negativeLogLikelihood(vector<array<double,2>> &sample)
+double Mixture::negativeLogLikelihood(vector<vector<double>> &sample)
 {
   double value = 0,density;
   for (int i=0; i<sample.size(); i++) {
@@ -345,7 +341,7 @@ double Mixture::computeMinimumMessageLength()
   // encode the likelihood of the sample
   double Il = 0,px;
   for (int i=0; i<N; i++) {
-    px = probability(angles[i]);
+    px = probability(data[i]);
     Il -= log(px);
   }
   Il -= 2 * N * log(AOM);
@@ -381,7 +377,7 @@ double Mixture::estimateParameters()
   auto t_start = high_resolution_clock::now();
 
   /* prepare log file */
-  string file_name = string(CURRENT_DIRECTORY) + "mixture/";
+  string file_name = string(CURRENT_DIRECTORY) + "/mixture/";
   if (simulation == SET) {
     file_name += "simulation/";
   }
@@ -470,10 +466,10 @@ double Mixture::computeNullModelMessageLength()
 {
   null_msglen = 0;
   null_msglen += N * (log(4*PI)-(2*log(AOM)));
-  for (int i=0; i<angles.size(); i++) {
+  /*for (int i=0; i<data.size(); i++) {
     double theta = angleInRadians(angles[i][0]);
     null_msglen -= log(sin(theta));
-  }
+  }*/
   return null_msglen / log(2);
 }
 
@@ -518,9 +514,9 @@ void Mixture::printParameters()
 void Mixture::plotMessageLengthEM()
 {
   // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/";
-  string output_file = string(CURRENT_DIRECTORY) + "mixture/";
-  string script_file = string(CURRENT_DIRECTORY) + "mixture/";
+  string data_file = string(CURRENT_DIRECTORY) + "/mixture/";
+  string output_file = string(CURRENT_DIRECTORY) + "/mixture/";
+  string script_file = string(CURRENT_DIRECTORY) + "/mixture/";
   if (simulation == SET) {
     data_file += "simulation/";
     output_file += "simulation/";
@@ -587,6 +583,8 @@ void Mixture::load(string &file_name)
   ifstream file(file_name.c_str());
   string line;
   vector<double> numbers;
+  vector<double> spherical_mean(3,1);
+  vector<double> unit_mean(3,0);
   while (getline(file,line)) {
     K++;
     boost::char_separator<char> sep("mukap,:()[] \t");
@@ -600,8 +598,12 @@ void Mixture::load(string &file_name)
     sample_size.push_back(numbers[0]);
     weights.push_back(numbers[1]);
     array<double,2> mu({numbers[2],numbers[3]});
+    angleInRadians(mu[0]);
+    angleInRadians(mu[1]);
+    spherical_mean[1] = mu[0]; spherical_mean[2] = mu[1];
+    spherical2cartesian(spherical_mean,unit_mean);
     double kappa = numbers[4];
-    Component component(mu,kappa,constrain_kappa);
+    Component component(unit_mean,kappa);
     components.push_back(component);
     numbers.clear();
   }
@@ -635,9 +637,9 @@ int Mixture::randomComponent()
  *  \param index an integer
  *  \param data a reference to a vector<array<double,3>>
  */
-void Mixture::saveComponentData(int index, vector<array<double,3>> &data)
+void Mixture::saveComponentData(int index, vector<vector<double>> &data)
 {
-  string data_file = string(CURRENT_DIRECTORY) + "mixture/visualize/comp";
+  string data_file = string(CURRENT_DIRECTORY) + "/mixture/visualize/comp";
   data_file += boost::lexical_cast<string>(index+1) + ".dat";
   components[index].printParameters(cout);
   ofstream file(data_file.c_str());
@@ -655,11 +657,11 @@ void Mixture::saveComponentData(int index, vector<array<double,3>> &data)
  *  each component.
  *  \param save_data a boolean variable
  */
-vector<array<double,3>> Mixture::generateRandomSampleSize(bool save_data)
+vector<vector<double>> Mixture::generateRandomSampleSize(bool save_data)
 {
-  vector<array<double,3>> sample;
+  vector<vector<double>> sample;
   for (int i=0; i<K; i++) {
-    vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
+    vector<vector<double>> x = components[i].generate((int)sample_size[i]);
     if (save_data) {
       saveComponentData(i,x);
     }
@@ -680,7 +682,7 @@ vector<array<double,3>> Mixture::generateRandomSampleSize(bool save_data)
  *  \param save_data a boolean variable
  *  \return the random sample
  */
-vector<array<double,3>>
+vector<vector<double>>
 Mixture::generateProportionally(int num_samples, bool save_data) 
 {
   sample_size = vector<double>(K,0);
@@ -689,9 +691,9 @@ Mixture::generateProportionally(int num_samples, bool save_data)
     int k = randomComponent();
     sample_size[k]++;
   }
-  vector<array<double,3>> sample;
+  vector<vector<double>> sample;
   for (int i=0; i<K; i++) {
-    vector<array<double,3>> x = components[i].generate((int)sample_size[i]);
+    vector<vector<double>> x = components[i].generate((int)sample_size[i]);
     if (save_data) {
       saveComponentData(i,x);
     }
@@ -709,20 +711,21 @@ Mixture::generateProportionally(int num_samples, bool save_data)
  */
 void Mixture::generateHeatmapData(double res)
 {
-  string data_fbins2D = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_2D.dat";
-  string data_fbins3D = string(CURRENT_DIRECTORY) + "mixture/visualize/bins_3D.dat";
+  string data_fbins2D = string(CURRENT_DIRECTORY) + "/mixture/visualize/bins_2D.dat";
+  string data_fbins3D = string(CURRENT_DIRECTORY) + "/mixture/visualize/bins_3D.dat";
   ofstream fbins2D(data_fbins2D.c_str());
   ofstream fbins3D(data_fbins3D.c_str());
-  array<double,2> angles;
+  vector<double> x(3,1);
+  vector<double> point(3,0);
   for (double theta=0; theta<180; theta+=res) {
-    angles[0] = theta;
+    x[1] = theta * PI/180;
     for (double phi=0; phi<360; phi+=res) {
-      angles[1] = phi;
-      double pr = probability(angles);
+      x[2] = phi * PI/180;
+      double pr = probability(x);
       // 2D bins
       fbins2D << fixed << setw(10) << setprecision(4) << pr;
       // 3D bins
-      array<double,3> point = convertToCartesian(1,theta,phi);
+      spherical2cartesian(x,point);
       for (int k=0; k<3; k++) {
         fbins3D << fixed << setw(10) << setprecision(4) << point[k];
       }
