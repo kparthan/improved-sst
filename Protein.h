@@ -40,7 +40,7 @@ class Protein
     double cpu_time,wall_time;
 
     //! Optimal model matrix
-    //vector<vector<OptimalFit>> optimal_model;
+    vector<vector<OptimalFit>> optimal_model;
 
     //! Optimal code length matrix
     vector<vector<double>> optimal_code_length;
@@ -112,7 +112,10 @@ class Protein
     double computeMessageLengthUsingNullModel(Mixture &);
 
     //! Compression using ideal models
-    void compressUsingIdealModels(Mixture &, int);
+    void compressUsingIdealModels(Mixture &, int, int, vector<string> &);
+
+    //! Fit a single segment
+    void fitOneSegment(vector<string> &, Mixture &, int);
 
     //! Computes the optimal code length matrix
     void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int);

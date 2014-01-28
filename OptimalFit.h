@@ -33,6 +33,10 @@ class OptimalFit
 
     //! Prints the details of the optimal fit
     void printFitInfo();
+
+    //! Gets the name of the ideal model
+    string getName();
+
 };
 
 #endif

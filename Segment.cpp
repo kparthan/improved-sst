@@ -1,6 +1,9 @@
 #include "Segment.h"
 #include "Message.h"
 #include "Superpose3D.h"
+#include "Geometry3D.h"
+
+extern vector<double> ZAXIS;
 
 /*!
  *  \brief This is a constructor function.
@@ -54,6 +57,13 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
     // has to wait until the first point(origin) and the next two points are
     // transmitted, using the sphere model
     msglen += message.encodeUsingSphereModel(radii[0],normal);
+    if (end > 1) {
+      msglen += message.encodeUsingSphereModel(radii[1],normal);
+      begin_loop = 2;
+    } else {
+      begin_loop = 1;
+    }
+  } else if (start == 1) {
     msglen += message.encodeUsingSphereModel(radii[1],normal);
     begin_loop = 2;
   }
@@ -84,6 +94,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
   Message message;
+  int begin_loop = start;
 
   double msglen = 0;
   // state the length of segment
@@ -94,7 +105,14 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     // has to wait until the first point(origin) and the next two points are
     // transmitted, using the sphere model
     msglen += message.encodeUsingSphereModel(radii[0],normal);
+    if (end > 1) {
+      msglen += message.encodeUsingSphereModel(radii[1],normal);
+      begin_loop = 2;
+    }
+    begin_loop = 1;
+  } else if (start == 1) {
     msglen += message.encodeUsingSphereModel(radii[1],normal);
+    begin_loop = 2;
   } else {  // an intermediate segment
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
@@ -106,104 +124,104 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       // state direction
       msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
     }
+    begin_loop = start + 2;
   }
 
-  // get the ideal model of length equal to the segment length
-  vector<vector<double>> ideal_residues = model.getResidues(num_residues);
-  // [observed,MOVING] and [ideal,FIXED]
-  vector<vector<double>> observed,ideal;  // observed, ideal are running lists
-                                          // of the orginal untransformed
-                                          // coordinates
-  vector<vector<double>> observed_copy,ideal_copy;
-  suffStatClass suff_stats;
-  pair<vector<vector<double>>,Matrix<double>> canonical_transformation;
-  Matrix<double> canonical_transformation_matrix;
-  vector<vector<double>> four_mer(4,vector<double>());
-  pair<vector<double,2>,vector<double,2>> mu_x;
-  vector<double,2> mu,x;
-  vector<double> vonmises_suffstats;
-  double kappa = 5;
-  double density;
-  Mixture conflated_mixture;
+  if (num_residues > 3) {
+    // get the ideal model of length equal to the segment length
+    vector<vector<double>> ideal_residues = model.getResidues(num_residues);
+    // [observed,MOVING] and [ideal,FIXED]
+    vector<vector<double>> observed,ideal;  // observed, ideal are running lists
+                                            // of the orginal untransformed
+                                            // coordinates
+    vector<vector<double>> observed_copy,ideal_copy;
+    suffStatClass suff_stats;
+    vector<vector<double>> four_mer,transformed_four_mer;
+    vector<vector<double>> rotation_matrix,zaxis_transform;
+    initializeMatrix(four_mer,4,3);
+    initializeMatrix(transformed_four_mer,4,3);
+    initializeMatrix(rotation_matrix,3,3);
+    initializeMatrix(zaxis_transform,3,3);
+    vector<double> unit_mean(3,0);
+    vector<double> x(3,0);
+    vector<double> vonmises_suffstats(3,0);
+    double kappa = 5;
+    Mixture conflated_mixture;
 
-  // INITIAL SUPERPOSITION
-  for (int i=0; i<3; i++) {
-    observed.push_back(observed_residues[i]);
-    ideal.push_back(ideal_residues[i]);
-  }
-  observed_copy = observed;
-  ideal_copy = ideal;
-  Superpose3DClass superpose(observed_copy,ideal_copy);
-  suff_stats = superpose.getSufficientStatistics();
-  observed_copy.push_back(observed_residues[3]);
-  superpose.transformVectors(observed_copy);
-  for (int i=0; i<4; i++) {
-    four_mer[i] = vector<double>(observed_copy[i]);
-  }
-  canonical_transformation = convertToCanonicalForm(four_mer);
-  canonical_transformation_matrix = canonical_transformation.second;
-  mu_x = getCurrentMeanAndDirection(canonical_transformation,ideal_residues[2],
-                                    ideal_residues[3],orientation);
-  mu = mu_x.first;
-  x = mu_x.second;
-  Component component(mu,kappa,mixture.constrain_kappa);
-  conflated_mixture = mixture.conflate(component);
-  msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
-  Matrix<double> zaxis_transform = alignWithZAxis(ideal_residues[2],ideal_residues[3]);
-  vonmises_suffstats = applyIdealModelTransformation(zaxis_transform,
-                        observed_residues[2],observed_residues[3]);
-  //vonmises_suffstats = convertToCartesian(1,x[0],x[1]);
-  int N = 1;
-
-  // ADAPTIVE SUPERPOSITION
-  for (int om=start+3; om<end; om++) {
-    // start,...,om : points known to receiver
-    //           om : most recent point communicated to the receiver
-    //         om+1 : current point being transmitted
-    // superpose (start,...,om) with the ideal model's (i1,...,im)
-    observed.push_back(observed_residues[om-start]);
-    ideal.push_back(ideal_residues[om-start]);
-    // copy the contents of the observed,ideal into temporary containers so that
-    // these temp lists can be transformed without affecting the original lists
+    // INITIAL SUPERPOSITION
+    for (int i=0; i<3; i++) {
+      observed.push_back(observed_residues[i]);
+      ideal.push_back(ideal_residues[i]);
+    }
     observed_copy = observed;
     ideal_copy = ideal;
-    //writeToFile(observed_copy,"observed_copy_before");
-    //writeToFile(ideal_copy,"ideal_copy_before");
-    Superpose3DClass superpose(suff_stats,observed_copy[om-start],
-                               ideal_copy[om-start]);
+    Superpose3DClass superpose(observed_copy,ideal_copy);
+    cout << "RMSD:" << superpose.getRMSD() << endl;
+    //sleep(1);
     suff_stats = superpose.getSufficientStatistics();
-    observed_copy.push_back(observed_residues[om-start+1]);
+    observed_copy.push_back(observed_residues[3]);
     superpose.transformVectors(observed_copy);
-    //writeToFile(observed_copy,"observed_copy_after");
-    //writeToFile(ideal_copy,"ideal_copy_after");
-    // get the current four_mer
     for (int i=0; i<4; i++) {
-      four_mer[i] = vector<double>(observed_copy[N+i]);
+      four_mer[i] = observed_copy[i];
     }
-    canonical_transformation = convertToCanonicalForm(four_mer);
-    canonical_transformation_matrix = canonical_transformation.second;
-    // apply the canonical transformation on the ideal four_mer
-    // it is sufficient to transform im and i_{m+1}
-    mu_x = getCurrentMeanAndDirection(canonical_transformation,
-           ideal_residues[om-start],ideal_residues[om-start+1],orientation);
-    if (N > 1) {
-      Component adaptive_component(vonmises_suffstats,N,SET);
-      adaptive_component.minimizeMessageLength();
-      kappa = adaptive_component.getKappa();
-    }
-    mu = mu_x.first;
-    x = mu_x.second;
-    component = Component(mu,kappa,mixture.constrain_kappa);
+    convertToCanonicalForm(four_mer,transformed_four_mer,rotation_matrix);
+    getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
+                               transformed_four_mer[3],ideal_residues[2],
+                               ideal_residues[3],orientation,unit_mean,x);
+    Component component(unit_mean,kappa);
     conflated_mixture = mixture.conflate(component);
     msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
-    // update von mises suff stats
-    zaxis_transform = alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1]);
-    vector<double> dir = applyIdealModelTransformation(zaxis_transform,
-                        observed_residues[om-start],observed_residues[om-start+1]);
-    N++;
-    //vector<double> tmp = convertToCartesian(1,x[0],x[1]);
-    for (int i=0; i<3; i++) {
-      vonmises_suffstats[i] += dir[i];
+    alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
+    applyIdealModelTransformation(zaxis_transform,observed_copy[2],
+                                  observed_copy[3],vonmises_suffstats);
+    int N = 1;
+
+    // ADAPTIVE SUPERPOSITION
+    for (int om=start+3; om<end; om++) {
+      // start,...,om : points known to receiver
+      //           om : most recent point communicated to the receiver
+      //         om+1 : current point being transmitted
+      // superpose (start,...,om) with the ideal model's (i1,...,im)
+      observed.push_back(observed_residues[om-start]);
+      ideal.push_back(ideal_residues[om-start]);
+      // copy the contents of the observed,ideal into temporary containers so that
+      // these temp lists can be transformed without affecting the original lists
+      observed_copy = observed;
+      ideal_copy = ideal;
+      //writeToFile(observed_copy,"observed_copy_before");
+      //writeToFile(ideal_copy,"ideal_copy_before");
+      Superpose3DClass superpose(suff_stats,observed_copy[om-start],
+                                 ideal_copy[om-start]);
+      cout << "start: " << start << " end: " << end << endl;
+      cout << "\"RMSD\":" << superpose.getRMSD() << endl;
+      suff_stats = superpose.getSufficientStatistics();
+      observed_copy.push_back(observed_residues[om-start+1]);
+      superpose.transformVectors(observed_copy);
+      //writeToFile(observed_copy,"observed_copy_after");
+      //writeToFile(ideal_copy,"ideal_copy_after");
+      // get the current four_mer
+      for (int i=0; i<4; i++) {
+        four_mer[i] = observed_copy[N+i];
+      }
+      // apply the canonical transformation on the ideal four_mer
+      // it is sufficient to transform im and i_{m+1}
+      convertToCanonicalForm(four_mer,transformed_four_mer,rotation_matrix);
+      getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
+                                 transformed_four_mer[3],ideal_residues[om-start],
+                                 ideal_residues[om-start+1],orientation,unit_mean,x);
+      if (N > 1) {
+        Component adaptive_component(vonmises_suffstats,N,SET);
+        adaptive_component.minimizeMessageLength(ZAXIS);
+        kappa = adaptive_component.getKappa();
+      }
+      Component component(unit_mean,kappa);
+      conflated_mixture = mixture.conflate(component);
+      msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
+      // update von mises suff stats
+      alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
+      applyIdealModelTransformation(zaxis_transform,observed_copy[om-start],
+                                    observed_copy[om-start+1],vonmises_suffstats);
+      N++;
     }
   }
 
@@ -217,64 +235,63 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 /*!
  *  \brief This function computes the current mean of the VMF component and 
  *  computes the direction from the mean to be used in the density function.
- *  \param canonical_transformation a reference to a pair<vector<vector<double>>,Matrix<double>>
+ *  \param pre_origin a reference to a vector<double>
+ *  \param rotation_matrix a reference to a vector<vector<double>>
+ *  \param om_new a reference to a vector<double>
+ *  \param om_plus_1_new a reference to a vector<double>
  *  \param im a reference to a vector<double>
  *  \param im_plus_1 a reference to a vector<double>
  *  \param orientation an integer
- *  \return the pair of mean and direction
+ *  \param unit_mean a reference to a vector<double>
+ *  \param x a reference to a vector<double>
  */
-pair<vector<double,2>,vector<double,2>> 
-Segment::getCurrentMeanAndDirection
-         (pair<vector<vector<double>>,Matrix<double>> &canonical_transformation,
-          vector<double> &im, vector<double> &im_plus_1, int orientation)
-{
+void Segment::getCurrentMeanAndDirection(
+  vector<double> &pre_origin, 
+  vector<vector<double>> &rotation_matrix,
+  vector<double> &om_new, 
+  vector<double> &om_plus_1_new, 
+  vector<double> &im, 
+  vector<double> &im_plus_1, 
+  int orientation, 
+  vector<double> &unit_mean, 
+  vector<double> &x
+) {
   // transform im and i_{m+1}
-  vector<double> im_new =
-  lcb::geometry::transform<double>(im,canonical_transformation.second);
-  vector<double> im_plus_1_new =
-  lcb::geometry::transform<double>(im_plus_1,canonical_transformation.second);
+  // translation
+  vector<double> im_tmp(3,0);
+  vector<double> im_plus_1_tmp(3,0);
+  for (int i=0; i<3; i++) {
+    im_tmp[i] = im[i] - pre_origin[i];
+    im_plus_1_tmp[i] = im_plus_1[i] - pre_origin[i];
+  }
+  // rotation
+  vector<double> im_new(3,0);
+  vector<double> im_plus_1_new(3,0);
+  rotateVector(rotation_matrix,im_tmp,im_new);
+  rotateVector(rotation_matrix,im_plus_1_tmp,im_plus_1_new);
   
-  // get the transformed om and o_{m+1}
-  vector<double> om_new = canonical_transformation.first[2];
-  vector<double> om_plus_1_new = canonical_transformation.first[3];
-
-  vector<double,2> mu,x;
-  vector<double> difference;
-  vector<double> diff;
+  vector<double> dratios(3,0);
   switch(orientation) {
     case 1:
-      diff = im_plus_1_new - im_new;
-      difference = convertToSpherical(diff);
-      mu[0] = difference[1];
-      mu[1] = difference[2];
-      diff = om_plus_1_new - om_new;
-      difference = convertToSpherical(diff);
-      x[0] = difference[1];
-      x[1] = difference[2];
+      computeDirectionRatios(im_plus_1_new,im_new,dratios);
+      cartesian2unitspherical(dratios,unit_mean);
+      computeDirectionRatios(om_plus_1_new,om_new,dratios);
+      cartesian2unitspherical(dratios,x);
       break;
 
     case 2:
-      diff = im_plus_1_new - om_new;
-      difference = convertToSpherical(diff);
-      mu[0] = difference[1];
-      mu[1] = difference[2];
-      diff = om_plus_1_new - om_new;
-      difference = convertToSpherical(diff);
-      x[0] = difference[1];
-      x[1] = difference[2];
+      computeDirectionRatios(im_plus_1_new,om_new,dratios);
+      cartesian2unitspherical(dratios,unit_mean);
+      computeDirectionRatios(om_plus_1_new,om_new,dratios);
+      cartesian2unitspherical(dratios,x);
       break;
 
     case 3:
-      diff = im_plus_1_new - im_new;
-      difference = convertToSpherical(diff);
-      mu[0] = difference[1];
-      mu[1] = difference[2];
-      diff = om_plus_1_new - im_new;
-      difference = convertToSpherical(diff);
-      x[0] = difference[1];
-      x[1] = difference[2];
+      computeDirectionRatios(im_plus_1_new,im_new,dratios);
+      cartesian2unitspherical(dratios,unit_mean);
+      computeDirectionRatios(om_plus_1_new,im_new,dratios);
+      cartesian2unitspherical(dratios,x);
       break;
   }
-  return pair<vector<double,2>,vector<double,2>>(mu,x);
 }
 

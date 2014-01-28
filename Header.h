@@ -64,6 +64,8 @@
 #define MIN_SIZE_STRAND 5
 #define MAX_SEGMENT_SIZE 49 
 #define DEFAULT_ORIENTATION 1
+#define FIT_ENTIRE_STRUCTURE 0
+#define FIT_SINGLE_SEGMENT 1
 
 using namespace std;
 using namespace std::chrono;

@@ -71,6 +71,8 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("sst","flag to execute sst script")
        ("orientation",value<int>(&parameters.orientation),
           "orientation of the mean/direction used in the adaptive encoding")
+       ("segment",value<vector<string>>(&parameters.end_points)->multitoken(),
+                                  "segment to be fit")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -210,6 +212,14 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     if (!vm.count("orientation")) {
       parameters.orientation = DEFAULT_ORIENTATION;
     }
+    if (vm.count("segment")) {
+      cout << "Fitting a single segment between the residues "
+           << "[" << parameters.end_points[1] << ", " << parameters.end_points[2]
+           << "] of chain " << parameters.end_points[0] << endl;
+      parameters.portion_to_fit = FIT_SINGLE_SEGMENT;
+    } else {
+      parameters.portion_to_fit = FIT_ENTIRE_STRUCTURE;
+    }
     parameters.simulation = UNSET;
   } else {
     parameters.sst = UNSET;
@@ -328,6 +338,23 @@ void cartesian2spherical(vector<double> &cartesian, vector<double> &spherical)
   spherical[0] = r;
   spherical[1] = theta;
   spherical[2] = phi;
+}
+
+/*!
+ *  \brief This function computes the unit spherical coordinates of a vector.
+ *  Any given vector in Cartesian coordinates is first transformed to its 
+ *  spherical equivalent, which is then converted to a vector on a unit sphere
+ *  with direction (theta,phi) being the same as the original vector. 
+ *  \param cartesian a reference to a vector<double> 
+ *  \param unit_spherical a reference to a vector<double> 
+ */
+void cartesian2unitspherical(vector<double> &cartesian, 
+                             vector<double>&unit_spherical)
+{
+  vector<double> spherical(3,0);
+  cartesian2spherical(cartesian,spherical);
+  spherical[0] = 1;
+  spherical2cartesian(spherical,unit_spherical);
 }
 
 /*!
@@ -651,62 +678,54 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
   multiplyVectors(rotation2,rotation1,rotation_matrix);
 }
 
-///*!
-// *  \brief This function computes the transformation to align a given vector
-// *  with the Z-axis.
-// *  \param sp a reference to a vector<double>
-// *  \param ep a reference to a vector<double>
-// *  \return the transformation matrix
-// */
-//Matrix<double> alignWithZAxis(vector<double> &sp, vector<double> &ep)
-//{
-//  // move sp to origin
-//  vector<double> v(3,0);
-//  for (int i=0; i<3; i++) {
-//    v[i] = ep[i] - sp[i];
-//  }
-//  Point<double> dir(v);
-//  vector<double,3> spherical = convertToSpherical(dir);
-//  vector<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
-//  double theta = angleInRadians(spherical[1]);
-//  double phi = angleInRadians(spherical[2]);
-//  Point<double> x(unit_vec);
-//  Vector<double> rotation_axis1;
-//  vector<double> zaxis = {0,0,1};
-//  rotation_axis1 = zaxis;
-//  Matrix<double> rm1 = rotationMatrix<double>(rotation_axis1,-phi);
-//  Vector<double> rotation_axis2;
-//  vector<double> yaxis = {0,1,0};
-//  rotation_axis2 = yaxis;
-//  Matrix<double> rm2 = rotationMatrix<double>(rotation_axis2,-theta);
-//  Matrix<double> trans = rm2 * rm1;
-//  return trans;
-//}
-//
-///*!
-// *  \brief This function applies the transformation of the ideal model and returns 
-// *  the corresponding unit vector.
-// *  \param matrix a reference to a Matrix<double>
-// *  \param sp a reference to a vector<double>
-// *  \param ep a reference to a vector<double>
-// *  \return the transformed unit vector
-// */
-//vector<double,3> applyIdealModelTransformation(Matrix<double> &matrix, 
-//                vector<double> &sp, vector<double> &ep)
-//{
-//  Point<double> s(sp);
-//  Point<double> e(ep);
-//  Point<double> dir = e - s;
-//  vector<double,3> spherical = convertToSpherical(dir);
-//  vector<double,3> unit_vec = convertToCartesian(1,spherical[1],spherical[2]);
-//  Point<double> x(unit_vec);
-//  Point<double> xtrans = lcb::geometry::transform<double>(x,matrix);
-//  vector<double,3> y;
-//  y[0] = xtrans.x();
-//  y[1] = xtrans.y();
-//  y[2] = xtrans.z();
-//  return y;
-//}
+/*!
+ *  \brief This function computes the transformation to align a given vector
+ *  with the Z-axis.
+ *  \param sp a reference to a vector<double>
+ *  \param ep a reference to a vector<double>
+ *  \param rotation_matrix a reference to a vector<vector<double>>
+ */
+void alignWithZAxis(vector<double> &sp, vector<double> &ep, 
+                    vector<vector<double>> &rotation_matrix)
+{
+  // find drs corresponding to sp-->ep vector
+  vector<double> dratios(3,0);
+  computeDirectionRatios(ep,sp,dratios);
+  // angle with Z-axis
+  double theta = computeAngle(dratios,ZAXIS);
+  // find normal to the plane (axis of rotation)
+  vector<double> normal(3,0);
+  computeCrossProduct(dratios,ZAXIS,normal);
+  vector<double> unit_normal(3,0);
+  computeDirectionCosines(normal,unit_normal);
+  computeRotationMatrix(unit_normal,theta,rotation_matrix);
+}
+
+/*!
+ *  \brief This function applies the transformation of the ideal model and returns 
+ *  the corresponding unit vector.
+ *  \param matrix a reference to a Matrix<double>
+ *  \param sp a reference to a vector<double>
+ *  \param ep a reference to a vector<double>
+ *  \return the transformed unit vector
+ */
+void applyIdealModelTransformation(vector<vector<double>> &rotation_matrix, 
+                                   vector<double> &sp, vector<double> &ep,
+                                   vector<double> &suffstats)
+{
+  // find drs corresponding to sp-->ep vector
+  vector<double> dratios(3,0);
+  computeDirectionRatios(ep,sp,dratios);
+  // find dcs of the vector
+  vector<double> dcosines(3,0);
+  computeDirectionCosines(dratios,dcosines);
+  // rotate this unit vector
+  vector<double> rotated(3,0);
+  rotateVector(rotation_matrix,dcosines,rotated);
+  for (int i=0; i<3; i++) {
+    suffstats[i] += rotated[i];
+  }
+}
 
 /*!
  *  \brief This function is used to read the angular profiles and use this data
@@ -1139,9 +1158,12 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
  *  \param mixture_file a string
  *  \param structure_file a string
  *  \param orientation an integer
+ *  \param portion_to_fit an integer
+ *  \param end_points a reference to a vector<string>
  */
 void assignSecondaryStructure(string mixture_file, string structure_file,
-                              int orientation)
+                              int orientation, int portion_to_fit,
+                              vector<string> &end_points)
 {
   cout << "Assigning secondary structure to " << structure_file << endl;
 
@@ -1164,6 +1186,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   Mixture mixture;
   mixture.load(mixture_file);
   protein.computeSphericalTransformation();
+  protein.getUnitCoordinatesList();
   msglen = protein.computeMessageLengthUsingNullModel(mixture);
   cout << "Null model message length: " << msglen << " bits. (" 
        << msglen / (double)num_residues << " bpr)" << endl;
@@ -1173,7 +1196,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   // using ideal models
   clock_t c_start = clock();
   auto t_start = std::chrono::high_resolution_clock::now();
-  protein.compressUsingIdealModels(mixture,orientation);
+  protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points);
   clock_t c_end = clock();
   auto t_end = std::chrono::high_resolution_clock::now();
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);

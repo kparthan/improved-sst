@@ -309,7 +309,7 @@ void Superpose3DClass::updateSufficientStatistics() {
   cout << "------\n" ;
 */
 
-  for( size_t i = 0 ; i < nVecs ; i++ ) {
+  //for( size_t i = 0 ; i < nVecs ; i++ ) {
   // sum_xm, sum_ym, sum_zm;
       updated_stats.sum_xm =   stats1.sum_xm + stats1.nVecs*mu1_xm 
                              + stats2.sum_xm + stats2.nVecs*mu2_xm;
@@ -403,7 +403,7 @@ void Superpose3DClass::updateSufficientStatistics() {
                + UPDATE(stats1.sum_yp,stats1.sum_zp,mu1_yp,mu1_zp,stats1.nVecs)
                + stats2.sum_ypzp
                + UPDATE(stats2.sum_yp,stats2.sum_zp,mu2_yp,mu2_zp,stats2.nVecs);
-	}
+	//}
 
   updated_stats.sum_Ax = stats1.sum_Ax + stats2.sum_Ax;
   updated_stats.sum_Ay = stats1.sum_Ay + stats2.sum_Ay;

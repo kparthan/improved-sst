@@ -96,3 +96,12 @@ string IdealModel::getName()
   return name;
 }
 
+/*!
+ *  \brief This function prints the details of the ideal model.
+ */
+void IdealModel::printModelInfo()
+{
+  cout << "Model: " << name << endl;
+  cout << "Length: " << length << endl;
+}
+

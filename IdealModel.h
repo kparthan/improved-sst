@@ -43,6 +43,9 @@ class IdealModel
     //! Returns the name of the ideal model
     string getName();
 
+    //! Prints the details of the optimal fit
+    void printModelInfo();
+
 };
 
 #endif

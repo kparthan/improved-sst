@@ -36,7 +36,7 @@ Protein::Protein(ProteinStructure *structure, string &name) :
         point2vector(p,v);
         chain_coordinates.push_back(v);
       }
-      //translateProteinToOrigin(chain_coordinates);
+      translateProteinToOrigin(chain_coordinates);
       cartesian_coordinates.push_back(chain_coordinates);
     }
   }
@@ -407,15 +407,12 @@ double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
 
     // state the remaining points using the mixture model
     double r;
-    array<double,2> x;
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       // state radius
       r = spherical_coordinates[i][j][0];
       msglen += message.encodeUsingNormalModel(r,normal);
-      // state theta,phi
-      x[0] = spherical_coordinates[i][j][1];  // theta
-      x[1] = spherical_coordinates[i][j][2];  // phi
-      msglen += message.encodeUsingMixtureModel(x,mixture);
+      // state direction 
+      msglen += message.encodeUsingMixtureModel(unit_coordinates[i][j],mixture);
     }
   }
   return msglen;
@@ -446,28 +443,98 @@ void Protein::initializeCodeLengthMatrices(int chain_index)
  *  \brief This function compresses the protein using the expert ideal models.
  *  \param mixture a reference to a Mixture
  *  \param orientation an integer
+ *  \param portion_to_fit an integer
+ *  \param end_points a reference to a vector<string>
  */
-void Protein::compressUsingIdealModels(Mixture &mixture, int orientation)
+void Protein::compressUsingIdealModels(Mixture &mixture, int orientation, 
+                                       int portion_to_fit, vector<string> &end_points)
 {
   vector<IdealModel> ideal_models = loadIdealModels();
-  for (int i=0; i<cartesian_coordinates.size(); i++) {
-    /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
-    cout << "distances size: " << distances[i].size() << endl;
-    cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
-    computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
-    pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
-    vector<int> segments = segmentation.second;
-    cout << "Compression fit: " << segmentation.first << " bits." << endl;
-    cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
-             << endl << endl; 
-    cout << "# of segments: " << segments.size()-1 << endl << endl;
-    cout << "Internal segmentation:" << endl;
-    int j;
-    for (j=0; j<segments.size()-1; j++) {
-      cout << segments[j] << "-->";
+  if (portion_to_fit == FIT_ENTIRE_STRUCTURE) {
+    for (int i=0; i<cartesian_coordinates.size(); i++) {
+      /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
+      cout << "distances size: " << distances[i].size() << endl;
+      cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
+      computeCodeLengthMatrix(ideal_models,mixture,orientation,i);
+      pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
+      vector<int> segments = segmentation.second;
+      cout << "Compression fit: " << segmentation.first << " bits." << endl;
+      cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
+               << endl << endl; 
+      cout << "# of segments: " << segments.size()-1 << endl << endl;
+      cout << "Internal segmentation:" << endl;
+      int j;
+      for (j=0; j<segments.size()-1; j++) {
+        cout << segments[j] << "-->";
+      }
+      cout << segments[j] << endl << endl;
+      for (j=0; j<segments.size()-1; j++) {
+        int a = segments[j];
+        int b = segments[j+1];
+        string name = optimal_model[a][b].getName();
+        cout << name << "-->";
+      }
+      cout << endl;
     }
-    cout << segments[j] << endl << endl;
+  } else if (portion_to_fit == FIT_SINGLE_SEGMENT) {
+    fitOneSegment(end_points,mixture,orientation);
   }
+}
+
+/*!
+ *  \brief This function fits the ideal models to a single segment of the
+ *  protein structure.
+ *  \param end_points a reference to a vector<string>
+ *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
+ */
+void Protein::fitOneSegment(vector<string> &end_points, Mixture &mixture, 
+                            int orientation)
+{
+  int start = boost::lexical_cast<int>(end_points[1]) - 1;
+  int end = boost::lexical_cast<int>(end_points[2]) - 1;
+  int chain = -1;
+  for (int i=0; i<chains.size(); i++) {
+    if (chains[i].compare(end_points[0]) == 0) {
+      chain = i;
+      cout << "chain_index: " << chain << endl;
+    }
+  }
+  if (chain == -1) {
+    cout << "Chain " << end_points[0] << " doesn't exist!\n";
+    exit(1);
+  }
+  vector<IdealModel> ideal_models = loadIdealModels();
+  Segment segment(start,end,cartesian_coordinates[chain],
+                  spherical_coordinates[chain],unit_coordinates[chain]);
+  if (start == 0 || start == 1) {
+    segment.setInitialDistances(distances[chain][0],distances[chain][1]);
+  }
+  int segment_length = end - start + 1; 
+  vector<OptimalFit> fit;
+  OptimalFit ideal_fit,current_fit;
+  // fit null model to the segment
+  cout << "NULL\n";
+  ideal_fit = segment.fitNullModel(mixture);
+  fit.push_back(ideal_fit);
+  for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+        (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
+      cout << "MODEL: " << ideal_models[m].getName() << endl << endl;
+      current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
+      fit.push_back(current_fit);
+      if (current_fit < ideal_fit) {
+        ideal_fit = current_fit;
+      }
+    }
+  }
+  cout << "\n\nPrinting fit info:\n";
+  for (int i=0; i<fit.size(); i++) {
+    fit[i].printFitInfo();
+    cout << endl;
+  }
+  cout << "\nBest fit: ";
+  ideal_fit.printFitInfo();
 }
 
 /*!
@@ -490,7 +557,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       cout << i << ":" << j << endl;
       Segment segment(i,j,cartesian_coordinates[chain],
                       spherical_coordinates[chain],unit_coordinates[chain]);
-      if (i == 0) {
+      if (i == 0 || i == 1) {
         segment.setInitialDistances(distances[chain][0],distances[chain][1]);
       }
       int segment_length = j - i + 1; 
@@ -525,7 +592,7 @@ pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
 {
   pair <double,vector<int>> segmentation;
   int chain_size = cartesian_coordinates[chain].size();
-  vector<double> optimal_msglen(chain_size,100000);
+  vector<double> optimal_msglen(chain_size,LARGE_NUMBER);
   vector<int> optimal_index(chain_size,-1);
 
   for (int i=0; i<chain_size; i++){
@@ -542,7 +609,7 @@ pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
   int index = chain_size - 1;
   vector<int> backtrack; 
   backtrack.push_back(chain_size-1);
-  while (1){
+  while(1) {
     if (index == optimal_index[index]){
       break;
     }

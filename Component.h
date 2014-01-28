@@ -50,6 +50,9 @@ class Component
     //! Minimize message length
     void minimizeMessageLength();
 
+    //! Minimize message length
+    void minimizeMessageLength(vector<double> &);
+
     //! Estimate MML mean parameter
     void estimateVonMisesMean();
 

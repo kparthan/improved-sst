@@ -82,6 +82,23 @@ void Component::minimizeMessageLength()
 }
 
 /*!
+ *  \brief This function is used to minimize the message length expression
+ *  by fixing the mean direction.
+ *  \param mean a reference to a vector<double>
+ */
+void Component::minimizeMessageLength(vector<double> &mean)
+{
+  estimateVonMisesMean();
+  unit_mean = mean;
+  updateMu(unit_mean);
+  kappa_ml = estimateKappa_ML();
+  kappa_mml = estimateKappa_MML(kappa_ml);
+  //kappa_mml = kappa_ml;
+  cout << "Kappa (MML): " << kappa_mml << endl;
+  von_mises = VonMises3D(unit_mean,kappa_mml);
+}
+
+/*!
  *  \brief This function is used to estimate the Von Mises mean
  */
 void Component::estimateVonMisesMean()
@@ -154,7 +171,7 @@ double Component::estimateKappa_MML(double initial)
     if (prev < 0) {
       prev = fabs(prev);
     }
-    if (num_iterations > 1000) {
+    if (num_iterations > 20) {
       if (constrain_kappa == SET && current >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
@@ -414,11 +431,10 @@ Component Component::conflate(Component &component)
   vector<double> resultant_spherical(3,0);
   cartesian2spherical(resultant,resultant_spherical);
   double conflated_kappa = resultant_spherical[0];
-  vector<double> spherical_mean(3,1);
+
   vector<double> conflated_mean(3,0);  // conflated
-  spherical_mean[1] = resultant_spherical[1];
-  spherical_mean[2] = resultant_spherical[2];
-  spherical2cartesian(spherical_mean,conflated_mean);
+  resultant_spherical[0] = 1;
+  spherical2cartesian(resultant_spherical,conflated_mean);
   
   return Component(conflated_mean,conflated_kappa,constrain_kappa); 
 }

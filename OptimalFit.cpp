@@ -70,6 +70,16 @@ bool OptimalFit::operator<(const OptimalFit &other)
  */
 void OptimalFit::printFitInfo()
 {
+  ideal_model.printModelInfo();
   cout << "total msglen: " << message_length << endl;
+}
+
+/*!
+ *  \brief This function returns the name of the representative ideal model.
+ *  \return the name
+ */
+string OptimalFit::getName()
+{
+  return ideal_model.getName();
 }
 

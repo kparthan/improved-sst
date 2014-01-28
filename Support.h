@@ -32,12 +32,8 @@ struct Parameters
   string structure;             // protein structure file
   int orientation;              // orientation to be used in the adaptive
                                 // encoding scheme
-};
-
-struct Estimates
-{
-  vector<double> unit_mean;
-  double kappa;
+  vector<string> end_points;    // end points of a segment
+  int portion_to_fit;           // fit a segment or the entire structure
 };
 
 // general functions
@@ -49,6 +45,7 @@ void writeToFile(vector<vector<double>> &, const char *);
 string extractName(string &);
 void initializeMatrix(vector<vector<double>> &, int, int);
 void cartesian2spherical(vector<double> &, vector<double> &);
+void cartesian2unitspherical(vector<double> &, vector<double> &);
 void spherical2cartesian(vector<double> &, vector<double> &);
 void point2vector(Point<double> &, vector<double> &);
 void scaleToAOM(double &);
@@ -70,8 +67,9 @@ bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
 void convertToCanonicalForm(vector<vector<double>> &, vector<vector<double>> &,
                             vector<vector<double>> &);
-//Matrix<double> alignWithZAxis(vector<double> &, vector<double> &);
-//array<double,3> applyIdealModelTransformation(Matrix<double> &, vector<double> &, vector<double> &);
+void alignWithZAxis(vector<double> &, vector<double> &, vector<vector<double>> &);
+void applyIdealModelTransformation(vector<vector<double>> &, vector<double> &, 
+                                   vector<double> &, vector<double> &);
 
 void computeEstimators(struct Parameters &);
 void modelOneComponent(struct Parameters &, vector<double> &, double &);
@@ -88,8 +86,8 @@ vector<double> generateRandomWeights(int, double);
 vector<Component> generateRandomComponents(int, int);
 void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 
-//// sst functions
-void assignSecondaryStructure(string, string, int);
+// sst functions
+void assignSecondaryStructure(string, string, int, int, vector<string> &);
 vector<IdealModel> loadIdealModels();
 
 #endif
