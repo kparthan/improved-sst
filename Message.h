@@ -28,6 +28,10 @@ class Message
     //! mixture model
     double encodeUsingMixtureModel(vector<double> &, Mixture &);
 
+    //! Computes the message length of stating the direction using a
+    //! single component
+    double encodeUsingComponent(vector<double> &, Component &);
+
 };
 
 #endif

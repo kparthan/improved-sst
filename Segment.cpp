@@ -148,6 +148,8 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     vector<double> vonmises_suffstats(3,0);
     double kappa = 5;
     Mixture conflated_mixture;
+    double r = spherical_coordinates[start][0];
+    msglen += message.encodeUsingNormalModel(r,normal);
 
     // INITIAL SUPERPOSITION
     for (int i=0; i<3; i++) {
@@ -175,8 +177,9 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     }
     double MSG;
     Component component(unit_mean,kappa);
-    conflated_mixture = mixture.conflate(component);
-    MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+    //conflated_mixture = mixture.conflate(component);
+    //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+    MSG = message.encodeUsingComponent(x,component);
     msglen += MSG;//msg << MSG << endl;
     alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
     applyIdealModelTransformation(zaxis_transform,observed_copy[2],
@@ -185,6 +188,8 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
     // ADAPTIVE SUPERPOSITION
     for (int om=start+3; om<end; om++) {
+      r = spherical_coordinates[om-2][0];
+      msglen += message.encodeUsingNormalModel(r,normal);
       // start,...,om : points known to receiver
       //           om : most recent point communicated to the receiver
       //         om+1 : current point being transmitted
@@ -221,8 +226,9 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
         kappa = adaptive_component.getKappa();
       }
       Component component(unit_mean,kappa);
-      conflated_mixture = mixture.conflate(component);
-      MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+      //conflated_mixture = mixture.conflate(component);
+      //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+      MSG = message.encodeUsingComponent(x,component);
       msglen += MSG;
       if (DEBUG == SET) {
         print(debug,unit_mean);print(debug,x);debug<<endl;

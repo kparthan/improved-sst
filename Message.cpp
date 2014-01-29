@@ -69,3 +69,18 @@ double Message::encodeUsingMixtureModel(vector<double> &direction,
   return msglen;
 }
 
+/*!
+ *  \brief This function is used to compute the encoding length of a direction
+ *  using a single component.
+ *  \param direction a reference to a vector<double>
+ *  \param component a reference to a Component
+ *  \return the message length (in bits)
+ */
+double Message::encodeUsingComponent(vector<double> &direction,
+                                     Component &component)
+{
+  double density = component.likelihood(direction);
+  double msglen = -log2(density) - 2*log2(AOM);
+  return msglen;
+}
+
