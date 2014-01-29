@@ -53,6 +53,12 @@ class Component
     //! Minimize message length
     void minimizeMessageLength(vector<double> &);
 
+    //! Computes the resultant length
+    void computeMeanResultantLength();
+
+    //! Computes the kappa estimates
+    void estimateKappas();
+
     //! Estimate MML mean parameter
     void estimateVonMisesMean();
 

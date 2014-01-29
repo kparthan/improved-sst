@@ -11,6 +11,7 @@ vector<double> XAXIS = {1,0,0};
 vector<double> NEGATIVE_XAXIS = {-1,0,0};
 vector<double> YAXIS = {0,1,0};
 vector<double> ZAXIS = {0,0,1};
+int DEBUG;
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -73,6 +74,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
           "orientation of the mean/direction used in the adaptive encoding")
        ("segment",value<vector<string>>(&parameters.end_points)->multitoken(),
                                   "segment to be fit")
+       ("debug","flag to print out values to assist in debugging")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -86,6 +88,12 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.force = SET;
   } else {
     parameters.force = UNSET;
+  }
+
+  if (vm.count("debug")) {
+    DEBUG = SET;
+  } else {
+    DEBUG = UNSET;
   }
 
   if (vm.count("initialize_components_from_file")) {
@@ -420,7 +428,8 @@ template long double minimum(long double,long double);
  */
 void print(ostream &os, vector<double> &v)
 {
-  os << "(" << v[0] << "," << v[1] << "," << v[2] << ")\n";
+  os << fixed << setprecision(4) << "(" << v[0] << "," << v[1] << "," << v[2] <<
+")\t";
 }
 
 /*!
@@ -719,12 +728,20 @@ void applyIdealModelTransformation(vector<vector<double>> &rotation_matrix,
   // find dcs of the vector
   vector<double> dcosines(3,0);
   computeDirectionCosines(dratios,dcosines);
+  cout << "xhat before: ";
+  print(cout,dcosines);
   // rotate this unit vector
   vector<double> rotated(3,0);
   rotateVector(rotation_matrix,dcosines,rotated);
+  cout << "xhat after rotaiton: ";
+  print(cout,rotated);
+  cout << "sum before : ";
+  print(cout,suffstats);
   for (int i=0; i<3; i++) {
     suffstats[i] += rotated[i];
   }
+  cout << "sum after : ";
+  print(cout,suffstats);
 }
 
 /*!

@@ -58,7 +58,7 @@ Protein::Protein(ProteinStructure *structure, string &name) :
 void Protein::translateProteinToOrigin(vector<vector<double>> &chain_coordinates)
 {
   // before translation
-  writeToFile(chain_coordinates,"before_translation");
+  //writeToFile(chain_coordinates,"before_translation");
   initial_translation_vector = vector<double>(3,0);
   for (int i=0; i<3; i++) {
     initial_translation_vector[i] = -chain_coordinates[0][i];
@@ -73,7 +73,7 @@ void Protein::translateProteinToOrigin(vector<vector<double>> &chain_coordinates
     }
   }
   // after translation
-  writeToFile(chain_coordinates,"after_translation");
+  //writeToFile(chain_coordinates,"after_translation");
 }
 
 /*!
@@ -554,7 +554,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
   for (int i=0; i<chain_size-1; i++) {
     int bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
     for (int j=i+1; j<chain_size; j++) {
-      cout << i << ":" << j << endl;
+      cout << "Segment " << i << ":" << j << endl;
       Segment segment(i,j,cartesian_coordinates[chain],
                       spherical_coordinates[chain],unit_coordinates[chain]);
       if (i == 0 || i == 1) {

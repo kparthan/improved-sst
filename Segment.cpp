@@ -4,6 +4,7 @@
 #include "Geometry3D.h"
 
 extern vector<double> ZAXIS;
+extern int DEBUG;
 
 /*!
  *  \brief This is a constructor function.
@@ -15,7 +16,7 @@ extern vector<double> ZAXIS;
 Segment::Segment(int start, int end, vector<vector<double>> &cartesian_coordinates,
                  vector<vector<double>> &spherical_coordinates, 
                  vector<vector<double>> &unit_coordinates) : start(start), end(end),
-                 cartesian_coordinates(cartesian_coordinates) , 
+                 cartesian_coordinates(cartesian_coordinates), 
                  spherical_coordinates(spherical_coordinates),
                  unit_coordinates(unit_coordinates)
 {
@@ -157,7 +158,6 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     ideal_copy = ideal;
     Superpose3DClass superpose(observed_copy,ideal_copy);
     cout << "RMSD:" << superpose.getRMSD() << endl;
-    //sleep(1);
     suff_stats = superpose.getSufficientStatistics();
     observed_copy.push_back(observed_residues[3]);
     superpose.transformVectors(observed_copy);
@@ -168,9 +168,16 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
                                transformed_four_mer[3],ideal_residues[2],
                                ideal_residues[3],orientation,unit_mean,x);
+    ofstream debug("debug",ios::app);
+    ofstream msg("msg",ios::app);
+    if (DEBUG == SET) {
+      print(debug,unit_mean);print(debug,x);debug<<endl;
+    }
+    double MSG;
     Component component(unit_mean,kappa);
     conflated_mixture = mixture.conflate(component);
-    msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
+    MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+    msglen += MSG;//msg << MSG << endl;
     alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
     applyIdealModelTransformation(zaxis_transform,observed_copy[2],
                                   observed_copy[3],vonmises_suffstats);
@@ -192,7 +199,6 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       //writeToFile(ideal_copy,"ideal_copy_before");
       Superpose3DClass superpose(suff_stats,observed_copy[om-start],
                                  ideal_copy[om-start]);
-      cout << "start: " << start << " end: " << end << endl;
       cout << "\"RMSD\":" << superpose.getRMSD() << endl;
       suff_stats = superpose.getSufficientStatistics();
       observed_copy.push_back(observed_residues[om-start+1]);
@@ -210,21 +216,29 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
                                  transformed_four_mer[3],ideal_residues[om-start],
                                  ideal_residues[om-start+1],orientation,unit_mean,x);
       if (N > 1) {
-        Component adaptive_component(vonmises_suffstats,N,SET);
+        Component adaptive_component(vonmises_suffstats,N+1,SET);
         adaptive_component.minimizeMessageLength(ZAXIS);
         kappa = adaptive_component.getKappa();
       }
       Component component(unit_mean,kappa);
       conflated_mixture = mixture.conflate(component);
-      msglen += message.encodeUsingMixtureModel(x,conflated_mixture);
+      MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+      msglen += MSG;
+      if (DEBUG == SET) {
+        print(debug,unit_mean);print(debug,x);debug<<endl;
+        msg << MSG << endl;
+      }
       // update von mises suff stats
       alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
       applyIdealModelTransformation(zaxis_transform,observed_copy[om-start],
                                     observed_copy[om-start+1],vonmises_suffstats);
       N++;
     }
+    if (DEBUG == SET) {
+      debug << endl;debug.close();
+      msg << endl;msg.close();
+    }
   }
-
   ProteinStructure *p = model.getStructure();
   string name = model.getName();
   IdealModel ideal_model(p,name);

@@ -1,6 +1,8 @@
 #include "Component.h"
 #include "Support.h"
 
+extern int DEBUG;
+
 /*!
  *  \brief The null constructor module.
  */
@@ -75,10 +77,7 @@ Component Component::operator=(const Component &source)
 void Component::minimizeMessageLength()
 {
   estimateVonMisesMean();
-  kappa_ml = estimateKappa_ML();
-  kappa_mml = estimateKappa_MML(kappa_ml);
-  cout << "Kappa (MML): " << kappa_mml << endl;
-  von_mises = VonMises3D(unit_mean,kappa_mml);
+  estimateKappas();
 }
 
 /*!
@@ -88,14 +87,34 @@ void Component::minimizeMessageLength()
  */
 void Component::minimizeMessageLength(vector<double> &mean)
 {
-  estimateVonMisesMean();
+  computeMeanResultantLength();
   unit_mean = mean;
   updateMu(unit_mean);
-  kappa_ml = estimateKappa_ML();
-  kappa_mml = estimateKappa_MML(kappa_ml);
-  //kappa_mml = kappa_ml;
-  cout << "Kappa (MML): " << kappa_mml << endl;
-  von_mises = VonMises3D(unit_mean,kappa_mml);
+  estimateKappas();
+}
+
+/*!
+ *  \brief This function is used to compute the mean resultant length of the
+ *  direction vector.
+ */
+void Component::computeMeanResultantLength()
+{
+  vector<double> spherical_coordinates(3,0);
+  cartesian2spherical(mean_direction,spherical_coordinates);
+
+  // magnitude of the mean direction vector
+  R = spherical_coordinates[0];
+  rbar = R / (double)N ;
+
+  if (DEBUG == SET) {
+    cout << "\nCartesian coordinates of resultant mean direction vector: ";
+    print(cout,mean_direction);
+    cout << "Spherical coordinates of mean direction vector: ";
+    print(cout,spherical_coordinates);
+    cout << "Magnitude (R) of resultant direction vector: " << R << endl;
+    cout << "N: " << N << endl;
+    cout << "rbar (R/N): " << rbar << endl;
+  }
 }
 
 /*!
@@ -103,40 +122,40 @@ void Component::minimizeMessageLength(vector<double> &mean)
  */
 void Component::estimateVonMisesMean()
 {
-  cout << "\nCartesian coordinates of resultant mean direction vector: ";
-  print(cout,mean_direction);
-  vector<double> spherical_coordinates(3,0);
-  cartesian2spherical(mean_direction,spherical_coordinates);
-
-  cout << "Spherical coordinates of mean direction vector: ";
-  print(cout,spherical_coordinates);
-
-  // magnitude of the mean direction vector
-  R = spherical_coordinates[0];
+  computeMeanResultantLength();
 
   // normalize the mean direction vector to obtain an unit vector
   unit_mean = vector<double>(3,0);
   for (int i=0; i<3; i++) {
     unit_mean[i] = mean_direction[i] / R;
   }
-  cout << "Cartesian coordinates of unit mean direction vector: ";
-  print(cout,unit_mean);
 
+  vector<double> spherical_coordinates(3,0);
   cartesian2spherical(unit_mean,spherical_coordinates);
   mu[0] = spherical_coordinates[1];
   mu[1] = spherical_coordinates[2];
-  cout << "Spherical coordinates of unit mean direction vector: ";
-  print(cout,spherical_coordinates);
 
-  rbar = R / (double)N ;
-  cout << "R of direction vector: " << R << endl;
-  cout << "N: " << N << endl;
-  cout << "rbar: " << rbar << endl;
+  if (DEBUG == SET) {
+    cout << "Cartesian coordinates of unit mean direction vector: ";
+    print(cout,unit_mean);
+    cout << "Spherical coordinates of unit mean direction vector: ";
+    print(cout,spherical_coordinates);
+    // print the estimates of theta, phi
+    cout << "\nEstimates:\n";
+    cout << "(theta,phi) = (" << spherical_coordinates[1]*180/PI << ", " 
+         << spherical_coordinates[2]*180/PI << ")" << endl;
+  }
+}
 
-  // print the estimates of theta, phi
-  cout << "\nEstimates:\n";
-  cout << "(theta,phi) = (" << spherical_coordinates[1]*180/PI << ", " 
-       << spherical_coordinates[2]*180/PI << ")" << endl;
+/*!
+ *  \brief This function is used to compute the ML and MML estimates of kappa.
+ */
+void Component::estimateKappas()
+{
+  kappa_ml = estimateKappa_ML();
+  kappa_mml = estimateKappa_MML(kappa_ml);
+  cout << "Kappa (MML): " << kappa_mml << endl;
+  von_mises = VonMises3D(unit_mean,kappa_mml);
 }
 
 /*!
@@ -147,6 +166,7 @@ void Component::estimateVonMisesMean()
 double Component::estimateKappa_ML()
 {
   double kappa = (rbar * (3 - (rbar * rbar))) / (1 - (rbar * rbar));
+  assert(kappa > 0);
   if (constrain_kappa == SET) {
     if (fabs(kappa) >= MAX_KAPPA) {
       kappa = MAX_KAPPA;
@@ -169,12 +189,14 @@ double Component::estimateKappa_MML(double initial)
   while(1) {
     num_iterations++;
     if (prev < 0) {
-      prev = fabs(prev);
+      //prev = fabs(prev);
+      prev = kappa_ml * 2; 
     }
     if (num_iterations > 20) {
       if (constrain_kappa == SET && current >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
+        assert(prev > 0);
         return prev;
       }
     } 
@@ -192,14 +214,18 @@ double Component::estimateKappa_MML(double initial)
         if (constrain_kappa == SET && current >= MAX_KAPPA) {
           return MAX_KAPPA;
         } else {
+          assert(current > 0);
           return current;
         }
       }
     } else {
+      cout << "Iteration " << num_iterations << ": [" << prev << ", " 
+           << current <<  ", " << fx << ", " << fx_der << "]" << endl;
       cout << "Derivative is zero ..." << endl;
       if (constrain_kappa == SET && prev >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
+        assert(prev > 0);
         return prev;
       }
     }
@@ -424,6 +450,7 @@ Component Component::conflate(Component &component)
   double k1 = kappa_mml;
   double k2 = component.getKappa();
 
+
   vector<double> resultant(3,0);
   for (int i=0; i<3; i++) {
     resultant[i] = k1 * mean1[i] + k2 * mean2[i];
@@ -435,7 +462,18 @@ Component Component::conflate(Component &component)
   vector<double> conflated_mean(3,0);  // conflated
   resultant_spherical[0] = 1;
   spherical2cartesian(resultant_spherical,conflated_mean);
+
+  if (DEBUG == SET) {
+    ofstream log("conflated",ios::app);
+    print(log,mean1);
+    log << k1 << "\t";
+    print(log,mean2);
+    log << k2 << "\t";
+    print(log,conflated_mean);
+    log << conflated_kappa << endl;
+    log.close();
+  }
   
-  return Component(conflated_mean,conflated_kappa,constrain_kappa); 
+  return Component(conflated_mean,conflated_kappa); 
 }
 
