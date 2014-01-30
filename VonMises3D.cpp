@@ -4,6 +4,7 @@
 
 extern vector<double> YAXIS;
 extern vector<double> ZAXIS;
+extern ofstream debug;
 
 /*!
  *  \brief This is a null constructor module
@@ -80,6 +81,9 @@ double VonMises3D::density(vector<double> &x)
   } else {
     double dot_product;
     computeDotProduct(unit_mean,x,dot_product);
+    print(debug,unit_mean);
+    print(debug,x);
+    debug << "dot product: " << dot_product << endl;
     double exponent = kappa * (dot_product - 1);
     double pr = norm_constant * exp(exponent);
     /*if (pr < ZERO) {

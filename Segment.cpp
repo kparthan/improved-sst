@@ -5,6 +5,7 @@
 
 extern vector<double> ZAXIS;
 extern int DEBUG;
+extern ofstream debug;
 
 /*!
  *  \brief This is a constructor function.
@@ -70,12 +71,21 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
   }
   // state the remaining points using the mixture model
   double r;
+  if (DEBUG == SET) {
+    debug << "MODEL: NullModel\n";
+  }
   for (int i=begin_loop; i<end; i++) {
     // state radius
     r = spherical_coordinates[i-2][0];
     msglen += message.encodeUsingNormalModel(r,normal);
     // state direction
-    msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+    double MSG;
+    MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+    msglen += MSG;
+    if (DEBUG == SET) {
+      debug << "\nEncoding om+1: " << i+1 << endl;
+      debug << "msglen: " << MSG << endl;
+    }
   }
 
   string name = "NullModel";
@@ -147,9 +157,12 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     vector<double> x(3,0);
     vector<double> vonmises_suffstats(3,0);
     double kappa = 5;
+    double rmsd;
+    double MSG,MSG1;
     Mixture conflated_mixture;
     double r = spherical_coordinates[start][0];
-    msglen += message.encodeUsingNormalModel(r,normal);
+    MSG1 = message.encodeUsingNormalModel(r,normal);
+    msglen += MSG1;
 
     // INITIAL SUPERPOSITION
     for (int i=0; i<3; i++) {
@@ -159,37 +172,98 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     observed_copy = observed;
     ideal_copy = ideal;
     Superpose3DClass superpose(observed_copy,ideal_copy);
-    cout << "RMSD:" << superpose.getRMSD() << endl;
+    rmsd = superpose.getRMSD();
+    if (DEBUG == SET) {
+      debug << "\n\nMODEL: " << model.getName() << endl;
+      debug << "<--- INITIAL SUPERPOSITION --->\n";
+      debug << "\nobserved: ";
+      for (int i=0; i<observed_copy.size(); i++) {
+        print(debug,observed_copy[i]);
+      }
+      debug << endl;
+      debug << "ideal: ";
+      for (int i=0; i<ideal_copy.size(); i++) {
+        print(debug,ideal_copy[i]);
+      }
+      debug << endl;
+      debug << "RMSD: " << rmsd << endl;
+    }
     suff_stats = superpose.getSufficientStatistics();
     observed_copy.push_back(observed_residues[3]);
     superpose.transformVectors(observed_copy);
     for (int i=0; i<4; i++) {
       four_mer[i] = observed_copy[i];
     }
+    double theta;
+    vector<double> diff1(3,0),diff2(3,0);
+    computeDirectionRatios(four_mer[3],four_mer[2],diff1);
+    computeDirectionRatios(ideal_residues[3],ideal_residues[2],diff2);
+    theta = computeAngle(diff1,diff2);
+    debug << "Angle before: " << theta << endl;
     convertToCanonicalForm(four_mer,transformed_four_mer,rotation_matrix);
     getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
                                transformed_four_mer[3],ideal_residues[2],
                                ideal_residues[3],orientation,unit_mean,x);
-    ofstream debug("debug",ios::app);
-    ofstream msg("msg",ios::app);
+    theta = computeAngle(unit_mean,x);
+    debug << "Angle after: " << theta << endl;
+    debug << "four-mer\n";
+    for(int i=0; i<4; i++){
+      print(debug,four_mer[i]);
+    }debug << endl;
+    debug << "transformed-four-mer\n";
+    for(int i=0; i<4; i++){
+      print(debug,transformed_four_mer[i]);
+    }debug << endl;
+    /*alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
+    applyIdealModelTransformation(zaxis_transform,observed_copy[2],
+                                  observed_copy[3],x);
+    unit_mean = ZAXIS;*/
     if (DEBUG == SET) {
-      print(debug,unit_mean);print(debug,x);debug<<endl;
+      debug << "current unit mean: ";
+      print(debug,unit_mean);
+      debug << endl;
+      debug << "current unit x to be encoded: ";
+      print(debug,x);
+      debug<<endl;
     }
-    double MSG;
+    //kappa = 1/(rmsd*rmsd);
     Component component(unit_mean,kappa);
     //conflated_mixture = mixture.conflate(component);
     //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
     MSG = message.encodeUsingComponent(x,component);
-    msglen += MSG;//msg << MSG << endl;
+    if (DEBUG == SET) {
+      debug << "current kappa: " << kappa << endl;
+      debug << "msglen to encode r: " << MSG1 << endl;
+      debug << "msglen to encode using component: " << MSG << endl;
+    }
+    msglen += MSG;
     alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
     applyIdealModelTransformation(zaxis_transform,observed_copy[2],
                                   observed_copy[3],vonmises_suffstats);
+    /*if (DEBUG == SET) {
+      debug << "von mises suff stats before: ";
+      print(debug,vonmises_suffstats);
+      debug << endl;
+    }
+    for (int i=0; i<3; i++) vonmises_suffstats[i] += x[i];
+    if (DEBUG == SET) {
+      debug << "von mises suff stats after: ";
+      print(debug,vonmises_suffstats);
+      debug << endl;
+    }*/
     int N = 1;
 
     // ADAPTIVE SUPERPOSITION
+    if (DEBUG == SET) {
+      debug << "<--- ADAPTIVE SUPERPOSITION --->\n";
+    }
     for (int om=start+3; om<end; om++) {
+      if (DEBUG == SET) {
+        debug << "\nEncoding om+1: " << om+1 << endl;
+      }
       r = spherical_coordinates[om-2][0];
-      msglen += message.encodeUsingNormalModel(r,normal);
+      MSG1 = message.encodeUsingNormalModel(r,normal);
+      msglen += MSG1;
       // start,...,om : points known to receiver
       //           om : most recent point communicated to the receiver
       //         om+1 : current point being transmitted
@@ -200,17 +274,25 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       // these temp lists can be transformed without affecting the original lists
       observed_copy = observed;
       ideal_copy = ideal;
-      //writeToFile(observed_copy,"observed_copy_before");
-      //writeToFile(ideal_copy,"ideal_copy_before");
       Superpose3DClass superpose(suff_stats,observed_copy[om-start],
                                  ideal_copy[om-start]);
-      cout << "\"RMSD\":" << superpose.getRMSD() << endl;
+      rmsd = superpose.getRMSD();
+      if (DEBUG == SET) {
+        debug << "observed: ";
+        for (int i=0; i<observed_copy.size(); i++) {
+          print(debug,observed_copy[i]);
+        }
+        debug << endl;
+        debug << "ideal: ";
+        for (int i=0; i<ideal_copy.size(); i++) {
+          print(debug,ideal_copy[i]);
+        }
+        debug << endl;
+        debug << "RMSD: " << rmsd << endl;
+      }
       suff_stats = superpose.getSufficientStatistics();
       observed_copy.push_back(observed_residues[om-start+1]);
       superpose.transformVectors(observed_copy);
-      //writeToFile(observed_copy,"observed_copy_after");
-      //writeToFile(ideal_copy,"ideal_copy_after");
-      // get the current four_mer
       for (int i=0; i<4; i++) {
         four_mer[i] = observed_copy[N+i];
       }
@@ -220,29 +302,57 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
                                  transformed_four_mer[3],ideal_residues[om-start],
                                  ideal_residues[om-start+1],orientation,unit_mean,x);
-      if (N > 1) {
+      /*alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
+      applyIdealModelTransformation(zaxis_transform,observed_copy[om-start],
+                                    observed_copy[om-start+1],x);*/
+      debug << "four-mer\n";
+      for(int i=0; i<4; i++){
+        print(debug,four_mer[i]);
+      }debug << endl;
+      debug << "transformed-four-mer\n";
+      for(int i=0; i<4; i++){
+        print(debug,transformed_four_mer[i]);
+      }debug << endl;
+      if (DEBUG == SET) {
+        debug << "current unit mean: ";
+        print(debug,unit_mean);
+        debug << endl;
+        debug << "current unit x to be encoded: ";
+        print(debug,x);
+        debug<<endl;
+      }
+      if (N >= 1) {
         Component adaptive_component(vonmises_suffstats,N+1,SET);
         adaptive_component.minimizeMessageLength(ZAXIS);
         kappa = adaptive_component.getKappa();
       }
+      //kappa = 1/(rmsd*rmsd);
       Component component(unit_mean,kappa);
       //conflated_mixture = mixture.conflate(component);
       //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
       MSG = message.encodeUsingComponent(x,component);
-      msglen += MSG;
       if (DEBUG == SET) {
-        print(debug,unit_mean);print(debug,x);debug<<endl;
-        msg << MSG << endl;
+        debug << "current kappa: " << kappa << endl;
+        debug << "msglen to encode r: " << MSG1 << endl;
+        debug << "msglen to encode using component: " << MSG << endl;
       }
+      msglen += MSG;
       // update von mises suff stats
       alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
       applyIdealModelTransformation(zaxis_transform,observed_copy[om-start],
                                     observed_copy[om-start+1],vonmises_suffstats);
+      /*if (DEBUG == SET) {
+        debug << "von mises suff stats before: ";
+        print(debug,vonmises_suffstats);
+        debug << endl;
+      }
+      for (int i=0; i<3; i++) vonmises_suffstats[i] += x[i];
+      if (DEBUG == SET) {
+        debug << "von mises suff stats after: ";
+        print(debug,vonmises_suffstats);
+        debug << endl;
+      }*/
       N++;
-    }
-    if (DEBUG == SET) {
-      debug << endl;debug.close();
-      msg << endl;msg.close();
     }
   }
   ProteinStructure *p = model.getStructure();
@@ -296,7 +406,9 @@ void Segment::getCurrentMeanAndDirection(
       computeDirectionRatios(im_plus_1_new,im_new,dratios);
       cartesian2unitspherical(dratios,unit_mean);
       computeDirectionRatios(om_plus_1_new,om_new,dratios);
+      //debug << "dratios: "; print(debug,dratios);
       cartesian2unitspherical(dratios,x);
+      //debug << "dcs: "; print(debug,x);
       break;
 
     case 2:

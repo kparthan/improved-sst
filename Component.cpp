@@ -424,7 +424,7 @@ vector<double> Component::getMeanDirection()
  */
 double Component::getKappa()
 {
-  return kappa_mml;
+  return kappa_ml;
 }
 
 /*!

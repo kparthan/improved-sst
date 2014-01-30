@@ -563,8 +563,9 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       int segment_length = j - i + 1; 
       OptimalFit fit,ideal_fit;
       // fit null model to the segment
-      ideal_fit = segment.fitNullModel(mixture);
+      //ideal_fit = segment.fitNullModel(mixture);
       if (j < bound) {
+        ideal_fit = segment.fitNullModel(mixture);
         for (int m=0; m<NUM_IDEAL_MODELS; m++) {
           if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
               (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
@@ -574,6 +575,8 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
             }
           }
         }
+      } else {
+        ideal_fit = OptimalFit();
       }
       optimal_model[i][j] = ideal_fit;
       optimal_code_length[i][j] = ideal_fit.getMessageLength();
