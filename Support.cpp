@@ -685,7 +685,7 @@ void convertToCanonicalForm(vector<vector<double>> &four_mer,
   for (int i=0; i<4; i++) {
     rotateVector(rotation2,interim_points[i],transformed_four_mer[i]);
   }
-  multiplyVectors(rotation2,rotation1,rotation_matrix);
+  multiply(rotation2,rotation1,rotation_matrix);
 }
 
 /*!

@@ -140,12 +140,18 @@ void rotateVector(vector<vector<double>> &rotation_matrix,
 	}	
 }
 
-/* This function multiplies two matrices. */
-void multiplyVectors(vector<vector<double>> &A, vector<vector<double>> &B,
+/* This function multiplies two matrices. 
+    product = A * B */
+void multiply(vector<vector<double>> &A, vector<vector<double>> &B,
                      vector<vector<double>> &product) 
 {
-  for (int i=0; i<A.size(); i++) {
-    rotateVector(B,A[i],product[i]);
+  for (int i=0; i<3; i++) {
+    for (int j=0; j<3; j++) {
+      product[i][j] = 0;
+      for (int k=0; k<3; k++) {
+        product[i][j] += A[i][k] * B[k][j];
+      }
+    }
   }
 }
 
@@ -156,5 +162,40 @@ double computeEuclideanDistance(vector<double> &v1, vector<double> &v2)
     d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
   }
   return sqrt(d);
+}
+
+double determinant2D(vector<vector<double>> &m)
+{
+  return(m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+}
+
+double determinant3D(vector<vector<double>> &m)
+{
+  vector<vector<double>> m1,m2,m3;
+  vector<double> tmp(2,0);
+  for (int i=0; i<2; i++) {
+    m1.push_back(tmp);
+    m2.push_back(tmp);
+    m3.push_back(tmp);
+  }
+  m1[0][0] = m[1][1];
+  m1[0][1] = m[1][2];
+  m1[1][0] = m[2][1];
+  m1[1][1] = m[2][2];
+  double det1 = determinant2D(m1);
+
+  m2[0][0] = m[1][0];
+  m2[0][1] = m[1][2];
+  m2[1][0] = m[2][0];
+  m2[1][1] = m[2][2];
+  double det2 = determinant2D(m2);
+
+  m3[0][0] = m[1][0];
+  m3[0][1] = m[1][1];
+  m3[1][0] = m[2][0];
+  m3[1][1] = m[2][1];
+  double det3 = determinant2D(m3);
+
+  return(m[0][0] * det1 - m[0][1] * det2 + m[0][2] * det3);
 }
 

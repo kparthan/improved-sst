@@ -3,7 +3,12 @@
 #define GEOMETRY3D_H
 
 #include "Header.h"
-
+/*#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <vector>
+#include <iomanip>
+using namespace std;*/
 /* This function computes direction cosines of a vector given its 
  * direction ratios. */ 
 void computeDirectionCosines(vector<double> &, vector<double> &); 
@@ -37,10 +42,13 @@ void computeRotationMatrix(vector<double> &, double, vector<vector<double>> &);
  * rotation matrix */
 void rotateVector(vector<vector<double>> &, vector<double> &, vector<double> &); 
 
-void multiplyVectors(vector<vector<double>> &, vector<vector<double>> &,
+void multiply(vector<vector<double>> &, vector<vector<double>> &,
                      vector<vector<double>> &); 
 
 double computeEuclideanDistance(vector<double> &, vector<double> &);
+
+double determinant2D(vector<vector<double>> &);
+double determinant3D(vector<vector<double>> &);
 
 #endif
 

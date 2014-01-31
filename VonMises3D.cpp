@@ -158,7 +158,7 @@ vector<vector<double>> VonMises3D::constructRotationMatrix()
   computeRotationMatrix(ZAXIS,spherical[2],rotate2);
 
   // final rotation matrix
-  multiplyVectors(rotate2,rotate1,rotation);
+  multiply(rotate2,rotate1,rotation);
 
   return rotation;
 }

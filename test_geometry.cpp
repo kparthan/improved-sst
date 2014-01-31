@@ -1,8 +1,6 @@
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include <vector>
-using namespace std;
+#include "Geometry3D.h"
+
+vector<double> ORIGIN(3,0);
 
 void print(double x[3])
 {
@@ -21,9 +19,25 @@ void print(double x[3][3])
 }
 double XAXIS[3];
 
+void print(vector<double> &x)
+{
+  for (int i=0; i<3; i++) {
+    cout << fixed << setw(5) << setprecision(3) << x[i] << " ";
+  }
+  cout << endl;
+}
+
+void print(vector<vector<double>> &x)
+{
+  for (int i=0; i<3; i++) {
+    print(x[i]);
+  }
+  cout << endl;
+}
+
 main()
 {
-  print(XAXIS);
+  /*print(XAXIS);
   //array<double,3> x = {1,0,0};
   // testing rotation matrix
   double xaxis[3] = {1,0,1};
@@ -53,7 +67,32 @@ main()
   cout << v4[0] << " " << v4[1] << " " << v4[2] << endl;
   v5 = vector<double>({1,3,4,5});
   cout << v5.size() << endl;
-  cout << v5[0] << " " << v5[1] << " " << v5[2] << " " << v5[3] << endl;
+  cout << v5[0] << " " << v5[1] << " " << v5[2] << " " << v5[3] << endl;*/
+
+  vector<double> xaxis = {1,0,0};
+  vector<double> tmp(3,0);
+  vector<vector<double>> rm1;
+  for (int i=0; i<3; i++) {
+    rm1.push_back(tmp);
+  }
+  //print(rm1);
+  computeRotationMatrix(xaxis,M_PI/2,rm1);
+  print(rm1);
+
+  vector<double> yaxis = {0,1,0};
+  vector<vector<double>> rm2;
+  for (int i=0; i<3; i++) {
+    rm2.push_back(tmp);
+  }
+  computeRotationMatrix(yaxis,M_PI/3,rm2);
+  print(rm2);
+
+  vector<vector<double>> rm3;
+  for (int i=0; i<3; i++) {
+    rm3.push_back(tmp);
+  }
+  multiply(rm2,rm1,rm3);
+  print(rm3);
 }
 
 

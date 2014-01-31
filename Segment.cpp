@@ -156,7 +156,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     vector<double> unit_mean(3,0);
     vector<double> x(3,0);
     vector<double> vonmises_suffstats(3,0);
-    double kappa = 5;
+    double kappa = 25;
     double rmsd;
     double MSG,MSG1;
     Mixture conflated_mixture;
@@ -214,10 +214,16 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     for(int i=0; i<4; i++){
       print(debug,transformed_four_mer[i]);
     }debug << endl;
-    /*alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
-    applyIdealModelTransformation(zaxis_transform,observed_copy[2],
-                                  observed_copy[3],x);
-    unit_mean = ZAXIS;*/
+    vector<double> tmpr(3,0),tmpt(3,0);
+    debug << "\tcheck canonical transformation: ";
+    for (int i=0; i<4; i++) {
+      for (int j=0; j<3; j++) {
+        tmpt[j] = four_mer[i][j] - four_mer[2][j];
+      }
+      rotateVector(rotation_matrix,tmpt,tmpr);
+      print(debug,tmpr);
+    }
+    debug << endl;
     if (DEBUG == SET) {
       debug << "current unit mean: ";
       print(debug,unit_mean);
@@ -226,11 +232,10 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       print(debug,x);
       debug<<endl;
     }
-    //kappa = 1/(rmsd*rmsd);
     Component component(unit_mean,kappa);
-    //conflated_mixture = mixture.conflate(component);
-    //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
-    MSG = message.encodeUsingComponent(x,component);
+    conflated_mixture = mixture.conflate(component);
+    MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+    //MSG = message.encodeUsingComponent(x,component);
     if (DEBUG == SET) {
       debug << "current kappa: " << kappa << endl;
       debug << "msglen to encode r: " << MSG1 << endl;
@@ -302,9 +307,6 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       getCurrentMeanAndDirection(four_mer[2],rotation_matrix,transformed_four_mer[2],
                                  transformed_four_mer[3],ideal_residues[om-start],
                                  ideal_residues[om-start+1],orientation,unit_mean,x);
-      /*alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
-      applyIdealModelTransformation(zaxis_transform,observed_copy[om-start],
-                                    observed_copy[om-start+1],x);*/
       debug << "four-mer\n";
       for(int i=0; i<4; i++){
         print(debug,four_mer[i]);
@@ -313,6 +315,15 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       for(int i=0; i<4; i++){
         print(debug,transformed_four_mer[i]);
       }debug << endl;
+      debug << "\tcheck canonical transformation: ";
+      for (int i=0; i<4; i++) {
+        for (int j=0; j<3; j++) {
+          tmpt[j] = four_mer[i][j] - four_mer[2][j];
+        }
+        rotateVector(rotation_matrix,tmpt,tmpr);
+        print(debug,tmpr);
+      }
+      debug << endl;
       if (DEBUG == SET) {
         debug << "current unit mean: ";
         print(debug,unit_mean);
@@ -321,16 +332,15 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
         print(debug,x);
         debug<<endl;
       }
-      if (N >= 1) {
+      if (N > 1) {
         Component adaptive_component(vonmises_suffstats,N+1,SET);
         adaptive_component.minimizeMessageLength(ZAXIS);
         kappa = adaptive_component.getKappa();
       }
-      //kappa = 1/(rmsd*rmsd);
       Component component(unit_mean,kappa);
-      //conflated_mixture = mixture.conflate(component);
-      //MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
-      MSG = message.encodeUsingComponent(x,component);
+      conflated_mixture = mixture.conflate(component);
+      MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
+      //MSG = message.encodeUsingComponent(x,component);
       if (DEBUG == SET) {
         debug << "current kappa: " << kappa << endl;
         debug << "msglen to encode r: " << MSG1 << endl;
@@ -376,7 +386,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
  *  \param x a reference to a vector<double>
  */
 void Segment::getCurrentMeanAndDirection(
-  vector<double> &pre_origin, 
+  vector<double> &pre_origin, // om 
   vector<vector<double>> &rotation_matrix,
   vector<double> &om_new, 
   vector<double> &om_plus_1_new, 
@@ -388,7 +398,7 @@ void Segment::getCurrentMeanAndDirection(
 ) {
   // transform im and i_{m+1}
   // translation
-  vector<double> im_tmp(3,0);
+  /*vector<double> im_tmp(3,0);
   vector<double> im_plus_1_tmp(3,0);
   for (int i=0; i<3; i++) {
     im_tmp[i] = im[i] - pre_origin[i];
@@ -398,32 +408,36 @@ void Segment::getCurrentMeanAndDirection(
   vector<double> im_new(3,0);
   vector<double> im_plus_1_new(3,0);
   rotateVector(rotation_matrix,im_tmp,im_new);
-  rotateVector(rotation_matrix,im_plus_1_tmp,im_plus_1_new);
+  rotateVector(rotation_matrix,im_plus_1_tmp,im_plus_1_new);*/
   
-  vector<double> dratios(3,0);
+  vector<double> dratios_mean(3,0);
+  vector<double> dratios_x(3,0);
   switch(orientation) {
     case 1:
-      computeDirectionRatios(im_plus_1_new,im_new,dratios);
-      cartesian2unitspherical(dratios,unit_mean);
-      computeDirectionRatios(om_plus_1_new,om_new,dratios);
+      //computeDirectionRatios(im_plus_1_new,im_new,dratios_mean);
+      computeDirectionRatios(im_plus_1,im,dratios_mean);
+      computeDirectionRatios(om_plus_1_new,om_new,dratios_x);
       //debug << "dratios: "; print(debug,dratios);
-      cartesian2unitspherical(dratios,x);
       //debug << "dcs: "; print(debug,x);
       break;
 
     case 2:
-      computeDirectionRatios(im_plus_1_new,om_new,dratios);
-      cartesian2unitspherical(dratios,unit_mean);
-      computeDirectionRatios(om_plus_1_new,om_new,dratios);
-      cartesian2unitspherical(dratios,x);
+      //computeDirectionRatios(im_plus_1_new,om_new,dratios_mean);
+      computeDirectionRatios(im_plus_1,om_new,dratios_mean);
+      computeDirectionRatios(om_plus_1_new,om_new,dratios_x);
       break;
 
     case 3:
-      computeDirectionRatios(im_plus_1_new,im_new,dratios);
-      cartesian2unitspherical(dratios,unit_mean);
-      computeDirectionRatios(om_plus_1_new,im_new,dratios);
-      cartesian2unitspherical(dratios,x);
+      //computeDirectionRatios(im_plus_1_new,im_new,dratios_mean);
+      //computeDirectionRatios(om_plus_1_new,im_new,dratios_x);
+      computeDirectionRatios(im_plus_1,im,dratios_mean);
+      computeDirectionRatios(om_plus_1_new,im,dratios_x);
       break;
   }
+  vector<double> unit_mean_tmp(3,0);
+  cartesian2unitspherical(dratios_mean,unit_mean_tmp);
+  rotateVector(rotation_matrix,unit_mean_tmp,unit_mean);
+  debug << "det(rotation_matrix): " << determinant3D(rotation_matrix) << endl;
+  cartesian2unitspherical(dratios_x,x);
 }
 
