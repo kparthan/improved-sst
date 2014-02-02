@@ -718,7 +718,6 @@ void alignWithZAxis(vector<double> &sp, vector<double> &ep,
  *  \param sp a reference to a vector<double>
  *  \param ep a reference to a vector<double>
  *  \param suffstats a reference to a vector<double>
- *  \return the transformed unit vector
  */
 void applyIdealModelTransformation(vector<vector<double>> &rotation_matrix, 
                                    vector<double> &sp, vector<double> &ep,
@@ -730,31 +729,11 @@ void applyIdealModelTransformation(vector<vector<double>> &rotation_matrix,
   // find dcs of the vector
   vector<double> dcosines(3,0);
   computeDirectionCosines(dratios,dcosines);
-  if (DEBUG == SET) {
-    debug << "\t\tUpdating VonMises Suffstats\t\t\n";
-    debug << "xhat before: ";
-    print(debug,dcosines);
-    debug << endl;
-  }
   // rotate this unit vector
   vector<double> rotated(3,0);
   rotateVector(rotation_matrix,dcosines,rotated);
-  //rotateVector(rotation_matrix,dcosines,x);
-  if (DEBUG == SET) {
-    debug << "xhat after rotation: ";
-    print(debug,rotated);
-    debug << endl;
-    debug << "von mises stats before: ";
-    print(debug,suffstats);
-    debug << endl;
-  }
   for (int i=0; i<3; i++) {
     suffstats[i] += rotated[i];
-  }
-  if (DEBUG == SET) {
-    debug << "von mises stats after: ";
-    print(debug,suffstats);
-    debug << endl;
   }
 }
 
