@@ -63,8 +63,8 @@ void Protein::translateProteinToOrigin(vector<vector<double>> &chain_coordinates
   for (int i=0; i<3; i++) {
     initial_translation_vector[i] = -chain_coordinates[0][i];
   }
-  cout << "Translation vector: ";
-  print(cout,initial_translation_vector);
+  //cout << "Translation vector: ";
+  //print(cout,initial_translation_vector);
 
   // translate the protein
   for (int i=0; i<chain_coordinates.size(); i++) {

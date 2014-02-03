@@ -60,6 +60,14 @@ double ratioBesselFunction_thirdDerivative(double);
 double computeConstantTerm(int);
 double getLatticeConstant(int);
 void angleInRadians(double &);
+template <typename RealType>
+vector<RealType> sort(vector<RealType> &);
+template <typename RealType>
+vector<int> sortedListIndex(vector<RealType> &);
+template <typename RealType>
+void quicksort(vector<RealType> &, vector<int> &, int, int);
+template <typename RealType>
+int partition(vector<RealType> &, vector<int> &, int, int);
 
 // Protein functions
 string getPDBFilePath(string &);

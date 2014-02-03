@@ -153,8 +153,8 @@ void Component::estimateVonMisesMean()
 void Component::estimateKappas()
 {
   kappa_ml = estimateKappa_ML();
-  kappa_mml = estimateKappa_MML(kappa_ml);
-  //kappa_mml = kappa_ml;
+  //kappa_mml = estimateKappa_MML(kappa_ml);
+  kappa_mml = kappa_ml;
   cout << "Kappa (MML): " << kappa_mml << endl;
   von_mises = VonMises3D(unit_mean,kappa_mml);
 }
@@ -192,14 +192,14 @@ double Component::estimateKappa_MML(double initial)
     if (prev < 0) {
       prev = fabs(prev);
     }
-    /*if (num_iterations > 20) {
+    if (num_iterations > 20) {
       if (constrain_kappa == SET && current >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
         assert(prev > 0);
         return prev;
       }
-    }*/ 
+    } 
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
     if (fabs(fx_der) > TOLERANCE) {

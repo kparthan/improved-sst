@@ -576,6 +576,113 @@ void angleInRadians(double &theta)
   theta *= PI / 180;
 }
 
+/*!
+ *  \brief This function sorts the elements in the list
+ *  \param list a reference to a vector<double>
+ *  \return the sorted list
+ */
+template <typename RealType>
+vector<RealType> sort(vector<RealType> &list)
+{
+  int num_samples = list.size();
+	vector<RealType> sortedList(list);
+  vector<int> index(num_samples,0);
+	for(int i=0; i<num_samples; i++) {
+			index[i] = i;
+  }
+	quicksort(sortedList,index,0,num_samples-1);
+  return sortedList;
+}
+template vector<int> sort(vector<int> &);
+template vector<float> sort(vector<float> &);
+template vector<double> sort(vector<double> &);
+template vector<long double> sort(vector<long double> &);
+
+/*!
+ *  \brief This function sorts the elements in the list
+ *  \param list a reference to a vector<double>
+ *  \return the sorted list
+ */
+template <typename RealType>
+vector<int> sortedListIndex(vector<RealType> &list)
+{
+  int num_samples = list.size();
+	vector<RealType> sortedList(list);
+  vector<int> index(num_samples,0);
+	for(int i=0; i<num_samples; i++) {
+			index[i] = i;
+  }
+	quicksort(sortedList,index,0,num_samples-1);
+  return index;
+}
+template vector<int> sortedListIndex(vector<int> &);
+template vector<int> sortedListIndex(vector<float> &);
+template vector<int> sortedListIndex(vector<double> &);
+template vector<int> sortedListIndex(vector<long double> &);
+
+/*!
+ *  This is an implementation of the classic quicksort() algorithm to sort a
+ *  list of data values. The module uses the overloading operator(<) to 
+ *  compare two Point<T> objects. 
+ *  Pivot is chosen as the right most element in the list(default)
+ *  This function is called recursively.
+ *  \param list a reference to a vector<double>
+ *	\param index a reference to a vector<int>
+ *  \param left an integer
+ *  \param right an integer
+ */
+template <typename RealType>
+void quicksort(vector<RealType> &list, vector<int> &index, int left, int right)
+{
+	if(left < right)
+	{
+		int pivotNewIndex = partition(list,index,left,right);
+		quicksort(list,index,left,pivotNewIndex-1);
+		quicksort(list,index,pivotNewIndex+1,right);
+	}
+}
+template void quicksort(vector<float> &, vector<int> &, int, int);
+template void quicksort(vector<double> &, vector<int> &, int, int);
+template void quicksort(vector<long double> &, vector<int> &, int, int);
+
+/*!
+ *  This function is called from the quicksort() routine to compute the new
+ *  pivot index.
+ *  \param list a reference to a vector<double>
+ *	\param index a reference to a vector<int>
+ *  \param left an integer
+ *  \param right an integer
+ *  \return the new pivot index
+ */
+template <typename RealType>
+int partition(vector<RealType> &list, vector<int> &index, int left, int right)
+{
+	RealType temp,pivotPoint = list[right];
+	int storeIndex = left,temp_i;
+	for(int i=left; i<right; i++) {
+		if(list[i] < pivotPoint) {
+			temp = list[i];
+			list[i] = list[storeIndex];
+			list[storeIndex] = temp;
+			temp_i = index[i];
+			index[i] = index[storeIndex];
+			index[storeIndex] = temp_i;
+			storeIndex += 1;	
+		}
+	}
+	temp = list[storeIndex];
+	list[storeIndex] = list[right];
+	list[right] = temp;
+	temp_i = index[storeIndex];
+	index[storeIndex] = index[right];
+	index[right] = temp_i;
+	return storeIndex;
+}
+template int partition(vector<float> &, vector<int> &, int, int);
+template int partition(vector<double> &, vector<int> &, int, int);
+template int partition(vector<long double> &, vector<int> &, int, int);
+
+
 //////////////////////// PROTEIN FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 /*!
@@ -1352,9 +1459,16 @@ void assignMixtureComponents(vector<IdealModel> &ideal_models, Mixture &mixture)
     cout << "spherical: "; print(cout,spherical);
     cartesian2unitspherical(mean,unit_mean);
     cout << "unit mean: "; print(cout,unit_mean);
+    string file = "density_" + name;
+    ofstream out(file.c_str());
     for (int j=0; j<components.size(); j++) {
       density[j] = weights[j] * components[j].likelihood(unit_mean);
     }
+    vector<int> sorted = sortedListIndex(density);
+    for (int j=0; j<components.size(); j++) {
+      out << sorted[j]+1 << "\t\t" << density[sorted[j]] << endl;
+    }
+    out.close();
     max_index = getIndexOfMaximumElement(density);
     cout << "INDEX: " << max_index+1 << "\t";
     cout << "PR: " << density[max_index] << "\t";
