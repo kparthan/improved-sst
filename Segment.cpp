@@ -91,14 +91,15 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
 }
 
 /*!
- *  \brief This function fits a null model to the protein segment.
+ *  \brief This function fits a ideal model to the protein segment using an adaptive
+ *  encoding scheme.
  *  \param model a reference to a IdealModel;
  *  \param mixture a reference to a Mixture
  *  \param orientation an integer
  *  \return the optimal fit using the ideal model
  */
-OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
-                                  int orientation)
+OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mixture,
+                                                  int orientation)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
   Message message;
@@ -253,6 +254,19 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
   IdealModel ideal_model(p,name);
   ideal_model.setLength(num_residues);
   return OptimalFit(ideal_model,msglen);
+}
+
+/*!
+ *  \brief This function fits a ideal model to the protein segment using a non-adaptive
+ *  encoding scheme.
+ *  \param model a reference to a IdealModel;
+ *  \param mixture a reference to a Mixture
+ *  \param orientation an integer
+ *  \return the optimal fit using the ideal model
+ */
+OptimalFit Segment::fitIdealModel_NonAdaptive(IdealModel &model, Mixture &mixture,
+                                              int orientation)
+{
 }
 
 /*!

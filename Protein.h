@@ -112,13 +112,13 @@ class Protein
     double computeMessageLengthUsingNullModel(Mixture &);
 
     //! Compression using ideal models
-    void compressUsingIdealModels(Mixture &, int, int, vector<string> &);
+    void compressUsingIdealModels(Mixture &, int, int, vector<string> &, int);
 
     //! Fit a single segment
-    void fitOneSegment(vector<string> &, Mixture &, int);
+    void fitOneSegment(vector<string> &, Mixture &, int, int);
 
     //! Computes the optimal code length matrix
-    void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int);
+    void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int, int);
 
     //! Computes the optimal segmentation using dynamic programming
     pair<double,vector<int>> computeOptimalSegmentation(int);

@@ -67,6 +67,10 @@
 #define FIT_ENTIRE_STRUCTURE 0
 #define FIT_SINGLE_SEGMENT 1
 
+#define ONE_COMPONENT_ADAPTIVE 1
+#define MIXTURE_ADAPTIVE 2
+#define NON_ADAPTIVE 3
+
 using namespace std;
 using namespace std::chrono;
 using namespace lcb;

@@ -47,6 +47,24 @@ void Mixture::setSimulationFlag()
 }
 
 /*!
+ *  \brief This function returns the list of all weights.
+ *  \return the list of weights
+ */
+vector<double> Mixture::getWeights()
+{
+  return weights;
+}
+
+/*!
+ *  \brief This function returns the list of components.
+ *  \return the components
+ */
+vector<Component> Mixture::getComponents()
+{
+  return components;
+}
+
+/*!
  *  \brief This function initializes the parameters of the model.
  */
 void Mixture::initialize()

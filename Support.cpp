@@ -40,7 +40,7 @@ void getHomeAndCurrentDirectory()
 struct Parameters parseCommandLineInput(int argc, char **argv)
 {
   struct Parameters parameters;
-  string pdb_id,scop_id,generation,constrain;
+  string pdb_id,scop_id,generation,constrain,sst_method;
 
   bool noargs = 1;
 
@@ -76,6 +76,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("segment",value<vector<string>>(&parameters.end_points)->multitoken(),
                                   "segment to be fit")
        ("debug","flag to print out values to assist in debugging")
+       ("method",value<string>(&sst_method),"the sst method to be used")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -211,7 +212,19 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     if (vm.count("load")) { 
       parameters.load_mixture = SET;
     } else {
-      parameters.load_mixture = UNSET;
+      cout << "Please supply a mixture file ...\n";
+      Usage(argv[0],desc);
+    }
+    if (vm.count("method")) {
+      if (sst_method.compare("mixture_adaptive") == 0) {
+        parameters.method = MIXTURE_ADAPTIVE;
+      } else if (sst_method.compare("one_component_adaptive") == 0) {
+        parameters.method = ONE_COMPONENT_ADAPTIVE;
+      } else if (sst_method.compare("non_adaptive") == 0) {
+        parameters.method = NON_ADAPTIVE;
+      }
+    } else {
+      parameters.method = MIXTURE_ADAPTIVE;
     }
     if (vm.count("pdbid")) {
       parameters.file = getPDBFilePath(pdb_id);
@@ -423,13 +436,31 @@ template double minimum(double,double);
 template long double minimum(long double,long double);
 
 /*!
+ *  \brief This function gets the index of the maximum element.
+ *  \param list a reference to a vector<RealType>
+ *  \return the index
+ */
+int getIndexOfMaximumElement(vector<double> &list)
+{
+  int max_index = 0;
+  double max_val = list[max_index];
+  for (int i=1; i<list.size(); i++) {
+    if (list[i] > max_val) {
+      max_val = list[i];
+      max_index = i;
+    }
+  }
+  return max_index;
+}
+
+/*!
  *  \brief This function prints the elements of an vector.
  *  \param os a reference to a ostream
  *  \param v a reference to a vector<double>
  */
 void print(ostream &os, vector<double> &v)
 {
-  os << fixed << setprecision(4) << "(" << v[0] << "," << v[1] << "," << v[2] <<
+  os << fixed << setprecision(4) << "(" << v[0] << "," << v[1]*180/PI << "," << v[2]*180/PI <<
 ")\t";
 }
 
@@ -1170,10 +1201,11 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
  *  \param orientation an integer
  *  \param portion_to_fit an integer
  *  \param end_points a reference to a vector<string>
+ *  \param sst_method an integer
  */
 void assignSecondaryStructure(string mixture_file, string structure_file,
                               int orientation, int portion_to_fit,
-                              vector<string> &end_points)
+                              vector<string> &end_points, int sst_method)
 {
   cout << "Assigning secondary structure to " << structure_file << endl;
 
@@ -1206,7 +1238,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   // using ideal models
   clock_t c_start = clock();
   auto t_start = std::chrono::high_resolution_clock::now();
-  protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points);
+  protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points,sst_method);
   clock_t c_end = clock();
   auto t_end = std::chrono::high_resolution_clock::now();
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
@@ -1290,5 +1322,44 @@ vector<IdealModel> loadIdealModels()
   ideal_models.push_back(m6);
 
   return ideal_models;
+}
+
+/*!
+ *  \brief This function assigns a representative mixture component to each of
+ *  the ideal models.
+ *  \param ideal_models a reference to a vector<IdealModel>
+ *  \param mixture a reference to a Mixture
+ */
+void assignMixtureComponents(vector<IdealModel> &ideal_models, Mixture &mixture)
+{
+  vector<double> mean(3,0),spherical(3,0),unit_mean(3,0);
+  vector<double> weights = mixture.getWeights();
+  vector<Component> components = mixture.getComponents();
+  vector<double> density(components.size(),0);
+  double pr;
+  int max_index;
+
+  for (int i=0; i<ideal_models.size(); i++) {
+    ProteinStructure *p = ideal_models[i].getStructure();
+    string name = ideal_models[i].getName();
+    Protein protein(p,name);
+    protein.computeSphericalTransformation();
+    //protein.save();
+    cout << name << "\t";
+    mean = protein.computeMeanDirection();
+    cout << "mean: "; print(cout,mean);
+    cartesian2spherical(mean,spherical);
+    cout << "spherical: "; print(cout,spherical);
+    cartesian2unitspherical(mean,unit_mean);
+    cout << "unit mean: "; print(cout,unit_mean);
+    for (int j=0; j<components.size(); j++) {
+      density[j] = weights[j] * components[j].likelihood(unit_mean);
+    }
+    max_index = getIndexOfMaximumElement(density);
+    cout << "INDEX: " << max_index+1 << "\t";
+    cout << "PR: " << density[max_index] << "\t";
+    pr = mixture.probability(unit_mean);
+    cout << "pr: " << pr;
+  }
 }
 

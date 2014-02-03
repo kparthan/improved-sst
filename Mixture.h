@@ -56,6 +56,12 @@ class Mixture
     //! Constructor
     Mixture(int, vector<vector<double>> &, int, int, int);
 
+    //! Gets the list of weights
+    vector<double> getWeights();
+
+    //! Gets the list of components
+    vector<Component> getComponents();
+
     //! Sets the simulation flag 
     void setSimulationFlag();
 

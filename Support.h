@@ -34,6 +34,7 @@ struct Parameters
                                 // encoding scheme
   vector<string> end_points;    // end points of a segment
   int portion_to_fit;           // fit a segment or the entire structure
+  int method;                   // flag to indicate the sst method
 };
 
 // general functions
@@ -50,6 +51,7 @@ void spherical2cartesian(vector<double> &, vector<double> &);
 void point2vector(Point<double> &, vector<double> &);
 void scaleToAOM(double &);
 template <typename RealType> RealType minimum(RealType, RealType);
+int getIndexOfMaximumElement(vector<double> &);
 void print(ostream &, vector<double> &);
 double ratioBesselFunction(double);
 double ratioBesselFunction_firstDerivative(double);
@@ -87,8 +89,9 @@ vector<Component> generateRandomComponents(int, int);
 void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
 
 // sst functions
-void assignSecondaryStructure(string, string, int, int, vector<string> &);
+void assignSecondaryStructure(string, string, int, int, vector<string> &, int);
 vector<IdealModel> loadIdealModels();
+void assignMixtureComponents(vector<IdealModel> &, Mixture &);
 
 #endif
 

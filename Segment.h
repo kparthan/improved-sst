@@ -40,8 +40,11 @@ class Segment
     //! Fit null model
     OptimalFit fitNullModel(Mixture &);
 
-    //! Fit an ideal model
-    OptimalFit fitIdealModel(IdealModel &, Mixture &, int);
+    //! Fit an ideal model using the adaptive model for mixture
+    OptimalFit fitIdealModel_MixtureAdaptive(IdealModel &, Mixture &, int);
+
+    //! Fit an ideal model using the non adaptive model for mixture
+    OptimalFit fitIdealModel_NonAdaptive(IdealModel &, Mixture &, int);
 
     //! Computes the current mean and direction in the adaptive superposition
     void getCurrentMeanAndDirection(vector<double> &, vector<vector<double>> &,
