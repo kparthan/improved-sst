@@ -739,11 +739,11 @@ void Mixture::generateHeatmapData(double res)
     x[1] = theta * PI/180;
     for (double phi=0; phi<360; phi+=res) {
       x[2] = phi * PI/180;
-      double pr = probability(x);
+      spherical2cartesian(x,point);
+      double pr = probability(point);
       // 2D bins
       fbins2D << fixed << setw(10) << setprecision(4) << pr;
       // 3D bins
-      spherical2cartesian(x,point);
       for (int k=0; k<3; k++) {
         fbins3D << fixed << setw(10) << setprecision(4) << point[k];
       }
@@ -768,5 +768,46 @@ Mixture Mixture::conflate(Component &component)
     new_components.push_back(conflated_component);
   }
   return Mixture(K,new_components,weights);
+}
+
+/*!
+ *  \brief This function computes the residual mixture after removing some 
+ *  components from the original mixture.
+ *  \param remove a reference to a vector<int> (the indices of components to be removed)
+ *  \param sum_residual_weights a reference to a double
+ *  \return the residual Mixture
+ */
+Mixture Mixture::getResidualMixture(vector<int> &remove, double &sum_residual_weights)
+{
+  if (remove.size() == 0) {
+    //sum_residual_weights = 1;
+    return *this;
+  } else {
+    int residual_k = K - remove.size();
+    vector<Component> residual_components;
+    vector<double> residual_weights;
+    double sum_removed_weights = 0;
+    for (int i=0; i<K; i++) {
+      int flag = 0; // don't remove
+      for (int j=0; j<remove.size(); j++) {
+        if (i == remove[j]) {
+          flag = 1; // remove
+          sum_removed_weights += weights[i];
+          break;
+        }
+      }
+      if (flag == 0) {
+        residual_components.push_back(components[i]);
+        residual_weights.push_back(weights[i]);
+      }
+    }
+    assert(residual_components.size() == residual_k);
+    assert(residual_weights.size() == residual_k);
+    sum_residual_weights = 1 - sum_removed_weights;
+    for (int i=0; i<residual_weights.size(); i++) {
+      residual_weights[i] /= sum_residual_weights; 
+    }
+    return Mixture(residual_k,residual_components,residual_weights);
+  }
 }
 

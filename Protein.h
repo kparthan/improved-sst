@@ -115,7 +115,7 @@ class Protein
     void compressUsingIdealModels(Mixture &, int, int, vector<string> &, int);
 
     //! Fit a single segment
-    void fitOneSegment(vector<string> &, Mixture &, int, int);
+    void fitOneSegment(vector<IdealModel> &, vector<string> &, Mixture &, int, int);
 
     //! Computes the optimal code length matrix
     void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int, int);

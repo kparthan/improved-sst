@@ -48,8 +48,8 @@
 #define DEFAULT_RESOLUTION 0.1
 #define DEFAULT_COMPONENTS 2
 #define MAX_COMPONENTS 10
-//#define MAX_KAPPA ceil(1/(0.09*AOM_angle*AOM_angle))
-#define MAX_KAPPA 50 
+#define MAX_KAPPA ceil(1/(0.09*AOM_angle*AOM_angle))
+//#define MAX_KAPPA 50 
 
 // for mixture components visualization
 #define VISUALIZE_2D 0
@@ -59,10 +59,10 @@
 #define DEFAULT_SAMPLE_SIZE 2000
 
 // for sst
-#define NUM_IDEAL_MODELS 7
+#define NUM_IDEAL_MODELS 6 
 #define MIN_SIZE_HELIX  4 
 #define MIN_SIZE_STRAND 4
-#define MAX_SEGMENT_SIZE 49 
+#define MAX_SEGMENT_SIZE 40 
 #define DEFAULT_ORIENTATION 1
 #define FIT_ENTIRE_STRUCTURE 0
 #define FIT_SINGLE_SEGMENT 1

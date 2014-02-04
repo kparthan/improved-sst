@@ -54,6 +54,10 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
   
   // state the length of segment
   msglen += message.encodeUsingLogStarModel(num_residues);
+
+  // state the null model
+  msglen += log2(NUM_IDEAL_MODELS+1);
+
   if (start == 0) {
     // if segment begins with the first point in the protein, the receiver
     // has to wait until the first point(origin) and the next two points are
@@ -79,10 +83,57 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
     double MSG;
     MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
     msglen += MSG;
-    if (DEBUG == SET) {
-      debug << "\nEncoding om+1: " << i+1 << endl;
-      debug << "msglen: " << MSG << endl;
+  }
+
+  string name = "NullModel";
+  IdealModel null_model(num_residues,name);
+  return OptimalFit(null_model,msglen);
+}
+
+/*!
+ *  \brief This function fits a null model to the protein segment.
+ *  \param residual_mixture a reference to a Mixture
+ *  \param sum_residual_weights a reference to a double
+ *  \return the optimal fit using the null model
+ */
+OptimalFit Segment::fitNullModel(Mixture &residual_mixture, double &sum_residual_weights)
+{
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  double msglen = 0;
+  int begin_loop = start;
+  
+  // state the length of segment
+  msglen += message.encodeUsingLogStarModel(num_residues);
+
+  // state the null/coil model
+  msglen += -log2(sum_residual_weights);
+
+  if (start == 0) {
+    // if segment begins with the first point in the protein, the receiver
+    // has to wait until the first point(origin) and the next two points are
+    // transmitted, using the sphere model
+    msglen += message.encodeUsingSphereModel(radii[0],normal);
+    if (end > 1) {
+      msglen += message.encodeUsingSphereModel(radii[1],normal);
+      begin_loop = 2;
+    } else {
+      begin_loop = 1;
     }
+  } else if (start == 1) {
+    msglen += message.encodeUsingSphereModel(radii[1],normal);
+    begin_loop = 2;
+  }
+  // state the remaining points using the residual mixture 
+  double r;
+  for (int i=begin_loop; i<end; i++) {
+    // state radius
+    r = spherical_coordinates[i-2][0];
+    msglen += message.encodeUsingNormalModel(r,normal);
+    // state direction
+    double MSG;
+    MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],residual_mixture);
+    msglen += MSG;
   }
 
   string name = "NullModel";
@@ -98,7 +149,7 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
  *  \param orientation an integer
  *  \return the optimal fit using the ideal model
  */
-OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mixture,
+OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
                                                   int orientation)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
@@ -109,6 +160,9 @@ OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mi
   // state the length of segment
   msglen += message.encodeUsingLogStarModel(num_residues);
 
+  // state the ideal model
+  msglen += log2(NUM_IDEAL_MODELS+1);
+
   if (start == 0) { // the first segment
     // if segment begins with the first point in the protein, the receiver
     // has to wait until the first point(origin) and the next two points are
@@ -117,8 +171,9 @@ OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mi
     if (end > 1) {
       msglen += message.encodeUsingSphereModel(radii[1],normal);
       begin_loop = 2;
+    } else {
+      begin_loop = 1;
     }
-    begin_loop = 1;
   } else if (start == 1) {
     msglen += message.encodeUsingSphereModel(radii[1],normal);
     begin_loop = 2;
@@ -197,13 +252,7 @@ OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mi
     int N = 1;
 
     // ADAPTIVE SUPERPOSITION
-    if (DEBUG == SET) {
-      debug << "<--- ADAPTIVE SUPERPOSITION --->\n";
-    }
     for (int om=start+3; om<end; om++) {
-      if (DEBUG == SET) {
-        debug << "\nEncoding om+1: " << om+1 << endl;
-      }
       r = spherical_coordinates[om-2][0];
       MSG1 = message.encodeUsingNormalModel(r,normal);
       msglen += MSG1;
@@ -261,12 +310,65 @@ OptimalFit Segment::fitIdealModel_MixtureAdaptive(IdealModel &model, Mixture &mi
  *  encoding scheme.
  *  \param model a reference to a IdealModel;
  *  \param mixture a reference to a Mixture
- *  \param orientation an integer
+ *  \param assigned_component a reference to a Component
+ *  \param weight a double
  *  \return the optimal fit using the ideal model
  */
-OptimalFit Segment::fitIdealModel_NonAdaptive(IdealModel &model, Mixture &mixture,
-                                              int orientation)
+OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
+                                     Component &assigned_component, double weight)
 {
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  int begin_loop = start;
+
+  double msglen = 0;
+  // state the length of segment
+  msglen += message.encodeUsingLogStarModel(num_residues);
+
+  // state the ideal model
+  msglen += -log2(weight);
+
+  if (start == 0) { // the first segment
+    // if segment begins with the first point in the protein, the receiver
+    // has to wait until the first point(origin) and the next two points are
+    // transmitted, using the sphere model
+    msglen += message.encodeUsingSphereModel(radii[0],normal);
+    if (end > 1) {
+      msglen += message.encodeUsingSphereModel(radii[1],normal);
+      begin_loop = 2;
+    } else {
+      begin_loop = 1;
+    }
+  } else if (start == 1) {
+    msglen += message.encodeUsingSphereModel(radii[1],normal);
+    begin_loop = 2;
+  } else {  // an intermediate segment
+    // the start point of the segment is the last point of the previous segment
+    // the next two points in the segment are stated using the null model
+    double r;
+    for (int i=start; i<start+2; i++) {
+      // state radius
+      r = spherical_coordinates[i-2][0];
+      msglen += message.encodeUsingNormalModel(r,normal);
+      // state direction
+      msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+    }
+    begin_loop = start + 2;
+  }
+  
+  if (num_residues > 3) {
+    for (int om=start+2; om<end; om++) {
+      // state radius
+      double r = spherical_coordinates[om-2][0];
+      msglen += message.encodeUsingNormalModel(r,normal);
+      msglen += message.encodeUsingComponent(unit_coordinates[om-2],assigned_component);
+    }
+  }
+  ProteinStructure *p = model.getStructure();
+  string name = model.getName();
+  IdealModel ideal_model(p,name);
+  ideal_model.setLength(num_residues);
+  return OptimalFit(ideal_model,msglen);
 }
 
 /*!

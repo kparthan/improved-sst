@@ -133,6 +133,9 @@ class Mixture
 
     //! Conflates a component with the current mixture
     Mixture conflate(Component &);
+
+    //! Gets the residual mixture
+    Mixture getResidualMixture(vector<int> &, double &);
 };
 
 #endif

@@ -460,7 +460,8 @@ int getIndexOfMaximumElement(vector<double> &list)
  */
 void print(ostream &os, vector<double> &v)
 {
-  os << fixed << setprecision(4) << "(" << v[0] << "," << v[1]*180/PI << "," << v[2]*180/PI <<
+  os << fixed << setprecision(4) << "(" << v[0] << "," << v[1] << "," << v[2] <<
+  //os << fixed << setprecision(4) << "(" << v[0] << "," << v[1]*180/PI << "," << v[2]*180/PI <<
 ")\t";
 }
 
@@ -1402,13 +1403,13 @@ vector<IdealModel> loadIdealModels()
   ideal_models.push_back(m3);
 
   // load ideal310Helix_LH
-  name = "310Helix_LH";
+  /*name = "310Helix_LH";
   path = "./ideal_models/ideal310Helix_LH.pdb";
   ProteinStructure *three10_lh = parsePDBFile(path);
   num_residues = three10_lh->getNumberOfResidues();
   //cout << "# residues (three10_lh): " << num_residues << endl;
   IdealModel m4(three10_lh,name);
-  ideal_models.push_back(m4);
+  ideal_models.push_back(m4);*/
 
   // load ideal310Helix_RH
   name = "310Helix_RH";
@@ -1428,6 +1429,15 @@ vector<IdealModel> loadIdealModels()
   IdealModel m6(beta_strand,name);
   ideal_models.push_back(m6);
 
+  // load idealAntiParallelBetaStrand
+  /*name = "AntiParallelBetaStrand";
+  path = "./ideal_models/idealAntiParallelBetaStrand.pdb";
+  ProteinStructure *beta_strand_anti = parsePDBFile(path);
+  num_residues = beta_strand_anti->getNumberOfResidues();
+  //cout << "# residues (beta_strand): " << num_residues << endl;
+  IdealModel m7(beta_strand_anti,name);
+  ideal_models.push_back(m7);*/
+
   return ideal_models;
 }
 
@@ -1435,16 +1445,19 @@ vector<IdealModel> loadIdealModels()
  *  \brief This function assigns a representative mixture component to each of
  *  the ideal models.
  *  \param ideal_models a reference to a vector<IdealModel>
- *  \param mixture a reference to a Mixture
+ *  \param components a reference to a vector<Component>
+ *  \param weights a reference to a vector<double>
+ *  \return the assignment list 
  */
-void assignMixtureComponents(vector<IdealModel> &ideal_models, Mixture &mixture)
+vector<int> assignMixtureComponents(vector<IdealModel> &ideal_models, 
+                                    vector<Component> &components, 
+                                    vector<double> &weights)
 {
   vector<double> mean(3,0),spherical(3,0),unit_mean(3,0);
-  vector<double> weights = mixture.getWeights();
-  vector<Component> components = mixture.getComponents();
   vector<double> density(components.size(),0);
-  double pr;
+  vector<int> assignment(ideal_models.size(),0);
   int max_index;
+  double cumulative_weight = 0;
 
   for (int i=0; i<ideal_models.size(); i++) {
     ProteinStructure *p = ideal_models[i].getStructure();
@@ -1452,28 +1465,35 @@ void assignMixtureComponents(vector<IdealModel> &ideal_models, Mixture &mixture)
     Protein protein(p,name);
     protein.computeSphericalTransformation();
     //protein.save();
-    cout << name << "\t";
+    cout << name << endl;
     mean = protein.computeMeanDirection();
-    cout << "mean: "; print(cout,mean);
+    //cout << "mean: "; print(cout,mean);
     cartesian2spherical(mean,spherical);
-    cout << "spherical: "; print(cout,spherical);
+    //cout << "\tspherical mean of ideal model: "; print(cout,spherical);
+    cout << "\t(theta,phi): (" << spherical[1]*180/PI << "," << spherical[2]*180/PI << ")";
     cartesian2unitspherical(mean,unit_mean);
-    cout << "unit mean: "; print(cout,unit_mean);
+    //cout << "unit mean: "; print(cout,unit_mean);
     string file = "density_" + name;
     ofstream out(file.c_str());
+    double pr = 0;
     for (int j=0; j<components.size(); j++) {
       density[j] = weights[j] * components[j].likelihood(unit_mean);
+      pr += density[j];
     }
     vector<int> sorted = sortedListIndex(density);
     for (int j=0; j<components.size(); j++) {
-      out << sorted[j]+1 << "\t\t" << density[sorted[j]] << endl;
+      out << sorted[j]+1 << "\t\t" << weights[j] << "\t\t" << density[sorted[j]]/pr << endl;
     }
     out.close();
     max_index = getIndexOfMaximumElement(density);
-    cout << "INDEX: " << max_index+1 << "\t";
-    cout << "PR: " << density[max_index] << "\t";
-    pr = mixture.probability(unit_mean);
-    cout << "pr: " << pr;
+    assignment[i] = max_index;
+    cumulative_weight += weights[max_index];
+    cout << "\n\tassigned component: " << max_index+1;
+    cout << "\tprob density: " << density[max_index]/pr << "\t" ; 
+    cout << "\tweight: " << weights[max_index] << "\t";
+    components[max_index].printParameters(cout);
   }
+  cout << "Cumulative weight: " << cumulative_weight << endl;
+  return assignment;
 }
 

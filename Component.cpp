@@ -153,8 +153,8 @@ void Component::estimateVonMisesMean()
 void Component::estimateKappas()
 {
   kappa_ml = estimateKappa_ML();
-  //kappa_mml = estimateKappa_MML(kappa_ml);
-  kappa_mml = kappa_ml;
+  kappa_mml = estimateKappa_MML(kappa_ml);
+  //kappa_mml = kappa_ml;
   cout << "Kappa (MML): " << kappa_mml << endl;
   von_mises = VonMises3D(unit_mean,kappa_mml);
 }
@@ -192,14 +192,14 @@ double Component::estimateKappa_MML(double initial)
     if (prev < 0) {
       prev = fabs(prev);
     }
-    if (num_iterations > 20) {
+    /*if (num_iterations > 20) {
       if (constrain_kappa == SET && current >= MAX_KAPPA) {
         return MAX_KAPPA;
       } else {
         assert(prev > 0);
         return prev;
       }
-    } 
+    }*/ 
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
     if (fabs(fx_der) > TOLERANCE) {
@@ -212,7 +212,8 @@ double Component::estimateKappa_MML(double initial)
         cout << "No significant change ..." << endl;
         cout << "current: " << current << endl;
         if (constrain_kappa == SET && current >= MAX_KAPPA) {
-          return MAX_KAPPA;
+          //return MAX_KAPPA;
+          return kappa_ml;
         } else {
           assert(current > 0);
           return current;
@@ -223,7 +224,8 @@ double Component::estimateKappa_MML(double initial)
            << current <<  ", " << fx << ", " << fx_der << "]" << endl;
       cout << "Derivative is zero ..." << endl;
       if (constrain_kappa == SET && prev >= MAX_KAPPA) {
-        return MAX_KAPPA;
+        //return MAX_KAPPA;
+        return kappa_ml;
       } else {
         assert(prev > 0);
         return prev;
@@ -424,7 +426,7 @@ vector<double> Component::getMeanDirection()
  */
 double Component::getKappa()
 {
-  return kappa_ml;
+  return kappa_mml;
 }
 
 /*!
