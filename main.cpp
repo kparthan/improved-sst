@@ -8,7 +8,11 @@ int main(int argc, char **argv)
   struct Parameters parameters = parseCommandLineInput(argc,argv);
   STRUCTURE = extractName(parameters.file);
 
-  if (parameters.sst == UNSET && parameters.read_profiles == UNSET 
+  if (parameters.dssp == SET && parameters.parse_dssp == SET) {
+    parseDSSP(parameters);
+  }
+
+  if (parameters.dssp == UNSET && parameters.sst == UNSET && parameters.read_profiles == UNSET 
       && parameters.mixture_model == UNSET) {
     buildAngularProfile(parameters);
   }

@@ -77,6 +77,9 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
                                   "segment to be fit")
        ("debug","flag to print out values to assist in debugging")
        ("method",value<string>(&sst_method),"the sst method to be used")
+       // parameters to run DSSP
+       ("dssp","flag to use DSSP output")
+       ("parse",value<string>(&parameters.dssp_file),"file with the DSSP assignment")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -245,6 +248,22 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.simulation = UNSET;
   } else {
     parameters.sst = UNSET;
+  }
+
+  if (vm.count("dssp")) {
+    parameters.dssp = SET;
+    if (!vm.count("parse")) {
+      cout << "Please perovide a DSSP file ...\n";
+      Usage(argv[0],desc);
+    }
+    parameters.parse_dssp = SET;
+    if (vm.count("pdbid")) {
+      parameters.file = getPDBFilePath(pdb_id);
+    } else if (vm.count("scopid")) {
+      parameters.file = getSCOPFilePath(scop_id);
+    }
+  } else {
+    parameters.dssp = UNSET;
   }
 
   if (noargs) {
@@ -711,6 +730,146 @@ string getSCOPFilePath(string &scop_id)
   string directory(scop_id,2,2);
   path += directory + "/" + scop_id + ".ent";
   return path;
+}
+
+/*!
+ *  \brief This function is used to parse the DSSP assignment file and save
+ *  the directional data for different types of secondary structure motifs.
+ *  \param parameters a reference to a struct Parameters
+ */
+void parseDSSP(struct Parameters &parameters)
+{
+  ifstream file(parameters.dssp_file.c_str());
+  int count = 0;
+  string line;
+  vector<string> chain_lines;
+  vector<vector<string>> all_lines;
+
+  int START_LINE = 29;
+  int HASH = 3 - 1;
+  char prev_chain_id,current_chain_id;
+  bool ignore_current_chain = 1;
+  bool new_chain = 1;
+  int CHAIN_ID = 12 - 1;
+  int CHAIN_BREAK = 14 - 1;
+  int CHAIN_END = 15 - 1;
+
+  vector<char> suitable_chains;
+  int num_chains = 0;
+  int num_suitable_chains = 0;
+  ofstream log("dssp_parser.log",ios::app);
+  log << STRUCTURE;
+  while (getline(file,line)) {
+    count++;
+    if (count == START_LINE - 1) {
+      assert(line[HASH] == '#');
+    }
+    if (count >= START_LINE) {
+      if (line[CHAIN_BREAK] == '!' && line[CHAIN_END] == '*') { // chain ends
+        if (!ignore_current_chain) {
+          all_lines.push_back(chain_lines);
+          num_suitable_chains++;
+          suitable_chains.push_back(current_chain_id);
+        }
+        new_chain = 1;
+        chain_lines.clear();
+      } else if (line[CHAIN_BREAK] == '!') {  // ignore the current chain
+        ignore_current_chain = 1;
+        log << "\tChain break in chain " << current_chain_id << " at line " 
+            << count << endl;
+      } else {
+        current_chain_id = line[CHAIN_ID];
+        if (!new_chain) {
+          assert(current_chain_id == prev_chain_id);
+        } else {
+          new_chain = 0;
+          ignore_current_chain = 0;
+          num_chains++;
+        }
+        if (!ignore_current_chain) {
+          chain_lines.push_back(line);
+        }
+        prev_chain_id = current_chain_id;
+      }
+    }
+  }
+  if (!ignore_current_chain) {
+    all_lines.push_back(chain_lines);
+    num_suitable_chains++;
+    suitable_chains.push_back(current_chain_id);
+  }
+  log << "\tnum_chains: " << num_chains << ";"
+      << "\tnum_suitable: " << num_suitable_chains << " | ";
+  for (int i=0; i<all_lines.size(); i++) {
+    log << "\t [" << suitable_chains[i] << "," << all_lines[i].size() << "]";
+  }
+  log << endl;
+    
+  file.close();
+
+  /*ofstream check("check");
+  for (int i=0; i<all_lines.size(); i++) {
+    for (int j=0; j<all_lines[i].size(); j++) {
+      check << all_lines[i][j] << endl;
+    }
+  }
+  check.close();*/
+
+  if (checkFile(parameters.file)) {
+    bool success = checkParsedDSSPFile(all_lines,parameters.file,log);
+    if (success) {
+      collectData(all_lines);
+    } 
+  }
+  log << endl;
+  log.close();
+}
+
+/*!
+ *  \brief This function performs some consistency checks on the parsed DSSP 
+ *  file by testing it against the PDB file.
+ *  \param all_lines a reference to a vector<vector<string>>
+ *  \param pdb_file a string
+ *  \param log a reference to a ostream
+ *  \return whether the sequences in the parsed matches with the original one
+ */
+bool checkParsedDSSPFile(vector<vector<string>> &all_lines, string pdb_file,
+                         ostream &log)
+{
+  int CHAIN_ID = 12 - 1;
+  int RESIDUE_ID = 14 - 1;
+  ProteinStructure *p = parsePDBFile(pdb_file);
+  vector<string> chain_ids = p->getChainIdentifiers();
+  string chain_id;
+  for (int i=0; i<all_lines.size(); i++) {
+    chain_id = all_lines[i][0][11];
+    cout << chain_id << endl;
+    // get chain sequence from the parsed file
+    string residue_ids;
+    for (int j=0; j<all_lines[i].size(); j++) {
+      assert(chain_id[0] == all_lines[i][j][CHAIN_ID]);
+      residue_ids += all_lines[i][j][RESIDUE_ID];
+    }
+    cout << "parsed: " << residue_ids << endl; 
+    // get original sequence
+    Chain chain = p->getDefaultModel()[chain_id];
+    string seq = chain.sequence();
+    cout << "actual: " << seq << endl;
+    if (residue_ids.compare(seq) != 0) {
+      log << "Sequences of chain " << chain_id << " don't match ...\n";
+      return 0;
+    }
+  }
+  log << "This is a suitable structure." << endl;
+  return 1;
+}
+
+/*!
+ *  \brief This function is used to collect the data from the DSSP assignment file.
+ *  \param all_lines a reference to a vector<vector<string>>
+ */
+void collectData(vector<vector<string>> &all_lines)
+{
 }
 
 /*!

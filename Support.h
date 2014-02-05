@@ -35,6 +35,10 @@ struct Parameters
   vector<string> end_points;    // end points of a segment
   int portion_to_fit;           // fit a segment or the entire structure
   int method;                   // flag to indicate the sst method
+  // parameters to use dssp assignment
+  int dssp;                     // flag to use DSSP assignment
+  int parse_dssp;               // flag to parse the DSSP file
+  string dssp_file;             // file with the DSSP assignment 
 };
 
 // general functions
@@ -72,6 +76,9 @@ int partition(vector<RealType> &, vector<int> &, int, int);
 // Protein functions
 string getPDBFilePath(string &);
 string getSCOPFilePath(string &);
+void parseDSSP(struct Parameters &);
+bool checkParsedDSSPFile(vector<vector<string>> &, string, ostream &);
+void collectData(vector<vector<string>> &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);

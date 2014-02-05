@@ -553,7 +553,9 @@ void Protein::fitOneSegment (
       double sum_residual_weights = 1;
       Mixture residual_mixture = mixture.getResidualMixture(assignment,sum_residual_weights);
       // fit null model to the segment
-      ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights);
+      //ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights);
+      sum_residual_weights = 1;
+      ideal_fit = segment.fitNullModel(mixture,sum_residual_weights);
       fit.push_back(ideal_fit);
       for (int m=0; m<NUM_IDEAL_MODELS; m++) {
         if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
