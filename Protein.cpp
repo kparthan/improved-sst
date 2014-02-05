@@ -51,6 +51,15 @@ Protein::Protein(ProteinStructure *structure, string &name) :
 }
 
 /*!
+ *  \brief This function returns the suitable chain ids used.
+ *  \return the list of chain ids
+ */
+vector<string> Protein::getChainIds()
+{
+  return chains;
+}
+
+/*!
  *  \brief This function translates the protein so that its first point
  *  coincides with the origin
  *  \param chain_coordinates a reference to a vector<vector<double>>

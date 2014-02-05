@@ -75,6 +75,9 @@ class Protein
     //! Constructor
     Protein(ProteinStructure *,string &);
 
+    //! Gets the suitable chains
+    vector<string> getChainIds();
+
     //! Computes the successive distances between atoms
     void computeSuccessiveDistances();
 

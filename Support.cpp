@@ -816,9 +816,11 @@ void parseDSSP(struct Parameters &parameters)
   check.close();*/
 
   if (checkFile(parameters.file)) {
-    bool success = checkParsedDSSPFile(all_lines,parameters.file,log);
+    ProteinStructure *p = parsePDBFile(parameters.file);
+    Protein protein(p,STRUCTURE);
+    bool success = checkParsedDSSPFile(protein,p,all_lines,log);
     if (success) {
-      collectData(all_lines);
+      collectData(protein,all_lines,log);
     } 
   }
   log << endl;
@@ -828,21 +830,21 @@ void parseDSSP(struct Parameters &parameters)
 /*!
  *  \brief This function performs some consistency checks on the parsed DSSP 
  *  file by testing it against the PDB file.
+ *  \param protein a reference to a Protein object
+ *  \param p a pointer to a ProteinStructure object
  *  \param all_lines a reference to a vector<vector<string>>
- *  \param pdb_file a string
  *  \param log a reference to a ostream
  *  \return whether the sequences in the parsed matches with the original one
  */
-bool checkParsedDSSPFile(vector<vector<string>> &all_lines, string pdb_file,
-                         ostream &log)
+bool checkParsedDSSPFile(Protein &protein, ProteinStructure *p,
+                         vector<vector<string>> &all_lines, ostream &log)
 {
   int CHAIN_ID = 12 - 1;
   int RESIDUE_ID = 14 - 1;
-  ProteinStructure *p = parsePDBFile(pdb_file);
-  vector<string> chain_ids = p->getChainIdentifiers();
+
   string chain_id;
   for (int i=0; i<all_lines.size(); i++) {
-    chain_id = all_lines[i][0][11];
+    chain_id = all_lines[i][0][CHAIN_ID];
     cout << chain_id << endl;
     // get chain sequence from the parsed file
     string residue_ids;
@@ -860,16 +862,34 @@ bool checkParsedDSSPFile(vector<vector<string>> &all_lines, string pdb_file,
       return 0;
     }
   }
+
+  vector<string> chains = protein.getChainIds();
+  if (chains.size() != all_lines.size()) {
+    log << "# of suitable chains don't match.\n";
+    return 0;
+  }
+  for (int i=0; i<chains.size(); i++) {
+    chain_id = all_lines[i][0][CHAIN_ID];
+    if(chain_id != chains[i]) {
+      log << "Corresponding chains don't match.\n";
+      return 0;
+    }
+  }
   log << "This is a suitable structure." << endl;
   return 1;
 }
 
 /*!
  *  \brief This function is used to collect the data from the DSSP assignment file.
+ *  \param p a pointer to a ProteinStructure object
  *  \param all_lines a reference to a vector<vector<string>>
+ *  \param log a reference to a ostream
  */
-void collectData(vector<vector<string>> &all_lines)
+void collectData(Protein &protein, vector<vector<string>> &all_lines,
+                 ostream &log)
 {
+  vector<string> chains = protein.getChainIds();
+  
 }
 
 /*!
