@@ -1,5 +1,4 @@
 #include "Support.h"
-#include "Segment.h"
 #include "Message.h"
 #include "Geometry3D.h"
 
@@ -299,6 +298,14 @@ vector<vector<double>> Protein::getUnitCoordinatesList()
 }
 
 /*!
+ *  \brief This function gets the list of all spherical coordinates
+ */
+vector<vector<vector<double>>> Protein::getSphericalCoordinatesList()
+{
+  return spherical_coordinates;
+}
+
+/*!
  *  \brief This function returns the size of transformed spherical coordinates.
  *  \return the size
  */
@@ -461,12 +468,13 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
                                        int sst_method)
 {
   vector<IdealModel> ideal_models = loadIdealModels();
+  ofstream log("compression.log");
   if (portion_to_fit == FIT_ENTIRE_STRUCTURE) {
     for (int i=0; i<cartesian_coordinates.size(); i++) {
       /*cout << "cartesian coordinates size: " << cartesian_coordinates[i].size() << endl;
       cout << "distances size: " << distances[i].size() << endl;
       cout << "spherical coordinates size: " << spherical_coordinates[i].size() << endl;*/
-      computeCodeLengthMatrix(ideal_models,mixture,orientation,i,sst_method);
+      computeCodeLengthMatrix(ideal_models,mixture,orientation,i,sst_method,log);
       pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
       vector<int> segments = segmentation.second;
       cout << "Compression fit: " << segmentation.first << " bits." << endl;
@@ -488,49 +496,64 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
       cout << endl;
     }
   } else if (portion_to_fit == FIT_SINGLE_SEGMENT) {
-    fitOneSegment(ideal_models,end_points,mixture,orientation,sst_method);
+    int start = boost::lexical_cast<int>(end_points[1]) - 1;
+    int end = boost::lexical_cast<int>(end_points[2]) - 1;
+    int chain = -1;
+    for (int i=0; i<chains.size(); i++) {
+      if (chains[i].compare(end_points[0]) == 0) {
+        chain = i;
+        cout << "chain_index: " << chain << endl;
+      }
+    }
+    if (chain == -1) {
+      cout << "Chain " << end_points[0] << " doesn't exist!\n";
+      exit(1);
+    }
+    Segment segment(start,end,cartesian_coordinates[chain],
+                    spherical_coordinates[chain],unit_coordinates[chain]);
+    log << "Segment: chain " << chains[chain] << "\t[" << start << "," << end << "]\n";
+    if (start == 0 || start == 1) {
+      segment.setInitialDistances(distances[chain][0],distances[chain][1]);
+    }
+    fitOneSegment(ideal_models,segment,mixture,orientation,sst_method,log);
   }
+  log.close();
 }
 
 /*!
  *  \brief This function fits the ideal models to a single segment of the
  *  protein structure.
  *  \param ideal_models a reference to a vector<IdealModel>
- *  \param end_points a reference to a vector<string>
+ *  \param segment a reference to a Segment 
  *  \param mixture a reference to a Mixture
  *  \param orientation an integer
  *  \param sst_method an integer
+ *  \param log a reference to a ostream
  */
-void Protein::fitOneSegment (
+OptimalFit Protein::fitOneSegment (
   vector<IdealModel> &ideal_models,
-  vector<string> &end_points, 
+  Segment &segment,
   Mixture &mixture, 
   int orientation, 
-  int sst_method
+  ostream &log
 ) {
-  int start = boost::lexical_cast<int>(end_points[1]) - 1;
-  int end = boost::lexical_cast<int>(end_points[2]) - 1;
-  int chain = -1;
-  for (int i=0; i<chains.size(); i++) {
-    if (chains[i].compare(end_points[0]) == 0) {
-      chain = i;
-      cout << "chain_index: " << chain << endl;
-    }
-  }
-  if (chain == -1) {
-    cout << "Chain " << end_points[0] << " doesn't exist!\n";
-    exit(1);
-  }
-  Segment segment(start,end,cartesian_coordinates[chain],
-                  spherical_coordinates[chain],unit_coordinates[chain]);
-  if (start == 0 || start == 1) {
-    segment.setInitialDistances(distances[chain][0],distances[chain][1]);
-  }
-  int segment_length = end - start + 1; 
+  //int segment_length = segment.length(); 
   vector<OptimalFit> fit;
   OptimalFit ideal_fit,current_fit;
 
-  switch(sst_method) {
+  ideal_fit = segment.fitNullModel(mixture,log);
+  fit.push_back(ideal_fit);
+  for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+        (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
+      current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation,log);
+      fit.push_back(current_fit);
+      if (current_fit < ideal_fit) {
+        ideal_fit = current_fit;
+      }
+    }
+  }
+  /*switch(sst_method) {
     case ONE_COMPONENT_ADAPTIVE:
       break;
 
@@ -538,13 +561,13 @@ void Protein::fitOneSegment (
     {
       // fit null model to the segment
       cout << "NULL\n";
-      ideal_fit = segment.fitNullModel(mixture);
+      ideal_fit = segment.fitNullModel(mixture,log);
       fit.push_back(ideal_fit);
       for (int m=0; m<NUM_IDEAL_MODELS; m++) {
         if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
             (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
           cout << "MODEL: " << ideal_models[m].getName() << endl << endl;
-          current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
+          current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation,log);
           fit.push_back(current_fit);
           if (current_fit < ideal_fit) {
             ideal_fit = current_fit;
@@ -562,9 +585,7 @@ void Protein::fitOneSegment (
       double sum_residual_weights = 1;
       Mixture residual_mixture = mixture.getResidualMixture(assignment,sum_residual_weights);
       // fit null model to the segment
-      //ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights);
-      sum_residual_weights = 1;
-      ideal_fit = segment.fitNullModel(mixture,sum_residual_weights);
+      ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights,log);
       fit.push_back(ideal_fit);
       for (int m=0; m<NUM_IDEAL_MODELS; m++) {
         if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
@@ -572,7 +593,7 @@ void Protein::fitOneSegment (
           Component assigned_component = components[assignment[m]];
           double weight = weights[assignment[m]];
           current_fit = segment.fitIdealModel(ideal_models[m],residual_mixture,
-                                                       assigned_component,weight);
+                                              assigned_component,weight,log);
           fit.push_back(current_fit);
           if (current_fit < ideal_fit) {
             ideal_fit = current_fit;
@@ -580,6 +601,48 @@ void Protein::fitOneSegment (
         }
       }
       break;
+    }
+  }*/
+  cout << "\n\nPrinting fit info:\n";
+  for (int i=0; i<fit.size(); i++) {
+    fit[i].printFitInfo();
+    cout << endl;
+  }
+  cout << "\nBest fit: ";
+  ideal_fit.printFitInfo();
+  return ideal_fit;
+}
+
+/*!
+ *
+ */
+OptimalFit 
+Protein::fitOneSegment (
+  vector<IdealModel> &ideal_models,
+  Segment &segment,
+  Mixture &residual_mixture,
+  double &sum_residual_weights,
+  vector<Component> &components,
+  vector<double> &weights,
+  vector<int> &assignment,
+  ostream &log
+) {
+  vector<OptimalFit> fit;
+  OptimalFit current_fit,ideal_fit;
+
+  ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights,log);
+  fit.push_back(ideal_fit);
+  for (int m=0; m<NUM_IDEAL_MODELS; m++) {
+    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+        (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
+      Component assigned_component = components[assignment[m]];
+      double weight = weights[assignment[m]];
+      current_fit = segment.fitIdealModel(ideal_models[m],residual_mixture,
+                                          assigned_component,weight,log);
+      fit.push_back(current_fit);
+      if (current_fit < ideal_fit) {
+        ideal_fit = current_fit;
+      }
     }
   }
   cout << "\n\nPrinting fit info:\n";
@@ -589,6 +652,7 @@ void Protein::fitOneSegment (
   }
   cout << "\nBest fit: ";
   ideal_fit.printFitInfo();
+  return ideal_fit;
 }
 
 /*!
@@ -599,14 +663,16 @@ void Protein::fitOneSegment (
  *  \param orientation an integer
  *  \param chain an integer
  *  \param sst_method an integer
+ *  \param log a reference to a ostream
  */
 void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
                                       Mixture &mixture, int orientation, 
-                                      int chain, int sst_method)
+                                      int chain, int sst_method, ostream &log)
 {
   initializeCodeLengthMatrices(chain);
   int chain_size = cartesian_coordinates[chain].size();
   int i,j,m,bound,segment_length;
+  OptimalFit ideal_fit;
 
   switch(sst_method) {
     case ONE_COMPONENT_ADAPTIVE:
@@ -623,21 +689,26 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
           if (i == 0 || i == 1) {
             segment.setInitialDistances(distances[chain][0],distances[chain][1]);
           }
-          segment_length = j - i + 1; 
+          if (j >= bound) {
+            ideal_fit = segment.fitNullModel(mixture,log);
+          } else {
+            ideal_fit = fitOneSegment(ideal_models,segment,mixture,orientation,log);
+          }
+          /*segment_length = j - i + 1; 
           OptimalFit current_fit,ideal_fit;
           // fit null model to the segment
-          ideal_fit = segment.fitNullModel(mixture);
+          ideal_fit = segment.fitNullModel(mixture,log);
           if (j < bound) {
             for (m=0; m<NUM_IDEAL_MODELS; m++) {
               if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
                   (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
-                current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation);
+                current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation,log);
                 if (current_fit < ideal_fit) {
                   ideal_fit = current_fit;
                 }
               }
             }
-          } 
+          }*/
           optimal_model[i][j] = ideal_fit;
           optimal_code_length[i][j] = ideal_fit.getMessageLength();
         }
@@ -662,10 +733,16 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
           if (i == 0 || i == 1) {
             segment.setInitialDistances(distances[chain][0],distances[chain][1]);
           }
-          segment_length = j - i + 1; 
+          if (j >= bound) {
+            ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights,log);
+          } else {
+            ideal_fit = fitOneSegment(ideal_models,segment,residual_mixture,
+                        sum_residual_weights,components,weight,assignment,log);
+          }
+          /*segment_length = j - i + 1;
           OptimalFit current_fit,ideal_fit;
           // fit null model to the segment
-          ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights);
+          ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights,log);
           if (j < bound) {
             for (int m=0; m<NUM_IDEAL_MODELS; m++) {
               if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
@@ -673,13 +750,13 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
                 Component assigned_component = components[assignment[m]];
                 double weight = weights[assignment[m]];
                 current_fit = segment.fitIdealModel(ideal_models[m],residual_mixture,
-                                                             assigned_component,weight);
+                                                    assigned_component,weight,log);
                 if (current_fit < ideal_fit) {
                   ideal_fit = current_fit;
                 }
               }
             }
-          } 
+          }*/
           optimal_model[i][j] = ideal_fit;
           optimal_code_length[i][j] = ideal_fit.getMessageLength();
         }

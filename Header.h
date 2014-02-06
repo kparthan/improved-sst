@@ -59,7 +59,7 @@
 #define DEFAULT_SAMPLE_SIZE 2000
 
 // for sst
-#define NUM_IDEAL_MODELS 6 
+#define NUM_IDEAL_MODELS 7 
 #define MIN_SIZE_HELIX  4 
 #define MIN_SIZE_STRAND 4
 #define MAX_SEGMENT_SIZE 40 

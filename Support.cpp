@@ -253,8 +253,13 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
   if (vm.count("dssp")) {
     parameters.dssp = SET;
     if (!vm.count("parse")) {
-      cout << "Please perovide a DSSP file ...\n";
+      cout << "Please provide a DSSP file ...\n";
       Usage(argv[0],desc);
+    } else {
+      if(checkFile(parameters.dssp_file) == 0) {
+        cout << "DSSP file: " << parameters.dssp_file << " doesn't exist.\n";
+        Usage(argv[0],desc);
+      }
     }
     parameters.parse_dssp = SET;
     if (vm.count("pdbid")) {
@@ -745,9 +750,9 @@ void parseDSSP(struct Parameters &parameters)
   vector<string> chain_lines;
   vector<vector<string>> all_lines;
 
-  int START_LINE = 29;
   int HASH = 3 - 1;
   char prev_chain_id,current_chain_id;
+  bool begin = 0;
   bool ignore_current_chain = 1;
   bool new_chain = 1;
   int CHAIN_ID = 12 - 1;
@@ -761,10 +766,11 @@ void parseDSSP(struct Parameters &parameters)
   log << STRUCTURE;
   while (getline(file,line)) {
     count++;
-    if (count == START_LINE - 1) {
-      assert(line[HASH] == '#');
+    if (line[HASH] == '#') {
+      begin = 1;
+      log << "\tParsing begins at line # " << count+1 << endl;
     }
-    if (count >= START_LINE) {
+    if (begin == 1 && line[HASH] != '#') {
       if (line[CHAIN_BREAK] == '!' && line[CHAIN_END] == '*') { // chain ends
         if (!ignore_current_chain) {
           all_lines.push_back(chain_lines);
@@ -852,44 +858,119 @@ bool checkParsedDSSPFile(Protein &protein, ProteinStructure *p,
       assert(chain_id[0] == all_lines[i][j][CHAIN_ID]);
       residue_ids += all_lines[i][j][RESIDUE_ID];
     }
-    cout << "parsed: " << residue_ids << endl; 
+    //cout << "parsed: " << residue_ids << endl; 
     // get original sequence
     Chain chain = p->getDefaultModel()[chain_id];
     string seq = chain.sequence();
-    cout << "actual: " << seq << endl;
+    //cout << "actual: " << seq << endl;
     if (residue_ids.compare(seq) != 0) {
-      log << "Sequences of chain " << chain_id << " don't match ...\n";
+      log << "\tSequences of chain " << chain_id << " don't match.\n";
       return 0;
     }
   }
 
   vector<string> chains = protein.getChainIds();
   if (chains.size() != all_lines.size()) {
-    log << "# of suitable chains don't match.\n";
+    log << "\t# of suitable chains don't match.\n";
     return 0;
   }
   for (int i=0; i<chains.size(); i++) {
     chain_id = all_lines[i][0][CHAIN_ID];
     if(chain_id != chains[i]) {
-      log << "Corresponding chains don't match.\n";
+      log << "\tCorresponding chains don't match.\n";
       return 0;
     }
   }
-  log << "This is a suitable structure." << endl;
+  log << "\tThis is a suitable structure." << endl;
   return 1;
 }
 
 /*!
  *  \brief This function is used to collect the data from the DSSP assignment file.
- *  \param p a pointer to a ProteinStructure object
+ *  \param protein a reference to a Protein object
  *  \param all_lines a reference to a vector<vector<string>>
  *  \param log a reference to a ostream
  */
 void collectData(Protein &protein, vector<vector<string>> &all_lines,
                  ostream &log)
 {
-  vector<string> chains = protein.getChainIds();
-  
+  int CHAIN_ID = 12 - 1;
+  int ASSIGN_ID = 17 - 1;
+  int k;
+  string line;
+  char type;
+  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/spherical_profiles/";
+  string type_dir;
+  type_dir = DSSP_DIR + "C/" + STRUCTURE + ".profile";
+  ofstream coil(type_dir.c_str());
+  type_dir = DSSP_DIR + "E/" + STRUCTURE + ".profile";
+  ofstream sheet(type_dir.c_str());
+  type_dir = DSSP_DIR + "G/" + STRUCTURE + ".profile";
+  ofstream helix_310(type_dir.c_str());
+  type_dir = DSSP_DIR + "H/" + STRUCTURE + ".profile";
+  ofstream helix_alpha(type_dir.c_str());
+  type_dir = DSSP_DIR + "I/" + STRUCTURE + ".profile";
+  ofstream helix_pi(type_dir.c_str());
+
+  protein.computeSphericalTransformation();
+  vector<vector<vector<double>>>
+  spherical_coordinates = protein.getSphericalCoordinatesList();
+  for (int i=0; i<all_lines.size(); i++) {
+    for (int j=3; j<all_lines[i].size(); j++) {
+      line = all_lines[i][j];
+      type = line[ASSIGN_ID];
+      vector<double> spherical = spherical_coordinates[i][j-3];
+
+      //cout << type << endl;
+      //if (type == ' ') cout << "yes\n";
+      switch(type) {
+        case 'E': // extended beta sheet
+          sheet << all_lines[i][j][CHAIN_ID];
+          for (k=0; k<3; k++) {
+            sheet << fixed << setw(10) << setprecision(4) << spherical[k];
+          }
+          sheet << endl;
+          break;
+
+        case 'G': //3-10 helix
+          helix_310 << all_lines[i][j][CHAIN_ID];
+          for (k=0; k<3; k++) {
+            helix_310 << fixed << setw(10) << setprecision(4) << spherical[k];
+          }
+          helix_310 << endl;
+          break;
+
+        case 'H': // alpha helix
+          helix_alpha << all_lines[i][j][CHAIN_ID];
+          for (k=0; k<3; k++) {
+            helix_alpha << fixed << setw(10) << setprecision(4) << spherical[k];
+          }
+          helix_alpha << endl;
+          break;
+
+        case 'I': // pi helix
+          helix_pi << all_lines[i][j][CHAIN_ID];
+          for (k=0; k<3; k++) {
+            helix_pi << fixed << setw(10) << setprecision(4) << spherical[k];
+          }
+          helix_pi << endl;
+          break;
+
+        default:  // coil
+          coil << all_lines[i][j][CHAIN_ID];
+          for (k=0; k<3; k++) {
+            coil << fixed << setw(10) << setprecision(4) << spherical[k];
+          }
+          coil << endl;
+          break;
+      }
+    }
+  }
+  coil.close();
+  sheet.close();
+  helix_310.close();
+  helix_alpha.close();
+  helix_pi.close();
 }
 
 /*!
@@ -1582,13 +1663,13 @@ vector<IdealModel> loadIdealModels()
   ideal_models.push_back(m3);
 
   // load ideal310Helix_LH
-  /*name = "310Helix_LH";
+  name = "310Helix_LH";
   path = "./ideal_models/ideal310Helix_LH.pdb";
   ProteinStructure *three10_lh = parsePDBFile(path);
   num_residues = three10_lh->getNumberOfResidues();
   //cout << "# residues (three10_lh): " << num_residues << endl;
   IdealModel m4(three10_lh,name);
-  ideal_models.push_back(m4);*/
+  ideal_models.push_back(m4);
 
   // load ideal310Helix_RH
   name = "310Helix_RH";

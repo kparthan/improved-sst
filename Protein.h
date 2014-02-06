@@ -4,6 +4,7 @@
 #include "Header.h"
 #include "Mixture.h"
 #include "OptimalFit.h"
+#include "Segment.h"
 
 class Protein
 {
@@ -93,8 +94,11 @@ class Protein
     //! Saves the spherical system
     void save();
 
-    //! Gets the list of all spherical coordinates
+    // Gets the list of all unit coordinates
     vector<vector<double>> getUnitCoordinatesList();
+
+    //! Gets the list of all spherical coordinates
+    vector<vector<vector<double>>> getSphericalCoordinatesList();
 
     //! Get the CPU time
     double getCPUTime();
@@ -118,10 +122,14 @@ class Protein
     void compressUsingIdealModels(Mixture &, int, int, vector<string> &, int);
 
     //! Fit a single segment
-    void fitOneSegment(vector<IdealModel> &, vector<string> &, Mixture &, int, int);
+    OptimalFit fitOneSegment(vector<IdealModel> &, Segment &, Mixture &, int, ostream &);
+
+    //! Fit a single segment
+    OptimalFit fitOneSegment(vector<IdealModel> &, Segment &, Mixture &, double &,
+                 vector<Component> &, vector<double> &, vector<int> &, ostream &);
 
     //! Computes the optimal code length matrix
-    void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int, int);
+    void computeCodeLengthMatrix(vector<IdealModel> &, Mixture &, int, int, int, ostream &);
 
     //! Computes the optimal segmentation using dynamic programming
     pair<double,vector<int>> computeOptimalSegmentation(int);

@@ -1,5 +1,5 @@
 #include "Segment.h"
-#include "Message.h"
+#include "Support.h"
 #include "Superpose3D.h"
 #include "Geometry3D.h"
 
@@ -41,22 +41,25 @@ void Segment::setInitialDistances(double d1, double d2)
 }
 
 /*!
- *  \brief This function fits a null model to the protein segment.
- *  \param mixture a reference to a Mixture
- *  \return the optimal fit using the null model
+ *  \brief This function returns the number of residues in the segment.
  */
-OptimalFit Segment::fitNullModel(Mixture &mixture)
+int Segment::length()
 {
-  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
-  Message message;
-  double msglen = 0;
-  int begin_loop = start;
-  
-  // state the length of segment
-  msglen += message.encodeUsingLogStarModel(num_residues);
+  return num_residues;
+}
 
-  // state the null model
-  msglen += log2(NUM_IDEAL_MODELS+1);
+/*!
+ *  \brief This function computes the message length to state the 0 (origin), 1st
+ *  and 2nd points in the protein.
+ *  \param begin_loop a reference to an integer
+ *  \param normal a reference to a Normal object
+ *  \param message a reference to a Message
+ *  \return the initial message length
+ */
+double Segment::computeInitialCost(int &begin_loop, Normal &normal, Message &message)
+{
+  begin_loop = start;
+  double msglen = 0;
 
   if (start == 0) {
     // if segment begins with the first point in the protein, the receiver
@@ -73,17 +76,59 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
     msglen += message.encodeUsingSphereModel(radii[1],normal);
     begin_loop = 2;
   }
+  return msglen;
+}
+
+/*!
+ *  \brief This function fits a null model to the protein segment.
+ *  \param mixture a reference to a Mixture
+ *  \param log a reference to a ostream
+ *  \return the optimal fit using the null model
+ */
+OptimalFit Segment::fitNullModel(Mixture &mixture, ostream &log)
+{
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  double msglen = 0;
+  double MSG;
+  int begin_loop;
+
+  log << "\tMODEL_TYPE: NULL\n";
+  
+  // state the length of segment
+  MSG = message.encodeUsingLogStarModel(num_residues);
+  log << "\t\tTo state the length: " << MSG << endl;
+  msglen += MSG;
+
+  // state the null model (type)
+  MSG = log2(NUM_IDEAL_MODELS+1);
+  log << "\t\tTo state the model type: " << MSG << endl;
+  msglen += MSG;
+
+  // initial statement cost if the start index is 0 or 1
+  MSG = computeInitialCost(begin_loop,normal,message);
+  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+      << MSG << endl;
+  msglen += MSG;
+
   // state the remaining points using the mixture model
   double r;
   for (int i=begin_loop; i<end; i++) {
+    log << "\t\tResidue " << i+1 << ": ";
     // state radius
     r = spherical_coordinates[i-2][0];
-    msglen += message.encodeUsingNormalModel(r,normal);
+    MSG = message.encodeUsingNormalModel(r,normal);
+    log << "To state radius & direction: (" << MSG << ",";
+    msglen += MSG;
+
     // state direction
-    double MSG;
     MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+    log << MSG << ")\n";
     msglen += MSG;
   }
+
+  log << "\t\t\tNet message length: " << msglen << " bits. (" << msglen/num_residues 
+      << " bpr)\n";
 
   string name = "NullModel";
   IdealModel null_model(num_residues,name);
@@ -94,49 +139,56 @@ OptimalFit Segment::fitNullModel(Mixture &mixture)
  *  \brief This function fits a null model to the protein segment.
  *  \param residual_mixture a reference to a Mixture
  *  \param sum_residual_weights a reference to a double
+ *  \param log a reference to a ostream
  *  \return the optimal fit using the null model
  */
-OptimalFit Segment::fitNullModel(Mixture &residual_mixture, double &sum_residual_weights)
+OptimalFit Segment::fitNullModel(Mixture &residual_mixture, double &sum_residual_weights,
+                                 ostream &log)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
   Message message;
   double msglen = 0;
-  int begin_loop = start;
+  double MSG;
+  int begin_loop;
   
+  log << "\tMODEL_TYPE: COIL/NULL\n";
+
   // state the length of segment
-  msglen += message.encodeUsingLogStarModel(num_residues);
+  MSG = message.encodeUsingLogStarModel(num_residues);
+  log << "\t\tTo state the length: " << MSG << endl;
+  msglen += MSG;
 
-  // state the null/coil model
-  msglen += -log2(sum_residual_weights);
+  // state the coil model (type)
+  MSG = -log2(sum_residual_weights);
+  log << "\t\tTo state the model type: " << MSG << endl;
+  msglen += MSG;
 
-  if (start == 0) {
-    // if segment begins with the first point in the protein, the receiver
-    // has to wait until the first point(origin) and the next two points are
-    // transmitted, using the sphere model
-    msglen += message.encodeUsingSphereModel(radii[0],normal);
-    if (end > 1) {
-      msglen += message.encodeUsingSphereModel(radii[1],normal);
-      begin_loop = 2;
-    } else {
-      begin_loop = 1;
-    }
-  } else if (start == 1) {
-    msglen += message.encodeUsingSphereModel(radii[1],normal);
-    begin_loop = 2;
-  }
+  // initial statement cost if the start index is 0 or 1
+  MSG = computeInitialCost(begin_loop,normal,message);
+  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+      << MSG << endl;
+  msglen += MSG;
+
   // state the remaining points using the residual mixture 
   double r;
   for (int i=begin_loop; i<end; i++) {
+    log << "\t\tResidue " << i+1 << ": ";
     // state radius
     r = spherical_coordinates[i-2][0];
-    msglen += message.encodeUsingNormalModel(r,normal);
+    MSG = message.encodeUsingNormalModel(r,normal);
+    log << "To state radius & direction: (" << MSG << ",";
+    msglen += MSG;
+
     // state direction
-    double MSG;
     MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],residual_mixture);
+    log << MSG << ")\n";
     msglen += MSG;
   }
 
-  string name = "NullModel";
+  log << "\t\t\tNet message length: " << msglen << " bits. (" << msglen/num_residues 
+      << " bpr)\n";
+
+  string name = "CoilModel";
   IdealModel null_model(num_residues,name);
   return OptimalFit(null_model,msglen);
 }
@@ -147,46 +199,50 @@ OptimalFit Segment::fitNullModel(Mixture &residual_mixture, double &sum_residual
  *  \param model a reference to a IdealModel;
  *  \param mixture a reference to a Mixture
  *  \param orientation an integer
+ *  \param log a reference to a ostream
  *  \return the optimal fit using the ideal model
  */
 OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
-                                                  int orientation)
+                                  int orientation, ostream &log)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
   Message message;
-  int begin_loop = start;
-
+  int begin_loop;
   double msglen = 0;
+  double r,MSG;
+
+  log << "\tMODEL_TYPE: " << model.getName() << endl;
+
   // state the length of segment
-  msglen += message.encodeUsingLogStarModel(num_residues);
+  MSG = message.encodeUsingLogStarModel(num_residues);
+  log << "\t\tTo state the length: " << MSG << endl;
+  msglen += MSG;
 
   // state the ideal model
-  msglen += log2(NUM_IDEAL_MODELS+1);
+  MSG = log2(NUM_IDEAL_MODELS+1);
+  log << "\t\tTo state the model type: " << MSG << endl;
+  msglen += MSG;
 
-  if (start == 0) { // the first segment
-    // if segment begins with the first point in the protein, the receiver
-    // has to wait until the first point(origin) and the next two points are
-    // transmitted, using the sphere model
-    msglen += message.encodeUsingSphereModel(radii[0],normal);
-    if (end > 1) {
-      msglen += message.encodeUsingSphereModel(radii[1],normal);
-      begin_loop = 2;
-    } else {
-      begin_loop = 1;
-    }
-  } else if (start == 1) {
-    msglen += message.encodeUsingSphereModel(radii[1],normal);
-    begin_loop = 2;
+  if (start == 0 || start == 1) { // the first segment
+    MSG = computeInitialCost(begin_loop,normal,message);
+    log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+        << MSG << endl;
+    msglen += MSG;
   } else {  // an intermediate segment
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
-    double r;
     for (int i=start; i<start+2; i++) {
+      log << "\t\tResidue " << i+1 << ": ";
       // state radius
       r = spherical_coordinates[i-2][0];
-      msglen += message.encodeUsingNormalModel(r,normal);
+      MSG = message.encodeUsingNormalModel(r,normal);
+      log << "To state radius & direction: (" << MSG << ",";
+      msglen += MSG;
+
       // state direction
-      msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+      MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+      log << MSG << ")\n";
+      msglen += MSG;
     }
     begin_loop = start + 2;
   }
@@ -209,13 +265,14 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     vector<double> unit_mean(3,0);
     vector<double> x(3,0);
     vector<double> vonmises_suffstats(3,0);
-    double kappa = 25;
-    double rmsd;
-    double MSG,MSG1;
+    double rmsd,kappa = 25;
     Mixture conflated_mixture;
-    double r = spherical_coordinates[start][0];
-    MSG1 = message.encodeUsingNormalModel(r,normal);
-    msglen += MSG1;
+
+    log << "\t\tResidue " << begin_loop+1 << ": ";
+    r = spherical_coordinates[start][0];
+    MSG = message.encodeUsingNormalModel(r,normal);
+    log << "To state radius & direction: (" << MSG << ",";
+    msglen += MSG;
 
     // INITIAL SUPERPOSITION
     for (int i=0; i<3; i++) {
@@ -245,6 +302,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
     conflated_mixture = mixture.conflate(component);
     MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
     //MSG = message.encodeUsingComponent(x,component);
+    log << MSG << ")\n";
     msglen += MSG;
     alignWithZAxis(ideal_residues[2],ideal_residues[3],zaxis_transform);
     applyIdealModelTransformation(zaxis_transform,observed_copy[2],
@@ -253,9 +311,11 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
     // ADAPTIVE SUPERPOSITION
     for (int om=start+3; om<end; om++) {
+      log << "\t\tResidue " << om+1 << ": ";
       r = spherical_coordinates[om-2][0];
-      MSG1 = message.encodeUsingNormalModel(r,normal);
-      msglen += MSG1;
+      MSG = message.encodeUsingNormalModel(r,normal);
+      log << "To state radius & direction: (" << MSG << ",";
+      msglen += MSG;
       // start,...,om : points known to receiver
       //           om : most recent point communicated to the receiver
       //         om+1 : current point being transmitted
@@ -290,6 +350,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       conflated_mixture = mixture.conflate(component);
       MSG = message.encodeUsingMixtureModel(x,conflated_mixture);
       //MSG = message.encodeUsingComponent(x,component);
+      log << MSG << ")\n";
       msglen += MSG;
       // update von mises suff stats
       alignWithZAxis(ideal_residues[om-start],ideal_residues[om-start+1],zaxis_transform);
@@ -298,6 +359,10 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
       N++;
     }
   }
+
+  log << "\t\t\tNet message length: " << msglen << " bits. (" << msglen/num_residues 
+      << " bpr)\n";
+
   ProteinStructure *p = model.getStructure();
   string name = model.getName();
   IdealModel ideal_model(p,name);
@@ -312,58 +377,73 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
  *  \param mixture a reference to a Mixture
  *  \param assigned_component a reference to a Component
  *  \param weight a double
+ *  \param log a reference to a ostream
  *  \return the optimal fit using the ideal model
  */
 OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
-                                     Component &assigned_component, double weight)
+                                  Component &assigned_component, double weight,
+                                  ostream &log)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
   Message message;
-  int begin_loop = start;
-
+  int begin_loop;
   double msglen = 0;
+  double r,MSG;
+
+  log << "\tMODEL_TYPE: " << model.getName() << endl;
+
   // state the length of segment
-  msglen += message.encodeUsingLogStarModel(num_residues);
+  MSG = message.encodeUsingLogStarModel(num_residues);
+  log << "\t\tTo state the length: " << MSG << endl;
+  msglen += MSG;
 
   // state the ideal model
-  msglen += -log2(weight);
+  MSG = -log2(weight);
+  log << "\t\tTo state the model type: " << MSG << endl;
+  msglen += MSG;
 
-  if (start == 0) { // the first segment
-    // if segment begins with the first point in the protein, the receiver
-    // has to wait until the first point(origin) and the next two points are
-    // transmitted, using the sphere model
-    msglen += message.encodeUsingSphereModel(radii[0],normal);
-    if (end > 1) {
-      msglen += message.encodeUsingSphereModel(radii[1],normal);
-      begin_loop = 2;
-    } else {
-      begin_loop = 1;
-    }
-  } else if (start == 1) {
-    msglen += message.encodeUsingSphereModel(radii[1],normal);
-    begin_loop = 2;
+  if (start == 0 || start == 1) { // the first segment
+    MSG = computeInitialCost(begin_loop,normal,message);
+    log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+        << MSG << endl;
+    msglen += MSG;
   } else {  // an intermediate segment
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
-    double r;
     for (int i=start; i<start+2; i++) {
+      log << "\t\tResidue " << i+1 << ": ";
       // state radius
       r = spherical_coordinates[i-2][0];
-      msglen += message.encodeUsingNormalModel(r,normal);
+      MSG = message.encodeUsingNormalModel(r,normal);
+      log << "To state radius & direction: (" << MSG << ",";
+      msglen += MSG;
+
       // state direction
-      msglen += message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+      //MSG = message.encodeUsingComponent(unit_coordinates[i-2],assigned_component);
+      MSG = message.encodeUsingMixtureModel(unit_coordinates[i-2],mixture);
+      log << MSG << ")\n";
+      msglen += MSG;
     }
     begin_loop = start + 2;
   }
   
-  if (num_residues > 3) {
-    for (int om=start+2; om<end; om++) {
-      // state radius
-      double r = spherical_coordinates[om-2][0];
-      msglen += message.encodeUsingNormalModel(r,normal);
-      msglen += message.encodeUsingComponent(unit_coordinates[om-2],assigned_component);
-    }
+  for (int om=begin_loop; om<end; om++) {
+    log << "\t\tResidue " << om+1 << ": ";
+    // state radius
+    r = spherical_coordinates[om-2][0];
+    MSG = message.encodeUsingNormalModel(r,normal);
+    log << "To state radius & direction: (" << MSG << ",";
+    msglen += MSG;
+
+    // state direction
+    MSG = message.encodeUsingComponent(unit_coordinates[om-2],assigned_component);
+    log << MSG << ")\n";
+    msglen += MSG;
   }
+
+  log << "\t\t\tNet message length: " << msglen << " bits. (" << msglen/num_residues 
+      << " bpr)\n";
+
   ProteinStructure *p = model.getStructure();
   string name = model.getName();
   IdealModel ideal_model(p,name);
