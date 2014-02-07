@@ -56,6 +56,9 @@ class Segment
     //! Fit an ideal model using the non adaptive model for mixture
     OptimalFit fitIdealModel(IdealModel &, Mixture &, Component &, double, ostream &);
 
+    //! Fit an ideal model using the non adaptive model based on DSSP data 
+    OptimalFit fitIdealModel(Mixture &, double, ostream &);
+
     //! Computes the current mean and direction in the adaptive superposition
     void getCurrentMeanAndDirection(vector<double> &, vector<vector<double>> &,
     vector<double> &, vector<double> &, vector<double> &, vector<double> &, 

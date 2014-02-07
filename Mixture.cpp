@@ -63,6 +63,14 @@ void Mixture::setDSSPFlag(string &sst_type)
 }
 
 /*!
+ *  \brief This function gets the DSSP type.
+ */
+string Mixture::getDSSPType()
+{
+  return dssp_sst_type;
+}
+
+/*!
  *  \brief This function returns the list of all weights.
  *  \return the list of weights
  */
@@ -78,6 +86,20 @@ vector<double> Mixture::getWeights()
 vector<Component> Mixture::getComponents()
 {
   return components;
+}
+
+/*!
+ *  \brief This function returns the sample size of the mixture.
+ *  \return the sample size
+ */
+double Mixture::getSampleSize()
+{
+  double sum = 0;
+  for (int i=0; i<sample_size.size(); i++) {
+    sum += sample_size[i];
+  }
+  //cout << "sum_mixture: " << sum << endl;
+  return sum;
 }
 
 /*!

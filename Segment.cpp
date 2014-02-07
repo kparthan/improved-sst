@@ -452,6 +452,62 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 }
 
 /*!
+ *  \brief This function fits an ideal mixture model to the protein segment 
+ *  using a non-adaptive encoding scheme based on DSSP assignment.
+ *  \param ideal_mixture a reference to a Mixture
+ *  \param weight a double
+ *  \param log a reference to a ostream
+ *  \return the optimal fit using the ideal model
+ */
+OptimalFit Segment::fitIdealModel(Mixture &ideal_mixture, double weight, 
+                                  ostream &log)
+{
+  Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
+  Message message;
+  int begin_loop;
+  double msglen = 0;
+  double r,MSG;
+
+  string name = ideal_mixture.getDSSPType(); 
+  log << "\tMODEL_TYPE: " << name << endl;
+
+  // state the length of segment
+  MSG = message.encodeUsingLogStarModel(num_residues);
+  log << "\t\tTo state the length: " << MSG << endl;
+  msglen += MSG;
+
+  // state the ideal model
+  MSG = -log2(weight);
+  log << "\t\tTo state the model type: " << MSG << endl;
+  msglen += MSG;
+
+  MSG = computeInitialCost(begin_loop,normal,message);
+  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+      << MSG << endl;
+  msglen += MSG;
+
+  for (int om=begin_loop; om<end; om++) {
+    log << "\t\tResidue " << om+1 << ": ";
+    // state radius
+    r = spherical_coordinates[om-2][0];
+    MSG = message.encodeUsingNormalModel(r,normal);
+    log << "To state radius & direction: (" << MSG << ",";
+    msglen += MSG;
+
+    // state direction
+    MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],ideal_mixture);
+    log << MSG << ")\n";
+    msglen += MSG;
+  }
+
+  log << "\t\t\tNet message length: " << msglen << " bits. (" << msglen/num_residues 
+      << " bpr)\n";
+
+  IdealModel ideal_model(num_residues,name);
+  return OptimalFit(ideal_model,msglen);
+}
+
+/*!
  *  \brief This function computes the current mean of the VMF component and 
  *  computes the direction from the mean to be used in the density function.
  *  \param pre_origin a reference to a vector<double>

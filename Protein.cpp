@@ -615,6 +615,47 @@ OptimalFit Protein::fitSegment (  // non-adaptive method
 }
 
 /*!
+ *  \brief This function is used to fit a single segment using the ideal mixture 
+ *  models generated using DSSP
+ *  \param ideal_mixture_models a reference to a vector<Mixture>
+ *  \param model_weights a reference to a vector<double>
+ *  \param segment a reference to a Segment 
+ *  \param log a reference to a ostream
+ *  \return the ideal fit for the segment
+ */
+OptimalFit Protein::fitSegment (  // dssp non-adaptive
+  vector<Mixture> &ideal_mixture_models,
+  vector<double> &model_weights,
+  Segment &segment,
+  ostream &log
+) {
+  int segment_length = segment.length(); 
+  vector<OptimalFit> fit;
+  OptimalFit current_fit,ideal_fit;
+
+  ideal_fit = segment.fitNullModel(ideal_mixture_models[4],model_weights[4],log);
+  fit.push_back(ideal_fit);
+  for (int m=0; m<4; m++) {
+    if ((m < 3 && segment_length >= MIN_SIZE_HELIX) ||
+        (m == 3 && segment_length >= MIN_SIZE_STRAND)) {
+      current_fit = segment.fitIdealModel(ideal_mixture_models[m],model_weights[m],log);
+      fit.push_back(current_fit);
+      if (current_fit < ideal_fit) {
+        ideal_fit = current_fit;
+      }
+    }
+  }
+  cout << "\n\nPrinting fit info:\n";
+  for (int i=0; i<fit.size(); i++) {
+    fit[i].printFitInfo();
+    cout << endl;
+  }
+  cout << "\nBest fit: ";
+  ideal_fit.printFitInfo();
+  return ideal_fit;
+}
+
+/*!
  *  \brief This function fits the ideal models to a JUST one segment of the
  *  protein structure using the adaptive superposition method.
  *  \param ideal_models a reference to a vector<IdealModel>
@@ -650,6 +691,14 @@ void Protein::fitOneSegment(
       Mixture residual_mixture = mixture.getResidualMixture(assignment,sum_residual_weights);
       ideal_fit = fitSegment(ideal_models,segment,residual_mixture,
                   sum_residual_weights,components,weights,assignment,log);
+      break;
+    }
+
+    case DSSP_NON_ADAPTIVE:
+    {
+      vector<Mixture> ideal_mixture_models = loadIdealMixtureModels();
+      vector<double> model_weights = computeRelativeWeights(ideal_mixture_models);
+      ideal_fit = fitSegment(ideal_mixture_models,model_weights,segment,log);
       break;
     }
   }
@@ -730,6 +779,31 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       }
       break;
     }
+
+    case DSSP_NON_ADAPTIVE:
+    {
+      vector<Mixture> ideal_mixture_models = loadIdealMixtureModels();
+      vector<double> model_weights = computeRelativeWeights(ideal_mixture_models);
+      for (i=0; i<chain_size-1; i++) {
+        bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
+        for (j=i+1; j<chain_size; j++) {
+          log << "Segment " << i << ":" << j << endl;
+          Segment segment(i,j,cartesian_coordinates[chain],
+                          spherical_coordinates[chain],unit_coordinates[chain]);
+          if (i == 0 || i == 1) {
+            segment.setInitialDistances(distances[chain][0],distances[chain][1]);
+          }
+          if (j >= bound) {
+            ideal_fit = segment.fitNullModel(ideal_mixture_models[4],model_weights[4],log);
+          } else {
+            ideal_fit = fitSegment(ideal_mixture_models,model_weights,segment,log);
+          }
+          optimal_model[i][j] = ideal_fit;
+          optimal_code_length[i][j] = ideal_fit.getMessageLength();
+        }
+      }
+      break;
+    } 
   }
   //printCodeLengthMatrix(chain);
 }

@@ -3,7 +3,7 @@
 
 #include "Header.h"
 #include "Protein.h"
-#include "Component.h"
+#include "Mixture.h"
 #include "IdealModel.h"
 
 struct Parameters
@@ -106,9 +106,11 @@ void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, struct 
 
 // sst functions
 void assignSecondaryStructure(string, string, int, int, vector<string> &, int);
+void assignSecondaryStructure(string, int, int, vector<string> &, int);
 vector<IdealModel> loadIdealModels();
-vector<int> assignMixtureComponents(vector<IdealModel> &, vector<Component> &,
-                                    vector<double> &);
+vector<int> assignMixtureComponents(vector<IdealModel> &, vector<Component> &, vector<double> &);
+vector<Mixture> loadIdealMixtureModels();
+vector<double> computeRelativeWeights(vector<Mixture> &);
 
 #endif
 

@@ -65,11 +65,17 @@ class Mixture
     //! Sets the DSSP flag
     void setDSSPFlag(string &);
 
+    //! Gets the DSSP type
+    string getDSSPType();
+
     //! Gets the list of weights
     vector<double> getWeights();
 
     //! Gets the list of components
     vector<Component> getComponents();
+
+    //! Gets the sample size
+    double getSampleSize();
 
     //! Sets the simulation flag 
     void setSimulationFlag();

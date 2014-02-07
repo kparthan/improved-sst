@@ -70,6 +70,7 @@
 #define ONE_COMPONENT_ADAPTIVE 1
 #define MIXTURE_ADAPTIVE 2
 #define NON_ADAPTIVE 3
+#define DSSP_NON_ADAPTIVE 4
 
 using namespace std;
 using namespace std::chrono;

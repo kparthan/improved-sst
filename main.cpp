@@ -35,6 +35,11 @@ int main(int argc, char **argv)
                              parameters.end_points,parameters.method);
   }
 
+  if (parameters.dssp == SET && parameters.sst == SET) {
+    assignSecondaryStructure(parameters.file,parameters.orientation,parameters.portion_to_fit,
+                             parameters.end_points,parameters.method);
+  }
+
   return 0;
 }
 

@@ -129,6 +129,9 @@ class Protein
                  vector<Component> &, vector<double> &, vector<int> &, ostream &);
 
     //! Fit a single segment
+    OptimalFit fitSegment(vector<Mixture> &, vector<double> &, Segment &, ostream &);
+
+    //! Fit a single segment
     void fitOneSegment(vector<IdealModel> &, Segment &, Mixture &, int, int, ostream &);
 
     //! Computes the optimal code length matrix

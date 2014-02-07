@@ -1,7 +1,6 @@
 #include "Support.h"
 #include "Geometry3D.h"
 #include "VonMises3D.h"
-#include "Mixture.h"
 #include "Normal.h"
 
 int initialize_components_from_file;
@@ -215,7 +214,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
     parameters.sst = SET;
     if (vm.count("load")) { 
       parameters.load_mixture = SET;
-    } else {
+    } else if (!vm.count("dssp")) {
       cout << "Please supply a mixture file ...\n";
       Usage(argv[0],desc);
     }
@@ -226,6 +225,8 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
         parameters.method = ONE_COMPONENT_ADAPTIVE;
       } else if (sst_method.compare("non_adaptive") == 0) {
         parameters.method = NON_ADAPTIVE;
+      } else if (sst_method.compare("dssp_non_adaptive") == 0) {
+        parameters.method = DSSP_NON_ADAPTIVE;
       }
     } else {
       parameters.method = MIXTURE_ADAPTIVE;
@@ -1652,6 +1653,45 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   cout << "Wall time: " << wall_time << " secs." << endl;
 }
 
+void assignSecondaryStructure(string structure_file,
+                              int orientation, int portion_to_fit,
+                              vector<string> &end_points, int sst_method)
+{
+  cout << "Assigning secondary structure to " << structure_file << endl;
+
+  // read protein coordinate data
+  string name = extractName(structure_file);
+  ProteinStructure *p = parsePDBFile(structure_file);
+  Protein protein(p,name);
+  int num_residues = p->getNumberOfResidues();
+  cout << "Number of residues: " << num_residues << endl;
+
+  // compute the message length to transmit using the sphere approach
+  protein.computeSuccessiveDistances();
+  double msglen = protein.computeMessageLengthUsingSphereModel();
+  cout << "Sphere model message length: " << msglen << " bits. (" 
+       << msglen / (double)num_residues << " bpr)" << endl;
+
+  // compute the message length to tansmit using the null model
+  // null model: mixture model
+  // read mixture data
+  Mixture mixture;
+  protein.computeSphericalTransformation();
+  protein.getUnitCoordinatesList();
+
+  // compute the message length using the compression model
+  // using ideal models
+  clock_t c_start = clock();
+  auto t_start = std::chrono::high_resolution_clock::now();
+  protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points,sst_method);
+  clock_t c_end = clock();
+  auto t_end = std::chrono::high_resolution_clock::now();
+  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
+  double wall_time = std::chrono::duration_cast<std::chrono::seconds>(t_end-t_start).count();
+  cout << "CPU time: " << cpu_time << " secs." << endl;
+  cout << "Wall time: " << wall_time << " secs." << endl;
+}
+
 /*!
  *  \brief This function loads the ideal models to be used in the compression
  *  model.
@@ -1792,5 +1832,77 @@ vector<int> assignMixtureComponents(vector<IdealModel> &ideal_models,
   }
   cout << "Cumulative weight: " << cumulative_weight << endl;
   return assignment;
+}
+
+/*!
+ *  \brief This function is used to load the ideal mixture models.
+ *  \return the list of ideal mixtures
+ */
+vector<Mixture> loadIdealMixtureModels()
+{
+  vector<Mixture> ideal_mixtures;
+  string mixture_file,dssp_sst_type;
+
+  // load ideal alpha-helix
+  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_alpha.mixture";
+  Mixture m0;
+  m0.load(mixture_file);
+  dssp_sst_type = "helix_alpha";
+  m0.setDSSPFlag(dssp_sst_type);
+  ideal_mixtures.push_back(m0);
+
+  // load ideal pi-helix
+  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_pi.mixture";
+  Mixture m1;
+  m1.load(mixture_file);
+  dssp_sst_type = "helix_pi";
+  m1.setDSSPFlag(dssp_sst_type);
+  ideal_mixtures.push_back(m1);
+
+  // load ideal 310-helix
+  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_310.mixture";
+  Mixture m2;
+  m2.load(mixture_file);
+  dssp_sst_type = "helix_310";
+  m2.setDSSPFlag(dssp_sst_type);
+  ideal_mixtures.push_back(m2);
+
+  // load ideal sheet 
+  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/sheet.mixture";
+  Mixture m3;
+  m3.load(mixture_file);
+  dssp_sst_type = "sheet";
+  m3.setDSSPFlag(dssp_sst_type);
+  ideal_mixtures.push_back(m3);
+
+  // load ideal coil 
+  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/coil.mixture";
+  Mixture m4;
+  m4.load(mixture_file);
+  dssp_sst_type = "coil";
+  m4.setDSSPFlag(dssp_sst_type);
+  ideal_mixtures.push_back(m4);
+
+  return ideal_mixtures;
+}
+
+/*!
+ *  \brief This function computes the relative weights of the mixtures based
+ *  on their sample size.
+ *  \param mixtures a reference to a vector<Mixture>
+ *  \return the relative weights
+ */
+vector<double> computeRelativeWeights(vector<Mixture> &mixtures)
+{
+  vector<double> weights(mixtures.size(),0);
+  double sum = 0;
+  for (int i=0; i<mixtures.size(); i++) {
+    weights[i] = mixtures[i].getSampleSize();
+    sum += weights[i];
+  }
+  for (int i=0; i<mixtures.size(); i++) {
+    weights[i] /= sum;
+  }
+  return weights;
 }
 
