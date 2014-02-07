@@ -47,6 +47,22 @@ void Mixture::setSimulationFlag()
 }
 
 /*!
+ *  \brief This function sets the DSSP flag.
+ *  \param sst_type a reference to a string
+ */
+void Mixture::setDSSPFlag(string &sst_type)
+{
+  dssp = SET;
+  dssp_sst_type = sst_type;
+  /*if (sst_type.compare("") == 0) {
+    dssp_sst_type = "all";
+  } else {
+    dssp_sst_type = sst_type;
+  }*/
+  //cout << "type: " << dssp_sst_type << endl;
+}
+
+/*!
  *  \brief This function returns the list of all weights.
  *  \return the list of weights
  */
@@ -395,21 +411,27 @@ double Mixture::estimateParameters()
   auto t_start = high_resolution_clock::now();
 
   /* prepare log file */
-  string file_name = string(CURRENT_DIRECTORY) + "/mixture/";
-  if (simulation == SET) {
-    file_name += "simulation/";
-  }
-  file_name += "logs/";
-  if (simulation == UNSET) {
-    if (update_weights_new == UNSET) {
-      file_name += "normal_weights_update/";
-    } else if (update_weights_new == SET){
-      file_name += "new_weights_update/";
+  string file_name;
+  if (dssp == UNSET) {
+    file_name = string(CURRENT_DIRECTORY) + "/mixture/";
+    if (simulation == SET) {
+      file_name += "simulation/";
     }
+    file_name += "logs/";
+    if (simulation == UNSET) {
+      if (update_weights_new == UNSET) {
+        file_name += "normal_weights_update/";
+      } else if (update_weights_new == SET){
+        file_name += "new_weights_update/";
+      }
+    }
+  } else if (dssp == SET) {
+    file_name = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    file_name += "logs/";
   }
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
-  
+  //cout << file_name << endl;
 
   /* set the max allowed diff in msglen */
   double MAX_ALLOWED_DIFF_MSGLEN;
@@ -449,6 +471,7 @@ double Mixture::estimateParameters()
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
+        log << "\t\t\tN: " << N << endl;
         log << "\t\t" << current/N << " bpr" << endl;
         log << "Null model msglen: " << null_msglen << " bits.";
         log << "\t(" << null_msglen/N << " bpr)" << endl;
@@ -466,7 +489,14 @@ double Mixture::estimateParameters()
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
   double wall_time = duration_cast<seconds>(t_end-t_start).count();
   // update summary file
-  ofstream summary("summary",ios::app);
+  string summary_file;
+  if (dssp == UNSET) {
+    summary_file = "summary";
+  } else if (dssp == SET) {
+    summary_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type
+                   + "/mixture/summary";
+  }
+  ofstream summary(summary_file.c_str(),ios::app);
   summary << fixed << setw(5) << K;
   summary << fixed << setw(10) << iter;
   summary << fixed << setw(20) << setprecision(3) << cpu_time/60; // in mins
@@ -531,32 +561,41 @@ void Mixture::printParameters()
  */
 void Mixture::plotMessageLengthEM()
 {
-  // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "/mixture/";
-  string output_file = string(CURRENT_DIRECTORY) + "/mixture/";
-  string script_file = string(CURRENT_DIRECTORY) + "/mixture/";
-  if (simulation == SET) {
-    data_file += "simulation/";
-    output_file += "simulation/";
-    script_file += "simulation/";
-  }
-  data_file += "msglens/";
-  output_file += "plots/";
-  script_file += "plots/";
-  if (simulation == UNSET) {
-    if (update_weights_new == UNSET) {
-      data_file += "normal_weights_update/";
-      output_file += "normal_weights_update/";
-      script_file += "normal_weights_update/";
-    } else if (update_weights_new == SET){
-      data_file += "new_weights_update/";
-      output_file += "new_weights_update/";
-      script_file += "new_weights_update/";
+  string data_file,plot_file,script_file;
+  if (dssp == UNSET) {
+    data_file = string(CURRENT_DIRECTORY) + "/mixture/";
+    plot_file = string(CURRENT_DIRECTORY) + "/mixture/";
+    script_file = string(CURRENT_DIRECTORY) + "/mixture/";
+    if (simulation == SET) {
+      data_file += "simulation/";
+      plot_file += "simulation/";
+      script_file += "simulation/";
     }
+    data_file += "msglens/";
+    plot_file += "plots/";
+    script_file += "plots/";
+    if (simulation == UNSET) {
+      if (update_weights_new == UNSET) {
+        data_file += "normal_weights_update/";
+        plot_file += "normal_weights_update/";
+        script_file += "normal_weights_update/";
+      } else if (update_weights_new == SET){
+        data_file += "new_weights_update/";
+        plot_file += "new_weights_update/";
+        script_file += "new_weights_update/";
+      }
+    }
+  } else if (dssp == SET) {
+    data_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    plot_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    script_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    data_file += "msglens/";
+    plot_file += "plots/";
+    script_file += "plots/";
   }
   string num_comp = boost::lexical_cast<string>(K);
   data_file += num_comp + ".dat";
-  output_file += num_comp + ".eps";
+  plot_file += num_comp + ".eps";
   script_file += num_comp + "_script.p";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
@@ -577,7 +616,7 @@ void Mixture::plotMessageLengthEM()
 	script << "set title \"# of components: " << K << "\"" << endl ;
 	script << "set xlabel \"# of iterations\"" << endl ;
 	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"" << output_file << "\"" << endl ;
+	script << "set output \"" << plot_file << "\"" << endl ;
 	script << "plot \"" << data_file << "\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();

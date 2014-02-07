@@ -12,7 +12,7 @@ vector<double> NEGATIVE_XAXIS = {-1,0,0};
 vector<double> YAXIS = {0,1,0};
 vector<double> ZAXIS = {0,0,1};
 int DEBUG;
-ofstream debug("debug");
+//ofstream debug("debug");
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -79,6 +79,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("method",value<string>(&sst_method),"the sst method to be used")
        // parameters to run DSSP
        ("dssp","flag to use DSSP output")
+       ("type",value<string>(&parameters.dssp_sst_type),"model type")
        ("parse",value<string>(&parameters.dssp_file),"file with the DSSP assignment")
   ;
   variables_map vm;
@@ -252,20 +253,21 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
 
   if (vm.count("dssp")) {
     parameters.dssp = SET;
-    if (!vm.count("parse")) {
-      cout << "Please provide a DSSP file ...\n";
-      Usage(argv[0],desc);
-    } else {
+    if (vm.count("parse")) {
       if(checkFile(parameters.dssp_file) == 0) {
         cout << "DSSP file: " << parameters.dssp_file << " doesn't exist.\n";
         Usage(argv[0],desc);
       }
-    }
-    parameters.parse_dssp = SET;
-    if (vm.count("pdbid")) {
-      parameters.file = getPDBFilePath(pdb_id);
-    } else if (vm.count("scopid")) {
-      parameters.file = getSCOPFilePath(scop_id);
+      parameters.parse_dssp = SET;
+      if (vm.count("pdbid")) {
+        parameters.file = getPDBFilePath(pdb_id);
+      } else if (vm.count("scopid")) {
+        parameters.file = getSCOPFilePath(scop_id);
+      }
+    } else {
+      if (!vm.count("type")) {
+        parameters.dssp_sst_type = "all";
+      }
     }
   } else {
     parameters.dssp = UNSET;
@@ -365,7 +367,13 @@ void cartesian2spherical(vector<double> &cartesian, vector<double> &spherical)
   double theta = acos(z);
 
   // phi \in[0,2 PI]: angle with positive X-axis
-  double angle = acos(x / sin(theta));
+  double ratio = x/sin(theta);
+  if (ratio > 1) {
+    ratio = 1;
+  } else if (ratio < -1) {
+    ratio = -1;
+  }
+  double angle = acos(ratio);
   double phi = 0;
   if (x == 0 && y == 0) {
     phi = 0;
@@ -899,17 +907,17 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
   int k;
   string line;
   char type;
-  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/spherical_profiles/";
+  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/models/";
   string type_dir;
-  type_dir = DSSP_DIR + "C/" + STRUCTURE + ".profile";
+  type_dir = DSSP_DIR + "coil/" + STRUCTURE + ".profile";
   ofstream coil(type_dir.c_str());
-  type_dir = DSSP_DIR + "E/" + STRUCTURE + ".profile";
+  type_dir = DSSP_DIR + "sheet/" + STRUCTURE + ".profile";
   ofstream sheet(type_dir.c_str());
-  type_dir = DSSP_DIR + "G/" + STRUCTURE + ".profile";
+  type_dir = DSSP_DIR + "helix_310/" + STRUCTURE + ".profile";
   ofstream helix_310(type_dir.c_str());
-  type_dir = DSSP_DIR + "H/" + STRUCTURE + ".profile";
+  type_dir = DSSP_DIR + "helix_alpha/" + STRUCTURE + ".profile";
   ofstream helix_alpha(type_dir.c_str());
-  type_dir = DSSP_DIR + "I/" + STRUCTURE + ".profile";
+  type_dir = DSSP_DIR + "helix_pi/" + STRUCTURE + ".profile";
   ofstream helix_pi(type_dir.c_str());
 
   protein.computeSphericalTransformation();
@@ -1168,6 +1176,7 @@ void computeEstimators(struct Parameters &parameters)
 void modelOneComponent(struct Parameters &parameters, vector<double> &direction,
                        double &num_samples)
 {
+  cout << "sample size: " << num_samples << endl;
   Component component(direction,num_samples,parameters.constrain_kappa);
   component.minimizeMessageLength();
 }
@@ -1190,17 +1199,23 @@ void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
         components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
                         parameters.constrain_kappa,parameters.simulation);
+        if (parameters.dssp == SET) {
+          mixture.setDSSPFlag(parameters.dssp_sst_type);
+        }
         double msg = mixture.estimateParameters();
         msglens.push_back(msg);
       //}
     }
-    plotMessageLengthAgainstComponents(components,msglens,parameters.simulation);
+    plotMessageLengthAgainstComponents(components,msglens,parameters);
   } else if (parameters.infer_num_components == UNSET) {
     // for a given value of number of components
     // do the mixture modelling
     Mixture mixture(parameters.fit_num_components,data,
                     parameters.update_weights_new,parameters.constrain_kappa,
                     parameters.simulation);
+    if (parameters.dssp == SET) {
+      mixture.setDSSPFlag(parameters.dssp_sst_type);
+    }
     mixture.estimateParameters();
   }
 }
@@ -1255,7 +1270,7 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
       }
       //log.close();
       if (parameters.heat_map == SET) {
-        outputBins(bins,parameters.res);
+        outputBins(bins,parameters);
       }
       return 1;
     } else {
@@ -1344,14 +1359,17 @@ void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
   vector<vector<double>> unit_coordinates = protein.getUnitCoordinatesList();
   double theta,phi;
   int row,col;
+  vector<double> spherical(3,0);
   for (int i=0; i<unit_coordinates.size(); i++) {
-    theta = unit_coordinates[i][1] * 180 / PI;
+    //cout << "i: " << i << endl; 
+    cartesian2spherical(unit_coordinates[i],spherical);
+    theta = spherical[1] * 180 / PI;
     if (fabs(theta) <= ZERO) {
       row = 0;
     } else {
       row = (int)(ceil(theta/res) - 1);
     }
-    phi = unit_coordinates[i][2] * 180 / PI;
+    phi = spherical[2] * 180 / PI;
     if (fabs(phi) <= ZERO) {
       col = 0;
     } else {
@@ -1360,7 +1378,9 @@ void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
     if (row >= bins.size() || col >= bins[0].size()) {
       cout << "outside bounds: " << row << " " << col << "\n";
       cout << "theta: " << theta << " phi: " << phi << endl;
-      cout.flush();
+      cout << "spherical_1: " << spherical[1] << " spherical_2: " << spherical[2] << endl;
+      cout << "unit_coordinates[i]_1: " << unit_coordinates[i][1] << " unit_coordinates[i]_2: " << unit_coordinates[i][2] << endl;
+      fflush(stdout);
     }
     bins[row][col]++;
     //cout << "row,col: " << row << "," << col << endl;
@@ -1370,21 +1390,31 @@ void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
 /*!
  *  \brief This function outputs the bin data.
  *  \param bins a reference to a vector<vector<int>>
- *  \param res a double
+ *  \param parameters a reference to a struct Parameters
  */
-void outputBins(vector<vector<int>> &bins, double res)
+void outputBins(vector<vector<int>> &bins, struct Parameters &parameters)
 {
   double theta=0,phi;
-  ofstream fbins("matlab/bins_2D");
-  ofstream fbins3D("matlab/bins_3D");
+  string fbins2D_file,fbins3D_file;
+  if (parameters.dssp == UNSET) {
+    fbins2D_file = CURRENT_DIRECTORY + "/matlab/bins_2D";
+    fbins3D_file = CURRENT_DIRECTORY + "/matlab/bins_3D";
+  } else if (parameters.dssp == SET) {
+    fbins2D_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+                   + "/matlab/bins_2D";
+    fbins3D_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+                   + "/matlab/bins_3D";
+  }
+  ofstream fbins2D(fbins2D_file.c_str());
+  ofstream fbins3D(fbins3D_file.c_str());
   vector<double> cartesian(3,0);
   vector<double> spherical(3,1);
   for (int i=0; i<bins.size(); i++) {
     phi = 0;
     spherical[1] = theta * PI / 180;
     for (int j=0; j<bins[i].size(); j++) {
-      fbins << fixed << setw(10) << bins[i][j];
-      phi += res;
+      fbins2D << fixed << setw(10) << bins[i][j];
+      phi += parameters.res;
       spherical[2] = phi * PI / 180;
       spherical2cartesian(spherical,cartesian);
       for (int k=0; k<3; k++) {
@@ -1392,10 +1422,10 @@ void outputBins(vector<vector<int>> &bins, double res)
       }
       fbins3D << fixed << setw(10) << bins[i][j] << endl;
     }
-    theta += res;
-    fbins << endl;
+    theta += parameters.res;
+    fbins2D << endl;
   }
-  fbins.close();
+  fbins2D.close();
   fbins3D.close();
 }
 
@@ -1516,30 +1546,37 @@ generateRandomComponents(int num_components, int constrain_kappa)
  *  number of components.
  *  \param components a reference to a vector<int>
  *  \param msglens a reference to a vector<double>
- *  \param simulation an integer
+ *  \param parameters a reference to a struct Parameters 
  */
 void plotMessageLengthAgainstComponents(vector<int> &components,
-                                        vector<double> &msglens, int simulation)
+                                        vector<double> &msglens, 
+                                        struct Parameters &parameters)
 {
   assert(components.size() == msglens.size());
-  // output the data to a file
-  string data_file = string(CURRENT_DIRECTORY) + "/mixture/";
-  if (simulation == SET) {
-    data_file += "simulation/";
+
+  string data_file,plot_file;
+
+  if (parameters.dssp == UNSET) {
+    data_file = string(CURRENT_DIRECTORY) + "/mixture/";
+    plot_file = string(CURRENT_DIRECTORY) + "/mixture/";
+    if (parameters.simulation == SET) {
+      data_file += "simulation/";
+      plot_file += "simulation/";
+    }
+  } else if (parameters.dssp == SET) {
+    data_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+                + "/mixture/";
+    plot_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+                + "/mixture/";
   }
   data_file += "msglens-infer.dat";
+  plot_file += "msglens-infer.eps";
   ofstream file(data_file.c_str());
   for (int i=0; i<msglens.size(); i++) {
     file << components[i] << "\t" << msglens[i] << endl;
   }
   file.close();
 
-  // prepare gnuplot script file
-  string output_file = string(CURRENT_DIRECTORY) + "/mixture/";
-  if (simulation == SET) {
-    output_file += "simulation/";
-  }
-  output_file += "msglens-infer.eps";
   ofstream script("script.p");
 	script << "# Gnuplot script file for plotting data in file \"data\"\n\n" ;
 	script << "set terminal post eps" << endl ;
@@ -1553,7 +1590,7 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
 	//script << "set title \"# of components: " << K << "\"" << endl ;
 	script << "set xlabel \"# of components\"" << endl ;
 	script << "set ylabel \"message length (in bits)\"" << endl ;
-	script << "set output \"" << output_file << "\"" << endl ;
+	script << "set output \"" << plot_file << "\"" << endl ;
 	script << "plot \"" << data_file << "\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();

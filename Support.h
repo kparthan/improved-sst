@@ -39,6 +39,7 @@ struct Parameters
   int dssp;                     // flag to use DSSP assignment
   int parse_dssp;               // flag to parse the DSSP file
   string dssp_file;             // file with the DSSP assignment 
+  string dssp_sst_type;         // the sst model type
 };
 
 // general functions
@@ -96,12 +97,12 @@ bool gatherData(struct Parameters &, vector<vector<double>> &);
 void updateLogFile(string &, double, int);
 void updateMeanDirection(vector<double> &, double &, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
-void outputBins(vector<vector<int>> &, double);
+void outputBins(vector<vector<int>> &, struct Parameters &);
 void visualizeMixtureComponents(struct Parameters &);
 void simulateMixtureModel(struct Parameters &);
 vector<double> generateRandomWeights(int, double);
 vector<Component> generateRandomComponents(int, int);
-void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, int);
+void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, struct Parameters &);
 
 // sst functions
 void assignSecondaryStructure(string, string, int, int, vector<string> &, int);

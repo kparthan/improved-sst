@@ -4,8 +4,8 @@
 #include "Geometry3D.h"
 
 extern vector<double> ZAXIS;
-extern int DEBUG;
-extern ofstream debug;
+//extern int DEBUG;
+//extern ofstream debug;
 
 /*!
  *  \brief This is a constructor function.

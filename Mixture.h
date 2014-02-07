@@ -34,6 +34,12 @@ class Mixture
     //! Simulation flag
     int simulation;
 
+    //! DSSP flag
+    int dssp;
+
+    //! Type of sst model
+    string dssp_sst_type;
+
     //! Alphas (alpha_k)
     vector<double> alphas;
 
@@ -55,6 +61,9 @@ class Mixture
 
     //! Constructor
     Mixture(int, vector<vector<double>> &, int, int, int);
+
+    //! Sets the DSSP flag
+    void setDSSPFlag(string &);
 
     //! Gets the list of weights
     vector<double> getWeights();
