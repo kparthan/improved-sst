@@ -484,16 +484,20 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
       cout << "Internal segmentation:" << endl;
       int j;
       for (j=0; j<segments.size()-1; j++) {
-        cout << segments[j] << "-->";
+        cout << segments[j]+1 << "-->";
       }
-      cout << segments[j] << endl << endl;
-      for (j=0; j<segments.size()-1; j++) {
-        int a = segments[j];
-        int b = segments[j+1];
-        string name = optimal_model[a][b].getName();
+      cout << segments[j]+1 << endl << endl;
+      int a,b;
+      string name;
+      for (j=0; j<segments.size()-2; j++) {
+        a = segments[j];
+        b = segments[j+1];
+        name = optimal_model[a][b].getName();
         cout << name << "-->";
       }
-      cout << endl;
+      a = segments[j]; b = segments[j+1];
+      name = optimal_model[a][b].getName();
+      cout << name << endl;
     }
   } else if (portion_to_fit == FIT_SINGLE_SEGMENT) {
     int start = boost::lexical_cast<int>(end_points[1]) - 1;
@@ -732,7 +736,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       for (i=0; i<chain_size-1; i++) {
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
-          log << "Segment " << i << ":" << j << endl;
+          log << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -761,7 +765,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       for (i=0; i<chain_size-1; i++) {
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
-          log << "Segment " << i << ":" << j << endl;
+          log << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -787,7 +791,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       for (i=0; i<chain_size-1; i++) {
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
-          log << "Segment " << i << ":" << j << endl;
+          log << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -805,7 +809,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
       break;
     } 
   }
-  //printCodeLengthMatrix(chain);
+  printCodeLengthMatrix(chain);
 }
 
 /*!
@@ -862,7 +866,9 @@ void Protein::printCodeLengthMatrix(int chain_index)
   ofstream file(name.c_str());
   for (int i=0; i<optimal_code_length.size(); i++) {
     for (int j=0; j<optimal_code_length[i].size(); j++) {
-      file << fixed << scientific << optimal_code_length[i][j] << "\t";
+      file << "Segment " << i+1 << ":" << j+1 << "\t";
+      //file << fixed << scientific << optimal_code_length[i][j] << "\t";
+      file << fixed << setw(10) << setprecision(4) << optimal_code_length[i][j] << "\n";
     }
     file << endl;
   }

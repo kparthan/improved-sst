@@ -107,14 +107,14 @@ OptimalFit Segment::fitNullModel(Mixture &mixture, ostream &log)
 
   // initial statement cost if the start index is 0 or 1
   MSG = computeInitialCost(begin_loop,normal,message);
-  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+  log << "\t\tInitial statement cost (only for segments starting from 1/2): " 
       << MSG << endl;
   msglen += MSG;
 
   // state the remaining points using the mixture model
   double r;
   for (int i=begin_loop; i<end; i++) {
-    log << "\t\tResidue " << i+1 << ": ";
+    log << "\t\tResidue " << i+2 << ": ";
     // state radius
     r = spherical_coordinates[i-2][0];
     MSG = message.encodeUsingNormalModel(r,normal);
@@ -165,14 +165,14 @@ OptimalFit Segment::fitNullModel(Mixture &residual_mixture, double &sum_residual
 
   // initial statement cost if the start index is 0 or 1
   MSG = computeInitialCost(begin_loop,normal,message);
-  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+  log << "\t\tInitial statement cost (only for segments starting from 1/2): " 
       << MSG << endl;
   msglen += MSG;
 
   // state the remaining points using the residual mixture 
   double r;
   for (int i=begin_loop; i<end; i++) {
-    log << "\t\tResidue " << i+1 << ": ";
+    log << "\t\tResidue " << i+2 << ": ";
     // state radius
     r = spherical_coordinates[i-2][0];
     MSG = message.encodeUsingNormalModel(r,normal);
@@ -225,14 +225,14 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
   if (start == 0 || start == 1) { // the first segment
     MSG = computeInitialCost(begin_loop,normal,message);
-    log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+    log << "\t\tInitial statement cost (only for segments starting from 1/2): " 
         << MSG << endl;
     msglen += MSG;
   } else {  // an intermediate segment
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
     for (int i=start; i<start+2; i++) {
-      log << "\t\tResidue " << i+1 << ": ";
+      log << "\t\tResidue " << i+2 << ": ";
       // state radius
       r = spherical_coordinates[i-2][0];
       MSG = message.encodeUsingNormalModel(r,normal);
@@ -311,7 +311,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
     // ADAPTIVE SUPERPOSITION
     for (int om=start+3; om<end; om++) {
-      log << "\t\tResidue " << om+1 << ": ";
+      log << "\t\tResidue " << om+2 << ": ";
       r = spherical_coordinates[om-2][0];
       MSG = message.encodeUsingNormalModel(r,normal);
       log << "To state radius & direction: (" << MSG << ",";
@@ -404,14 +404,14 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
 
   if (start == 0 || start == 1) { // the first segment
     MSG = computeInitialCost(begin_loop,normal,message);
-    log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+    log << "\t\tInitial statement cost (only for segments starting from 1/2): " 
         << MSG << endl;
     msglen += MSG;
   } else {  // an intermediate segment
     // the start point of the segment is the last point of the previous segment
     // the next two points in the segment are stated using the null model
     for (int i=start; i<start+2; i++) {
-      log << "\t\tResidue " << i+1 << ": ";
+      log << "\t\tResidue " << i+2 << ": ";
       // state radius
       r = spherical_coordinates[i-2][0];
       MSG = message.encodeUsingNormalModel(r,normal);
@@ -428,7 +428,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
   }
   
   for (int om=begin_loop; om<end; om++) {
-    log << "\t\tResidue " << om+1 << ": ";
+    log << "\t\tResidue " << om+2 << ": ";
     // state radius
     r = spherical_coordinates[om-2][0];
     MSG = message.encodeUsingNormalModel(r,normal);
@@ -482,12 +482,12 @@ OptimalFit Segment::fitIdealModel(Mixture &ideal_mixture, double weight,
   msglen += MSG;
 
   MSG = computeInitialCost(begin_loop,normal,message);
-  log << "\t\tInitial statement cost (only for segments starting from 0/1): " 
+  log << "\t\tInitial statement cost (only for segments starting from 1/2): " 
       << MSG << endl;
   msglen += MSG;
 
   for (int om=begin_loop; om<end; om++) {
-    log << "\t\tResidue " << om+1 << ": ";
+    log << "\t\tResidue " << om+2 << ": ";
     // state radius
     r = spherical_coordinates[om-2][0];
     MSG = message.encodeUsingNormalModel(r,normal);
