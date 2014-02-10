@@ -10,6 +10,7 @@ vector<double> XAXIS = {1,0,0};
 vector<double> NEGATIVE_XAXIS = {-1,0,0};
 vector<double> YAXIS = {0,1,0};
 vector<double> ZAXIS = {0,0,1};
+int DSSP_DATA_COLLECT;
 int DEBUG;
 //ofstream debug("debug");
 
@@ -80,6 +81,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
        ("dssp","flag to use DSSP output")
        ("type",value<string>(&parameters.dssp_sst_type),"model type")
        ("parse",value<string>(&parameters.dssp_file),"file with the DSSP assignment")
+       ("collect",value<int>(&parameters.dssp_data_collect),"method to collect DSSP data")
   ;
   variables_map vm;
   store(parse_command_line(argc,argv,desc),vm);
@@ -270,6 +272,7 @@ struct Parameters parseCommandLineInput(int argc, char **argv)
         parameters.dssp_sst_type = "all";
       }
     }
+    DSSP_DATA_COLLECT = parameters.dssp_data_collect;
   } else {
     parameters.dssp = UNSET;
   }
@@ -835,7 +838,11 @@ void parseDSSP(struct Parameters &parameters)
     Protein protein(p,STRUCTURE);
     bool success = checkParsedDSSPFile(protein,p,all_lines,log);
     if (success) {
-      collectData(protein,all_lines,log);
+      if (parameters.dssp_data_collect == 1) {
+        collectData(protein,all_lines,log);
+      } else if (parameters.dssp_data_collect == 2) {
+        collectData2(protein,all_lines,log);
+      }
     } 
   }
   log << endl;
@@ -908,7 +915,7 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
   int k;
   string line;
   char type;
-  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/models/";
+  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/parsed1/models/";
   string type_dir;
   type_dir = DSSP_DIR + "coil/" + STRUCTURE + ".profile";
   ofstream coil(type_dir.c_str());
@@ -972,6 +979,90 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
           }
           coil << endl;
           break;
+      }
+    }
+  }
+  coil.close();
+  sheet.close();
+  helix_310.close();
+  helix_alpha.close();
+  helix_pi.close();
+}
+
+/*!
+ *
+ */
+void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &log)
+{
+  int CHAIN_ID = 12 - 1;
+  int ASSIGN_ID = 17 - 1;
+  int k;
+  string line;
+  char type[4];
+  string DSSP_DIR = CURRENT_DIRECTORY + "/dssp/parsed2/models/";
+  string type_dir;
+  type_dir = DSSP_DIR + "coil/profiles/" + STRUCTURE + ".profile";
+  ofstream coil(type_dir.c_str());
+  type_dir = DSSP_DIR + "sheet/profiles/" + STRUCTURE + ".profile";
+  ofstream sheet(type_dir.c_str());
+  type_dir = DSSP_DIR + "helix_310/profiles/" + STRUCTURE + ".profile";
+  ofstream helix_310(type_dir.c_str());
+  type_dir = DSSP_DIR + "helix_alpha/profiles/" + STRUCTURE + ".profile";
+  ofstream helix_alpha(type_dir.c_str());
+  type_dir = DSSP_DIR + "helix_pi/profiles/" + STRUCTURE + ".profile";
+  ofstream helix_pi(type_dir.c_str());
+
+  protein.load(STRUCTURE);
+  vector<vector<vector<double>>>
+  spherical_coordinates = protein.getSphericalCoordinatesList();
+  for (int i=0; i<all_lines.size(); i++) {
+    for (int j=3; j<all_lines[i].size(); j++) {
+      for (int k=0; k<4; k++) {
+        type[k] = all_lines[i][j+k-3][ASSIGN_ID];
+      }
+      if (type[0] == type[1] && type[1] == type[2] && type[2] == type[3]) {
+        vector<double> spherical = spherical_coordinates[i][j-3];
+        switch(type[0]) {
+          case 'E': // extended beta sheet
+            sheet << all_lines[i][j][CHAIN_ID];
+            for (k=0; k<3; k++) {
+              sheet << fixed << setw(10) << setprecision(4) << spherical[k];
+            }
+            sheet << endl;
+            break;
+
+          case 'G': //3-10 helix
+            helix_310 << all_lines[i][j][CHAIN_ID];
+            for (k=0; k<3; k++) {
+              helix_310 << fixed << setw(10) << setprecision(4) << spherical[k];
+            }
+            helix_310 << endl;
+            break;
+
+          case 'H': // alpha helix
+            helix_alpha << all_lines[i][j][CHAIN_ID];
+            for (k=0; k<3; k++) {
+              helix_alpha << fixed << setw(10) << setprecision(4) << spherical[k];
+            }
+            helix_alpha << endl;
+            break;
+
+          case 'I': // pi helix
+            helix_pi << all_lines[i][j][CHAIN_ID];
+            for (k=0; k<3; k++) {
+              helix_pi << fixed << setw(10) << setprecision(4) << spherical[k];
+            }
+            helix_pi << endl;
+            break;
+
+          default:  // coil
+            coil << all_lines[i][j][CHAIN_ID];
+            for (k=0; k<3; k++) {
+              coil << fixed << setw(10) << setprecision(4) << spherical[k];
+            }
+            coil << endl;
+            break;
+        }
       }
     }
   }
@@ -1401,10 +1492,16 @@ void outputBins(vector<vector<int>> &bins, struct Parameters &parameters)
     fbins2D_file = CURRENT_DIRECTORY + "/matlab/bins_2D";
     fbins3D_file = CURRENT_DIRECTORY + "/matlab/bins_3D";
   } else if (parameters.dssp == SET) {
-    fbins2D_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
-                   + "/matlab/bins_2D";
-    fbins3D_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
-                   + "/matlab/bins_3D";
+    string tmp;
+    if (parameters.dssp_data_collect == 1) {
+      tmp = CURRENT_DIRECTORY + "/dssp/parsed1/models/" + parameters.dssp_sst_type
+            + "/matlab/";
+    } else if (parameters.dssp_data_collect == 2) {
+      tmp = CURRENT_DIRECTORY + "/dssp/parsed2/models/" + parameters.dssp_sst_type
+            + "/matlab/";
+    }
+    fbins2D_file = tmp + "bins_2D";
+    fbins3D_file = tmp +"bins_3D";
   }
   ofstream fbins2D(fbins2D_file.c_str());
   ofstream fbins3D(fbins3D_file.c_str());
@@ -1555,7 +1652,7 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
 {
   assert(components.size() == msglens.size());
 
-  string data_file,plot_file;
+  string data_file,plot_file,parsed;
 
   if (parameters.dssp == UNSET) {
     data_file = string(CURRENT_DIRECTORY) + "/mixture/";
@@ -1565,9 +1662,14 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
       plot_file += "simulation/";
     }
   } else if (parameters.dssp == SET) {
-    data_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+    if (DSSP_DATA_COLLECT == 1) {
+      parsed = "parsed1";
+    } else if (DSSP_DATA_COLLECT == 2) {
+      parsed = "parsed2";
+    }
+    data_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + parameters.dssp_sst_type
                 + "/mixture/";
-    plot_file = CURRENT_DIRECTORY + "/dssp/models/" + parameters.dssp_sst_type
+    plot_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + parameters.dssp_sst_type
                 + "/mixture/";
   }
   data_file += "msglens-infer.dat";
@@ -1841,10 +1943,16 @@ vector<int> assignMixtureComponents(vector<IdealModel> &ideal_models,
 vector<Mixture> loadIdealMixtureModels()
 {
   vector<Mixture> ideal_mixtures;
-  string mixture_file,dssp_sst_type;
+  string mixture_file,dssp_sst_type,parsed;
+
+  if (DSSP_DATA_COLLECT == 1) {
+    parsed = "parsed1";
+  } else if (DSSP_DATA_COLLECT == 2) {
+    parsed = "parsed2";
+  }
 
   // load ideal alpha-helix
-  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_alpha.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/helix_alpha.mixture";
   Mixture m0;
   m0.load(mixture_file);
   dssp_sst_type = "helix_alpha";
@@ -1852,7 +1960,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m0);
 
   // load ideal pi-helix
-  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_pi.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/helix_pi.mixture";
   Mixture m1;
   m1.load(mixture_file);
   dssp_sst_type = "helix_pi";
@@ -1860,7 +1968,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m1);
 
   // load ideal 310-helix
-  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/helix_310.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed +"/models/ideal_mixture_models/helix_310.mixture";
   Mixture m2;
   m2.load(mixture_file);
   dssp_sst_type = "helix_310";
@@ -1868,7 +1976,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m2);
 
   // load ideal sheet 
-  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/sheet.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/sheet.mixture";
   Mixture m3;
   m3.load(mixture_file);
   dssp_sst_type = "sheet";
@@ -1876,7 +1984,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m3);
 
   // load ideal coil 
-  mixture_file = CURRENT_DIRECTORY + "/dssp/models/ideal_mixture_models/coil.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
   Mixture m4;
   m4.load(mixture_file);
   dssp_sst_type = "coil";

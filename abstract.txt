@@ -1,0 +1,10 @@
+The three dimensional geometry of protein structures allows for grouping
+of torsion angles between the successive protein coordinates. Mixture modelling
+of these directional data allows for segregating data with specific properties.
+Each of the secondary structural elements of protein structures exhibit specific 
+geometric interactions and this can be leveraged to build a mixture model
+for each kind of interatomic behaviour. Each of the mixture model can help
+represent a secondary structural element. Using these statistical models, we
+assign secondary structure to a stretch of residues within a protein. 
+We use Minimum Message Length encoding to infer the number of components
+and the parameters that correspond to a mixture model.

@@ -3,6 +3,7 @@
 
 extern int initialize_components_from_file;
 extern string CURRENT_DIRECTORY;
+extern int DSSP_DATA_COLLECT;
 
 /*!
  *  \brief Null constructor module
@@ -433,7 +434,7 @@ double Mixture::estimateParameters()
   auto t_start = high_resolution_clock::now();
 
   /* prepare log file */
-  string file_name;
+  string file_name,parsed;
   if (dssp == UNSET) {
     file_name = string(CURRENT_DIRECTORY) + "/mixture/";
     if (simulation == SET) {
@@ -448,7 +449,12 @@ double Mixture::estimateParameters()
       }
     }
   } else if (dssp == SET) {
-    file_name = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    if (DSSP_DATA_COLLECT == 1) {
+      parsed = "parsed1";
+    } else if (DSSP_DATA_COLLECT == 2) {
+      parsed = "parsed2";
+    }
+    file_name = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + dssp_sst_type + "/mixture/";
     file_name += "logs/";
   }
   file_name += boost::lexical_cast<string>(K) + ".log";
@@ -515,7 +521,7 @@ double Mixture::estimateParameters()
   if (dssp == UNSET) {
     summary_file = "summary";
   } else if (dssp == SET) {
-    summary_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type
+    summary_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + dssp_sst_type
                    + "/mixture/summary";
   }
   ofstream summary(summary_file.c_str(),ios::app);
@@ -583,7 +589,7 @@ void Mixture::printParameters()
  */
 void Mixture::plotMessageLengthEM()
 {
-  string data_file,plot_file,script_file;
+  string data_file,plot_file,script_file,parsed;
   if (dssp == UNSET) {
     data_file = string(CURRENT_DIRECTORY) + "/mixture/";
     plot_file = string(CURRENT_DIRECTORY) + "/mixture/";
@@ -608,9 +614,14 @@ void Mixture::plotMessageLengthEM()
       }
     }
   } else if (dssp == SET) {
-    data_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
-    plot_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
-    script_file = CURRENT_DIRECTORY + "/dssp/models/" + dssp_sst_type + "/mixture/";
+    if (DSSP_DATA_COLLECT == 1) {
+      parsed = "parsed1";
+    } else if (DSSP_DATA_COLLECT == 2) {
+      parsed = "parsed2";
+    }
+    data_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + dssp_sst_type + "/mixture/";
+    plot_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + dssp_sst_type + "/mixture/";
+    script_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/" + dssp_sst_type + "/mixture/";
     data_file += "msglens/";
     plot_file += "plots/";
     script_file += "plots/";

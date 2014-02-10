@@ -39,6 +39,7 @@ struct Parameters
   int dssp;                     // flag to use DSSP assignment
   int parse_dssp;               // flag to parse the DSSP file
   string dssp_file;             // file with the DSSP assignment 
+  int dssp_data_collect;        // method to collect DSSP data
   string dssp_sst_type;         // the sst model type
 };
 
@@ -80,6 +81,7 @@ string getSCOPFilePath(string &);
 void parseDSSP(struct Parameters &);
 bool checkParsedDSSPFile(Protein &, ProteinStructure *, vector<vector<string>> &, ostream &);
 void collectData(Protein &, vector<vector<string>> &, ostream &);
+void collectData2(Protein &, vector<vector<string>> &, ostream &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);

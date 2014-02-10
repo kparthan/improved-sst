@@ -836,6 +836,8 @@ pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
     }
   }
   segmentation.first = optimal_msglen[chain_size-1];
+  cout << "Net optimal msglen: " << segmentation.first << " bits. ("
+       << segmentation.first/chain_size << " bpr)\n";
   int index = chain_size - 1;
   vector<int> backtrack; 
   backtrack.push_back(chain_size-1);

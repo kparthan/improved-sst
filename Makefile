@@ -60,5 +60,5 @@ Superpose3D.o: Superpose3D.cpp Superpose3D.h suffstat.h
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:
-	rm -f *.o *~ main 
+	rm -f *.o *~ main gmon.out compression.log code_length_matrix_*
 

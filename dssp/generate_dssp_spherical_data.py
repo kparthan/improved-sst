@@ -8,7 +8,7 @@ fw = open('generate_dssp_spherical_data.sh','w')
 fw.write('STARTM=`date -u "+%s"`\n')
 fw.write('line_number=1\n')
 
-current_dir = '/home/pkas7/Research/Work/improved-sst/dssp/dssp_assignments/'
+dssp_assignments_dir = '/home/pkas7/Research/Work/improved-sst/dssp/dssp_assignments/'
 scop_path = '/home/pkas7/Research/SCOP/pdbstyle-1.75B/'
 lc = 0
 line = fr.readline()
@@ -16,8 +16,8 @@ while line != '':
   x = line.strip('\n')
   y = x.split()
   domain = y[0]
-  dssp_file = current_dir + domain + '.dssp'
-  cmd = './main --dssp --parse ' + dssp_file + ' --scopid ' + domain
+  dssp_file = dssp_assignments_dir + domain + '.dssp'
+  cmd = './main --dssp --parse ' + dssp_file + ' --collect 2 --scopid ' + domain
   fw.write(cmd+'\n')
   fw.write('echo $line_number\n')
   fw.write('line_number=$((line_number+1))\n')
