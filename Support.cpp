@@ -990,7 +990,11 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
 }
 
 /*!
- *
+ *  \brief This function is used to collect the data from the DSSP assignment file
+ *  using the second kind of parsing scheme.
+ *  \param protein a reference to a Protein object
+ *  \param all_lines a reference to a vector<vector<string>>
+ *  \param log a reference to a ostream
  */
 void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &log)
 {
@@ -1016,9 +1020,12 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
   vector<vector<vector<double>>>
   spherical_coordinates = protein.getSphericalCoordinatesList();
   for (int i=0; i<all_lines.size(); i++) {
-    for (int j=3; j<all_lines[i].size(); j++) {
+    vector<char> sequence = getSequence(all_lines[i]);
+    for (int j=3; j<sequence.size(); j++) {
+    //for (int j=3; j<all_lines[i].size(); j++) {
       for (int k=0; k<4; k++) {
-        type[k] = all_lines[i][j+k-3][ASSIGN_ID];
+        type[k] = sequence[j+k-3];
+        //type[k] = all_lines[i][j+k-3][ASSIGN_ID];
       }
       if (type[0] == type[1] && type[1] == type[2] && type[2] == type[3]) {
         vector<double> spherical = spherical_coordinates[i][j-3];
@@ -1055,7 +1062,7 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
             helix_pi << endl;
             break;
 
-          default:  // coil
+          case 'C':  // coil
             coil << all_lines[i][j][CHAIN_ID];
             for (k=0; k<3; k++) {
               coil << fixed << setw(10) << setprecision(4) << spherical[k];
@@ -1071,6 +1078,31 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
   helix_310.close();
   helix_alpha.close();
   helix_pi.close();
+}
+
+/*!
+ *  \brief This function converts the sequence of DSSP output assignment string to a
+ *  sequence which is made up of G,H,I,E,C.
+ *  \param lines a reference to a vector<string>
+ *  \return the sequence of symbols
+ */
+vector<char> getSequence(vector<string> &lines)
+{
+  int ASSIGN_ID = 17 - 1;
+  vector<char> sequence;
+  char symbol;
+  for (int i=0; i<lines.size(); i++) {
+    symbol = lines[i][ASSIGN_ID];
+    if (!(symbol == 'E' || symbol == 'G' || symbol == 'H' || symbol == 'I')) {
+      symbol = 'C';
+    }
+    sequence.push_back(symbol);
+  }
+  assert(lines.size() == sequence.size());
+  for (int i=0; i<sequence.size(); i++) {
+    cout << sequence[i];
+  } cout << endl;
+  return sequence;
 }
 
 /*!

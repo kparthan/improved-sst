@@ -82,6 +82,7 @@ void parseDSSP(struct Parameters &);
 bool checkParsedDSSPFile(Protein &, ProteinStructure *, vector<vector<string>> &, ostream &);
 void collectData(Protein &, vector<vector<string>> &, ostream &);
 void collectData2(Protein &, vector<vector<string>> &, ostream &);
+vector<char> getSequence(vector<string> &);
 void buildAngularProfile(struct Parameters &);
 bool checkIfSphericalProfileExists(string &);
 ProteinStructure *parsePDBFile(string &);
