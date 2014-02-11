@@ -4,6 +4,7 @@
 #include "OptimalFit.h"
 #include "Mixture.h"
 #include "Normal.h"
+#include "Poisson.h"
 #include "Message.h"
 
 class Segment
@@ -57,7 +58,7 @@ class Segment
     OptimalFit fitIdealModel(IdealModel &, Mixture &, Component &, double, ostream &);
 
     //! Fit an ideal model using the non adaptive model based on DSSP data 
-    OptimalFit fitIdealModel(Mixture &, double, ostream &);
+    OptimalFit fitIdealModel(Mixture &, Mixture &, double, ostream &);
 
     //! Computes the current mean and direction in the adaptive superposition
     void getCurrentMeanAndDirection(vector<double> &, vector<vector<double>> &,

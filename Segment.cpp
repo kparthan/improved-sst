@@ -459,7 +459,7 @@ OptimalFit Segment::fitIdealModel(IdealModel &model, Mixture &mixture,
  *  \param log a reference to a ostream
  *  \return the optimal fit using the ideal model
  */
-OptimalFit Segment::fitIdealModel(Mixture &ideal_mixture, double weight, 
+OptimalFit Segment::fitIdealModel(Mixture &coil_mixture, Mixture &ideal_mixture, double weight, 
                                   ostream &log)
 {
   Normal normal(NORMAL_MEAN,NORMAL_SIGMA);
@@ -469,10 +469,16 @@ OptimalFit Segment::fitIdealModel(Mixture &ideal_mixture, double weight,
   double r,MSG;
 
   string name = ideal_mixture.getDSSPType(); 
+  double mean_length = getMeanLength(name);
+  Poisson poisson(mean_length);
   log << "\tMODEL_TYPE: " << name << endl;
 
   // state the length of segment
-  MSG = message.encodeUsingLogStarModel(num_residues);
+  if (name.compare("sheet") == 0) {
+    MSG = message.encodeUsingLogStarModel(num_residues);
+  } else {
+    MSG = message.encodeUsingPoissonModel(num_residues,poisson);
+  }
   log << "\t\tTo state the length: " << MSG << endl;
   msglen += MSG;
 
@@ -495,7 +501,11 @@ OptimalFit Segment::fitIdealModel(Mixture &ideal_mixture, double weight,
     msglen += MSG;
 
     // state direction
-    MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],ideal_mixture);
+    if (om < begin_loop+2) {
+      MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],coil_mixture);
+    } else {
+      MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],ideal_mixture);
+    }
     log << MSG << ")\n";
     msglen += MSG;
   }

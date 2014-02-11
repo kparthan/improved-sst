@@ -1,4 +1,4 @@
-CFLAGS=-std=c++0x -pg -g -O3 $(shell pkg-config --cflags liblcb-experimental) 
+CFLAGS=-std=c++0x -pg -O3 -g $(shell pkg-config --cflags liblcb-experimental) 
 LDFLAGS=$(shell pkg-config --libs liblcb-experimental) -pg -lboost_program_options -lboost_system -lboost_filesystem 
 
 OBJECTS = main.o \
@@ -10,6 +10,7 @@ OBJECTS = main.o \
   Mixture.o \
   Message.o \
   Normal.o  \
+  Poisson.o \
   Segment.o \
   OptimalFit.o  \
   IdealModel.o  \
@@ -45,6 +46,9 @@ Message.o: Message.cpp Message.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Normal.o: Normal.cpp Normal.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Poisson.o: Poisson.cpp Poisson.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 Segment.o: Segment.cpp Segment.h Header.h 

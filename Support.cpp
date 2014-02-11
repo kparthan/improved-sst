@@ -2025,9 +2025,9 @@ vector<Mixture> loadIdealMixtureModels()
 
   // load ideal coil 
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_blanks.mixture";
-  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_coil.mixture";
-  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
   Mixture m4;
   m4.load(mixture_file);
   dssp_sst_type = "coil";
@@ -2052,8 +2052,25 @@ vector<double> computeRelativeWeights(vector<Mixture> &mixtures)
     sum += weights[i];
   }
   for (int i=0; i<mixtures.size(); i++) {
-    weights[i] /= sum;
+    //weights[i] /= sum;
+    weights[i] = 1/(double)mixtures.size();
   }
   return weights;
+}
+
+/*!
+ *  \brief This function returns the mean length of an ideal model.
+ *  \param name a string
+ *  \return the mean length
+ */
+double getMeanLength(string name)
+{
+  if (name.compare("sheet") == 0) {
+    return MIN_SIZE_STRAND;
+  } else if (name.compare("coil") == 0) {
+    return MIN_SIZE_COIL;
+  } else {
+    return MIN_SIZE_HELIX;
+  }
 }
 

@@ -642,12 +642,12 @@ OptimalFit Protein::fitSegment (  // dssp non-adaptive
   vector<OptimalFit> fit;
   OptimalFit current_fit,ideal_fit;
 
-  ideal_fit = segment.fitNullModel(ideal_mixture_models[4],model_weights[4],log);
+  ideal_fit = segment.fitIdealModel(ideal_mixture_models[4],ideal_mixture_models[4],model_weights[4],log);
   fit.push_back(ideal_fit);
   for (int m=0; m<4; m++) {
     if ((m < 3 && segment_length >= MIN_SIZE_HELIX) ||
         (m == 3 && segment_length >= MIN_SIZE_STRAND)) {
-      current_fit = segment.fitIdealModel(ideal_mixture_models[m],model_weights[m],log);
+      current_fit = segment.fitIdealModel(ideal_mixture_models[4],ideal_mixture_models[m],model_weights[m],log);
       fit.push_back(current_fit);
       if (current_fit < ideal_fit) {
         ideal_fit = current_fit;

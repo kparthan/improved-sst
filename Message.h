@@ -2,6 +2,7 @@
 #define MESSAGE_H
 
 #include "Normal.h"
+#include "Poisson.h"
 #include "Mixture.h"
 
 class Message
@@ -15,6 +16,9 @@ class Message
     //! Computes the message length of stating an integer using the
     //! log star distribution
     double encodeUsingLogStarModel(double);
+
+    //! Poisson distribution
+    double encodeUsingPoissonModel(int, Poisson &);
 
     //! Computes the message length of stating the length using the
     //! normal model

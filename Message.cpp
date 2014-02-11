@@ -26,6 +26,25 @@ double Message::encodeUsingLogStarModel(double value)
 }
 
 /*!
+ *  \brief This function computes the message length to encode using a Poisson
+ *  distribution.
+ *  \param x a int
+ *  \param poisson a reference to a Poisson
+ *  \return the message length
+ */
+double Message::encodeUsingPoissonModel(int x, Poisson &poisson)
+{
+  //double density = poisson.density(x);
+  //return -log2(density);
+  double msglen = 0;
+  double lambda = poisson.mean();
+  msglen += lambda - (x * log(lambda));
+  long double fact = boost::math::factorial<long double>(x);
+  msglen += log(fact);
+  return msglen/log(2);
+}
+
+/*!
  *  \brief This function encodes the length assuming a Normal distribution.
  *  \param length a double
  *  \param normal a reference to a Normal

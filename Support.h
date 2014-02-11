@@ -114,6 +114,7 @@ vector<IdealModel> loadIdealModels();
 vector<int> assignMixtureComponents(vector<IdealModel> &, vector<Component> &, vector<double> &);
 vector<Mixture> loadIdealMixtureModels();
 vector<double> computeRelativeWeights(vector<Mixture> &);
+double getMeanLength(string);
 
 #endif
 
