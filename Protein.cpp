@@ -3,6 +3,7 @@
 #include "Geometry3D.h"
 
 extern string CURRENT_DIRECTORY,STRUCTURE;
+int PORTION_TO_FIT;
 
 /*!
  *  \brief Null constructor module.
@@ -467,6 +468,7 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
                                        int portion_to_fit, vector<string> &end_points,
                                        int sst_method)
 {
+  PORTION_TO_FIT = portion_to_fit;
   vector<IdealModel> ideal_models = loadIdealModels();
   ofstream log("compression.log");
   if (portion_to_fit == FIT_ENTIRE_STRUCTURE) {
@@ -477,9 +479,8 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
       computeCodeLengthMatrix(ideal_models,mixture,orientation,i,sst_method,log);
       pair<double,vector<int>> segmentation = computeOptimalSegmentation(i);
       vector<int> segments = segmentation.second;
-      cout << "Compression fit: " << segmentation.first << " bits." << endl;
-      cout << "Bits per residue: " << segmentation.first/cartesian_coordinates[i].size() 
-               << endl << endl; 
+      cout << "\nCompression fit: " << segmentation.first << " bits. ("
+           << segmentation.first/cartesian_coordinates[i].size() << " bpr)\n\n";
       cout << "# of segments: " << segments.size()-1 << endl << endl;
       cout << "Internal segmentation:" << endl;
       int j;
@@ -515,7 +516,7 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
     }
     Segment segment(start,end,cartesian_coordinates[chain],
                     spherical_coordinates[chain],unit_coordinates[chain]);
-    log << "Segment: chain " << chains[chain] << "\t[" << start << "," << end << "]\n";
+    log << "Segment: chain " << chains[chain] << "\t[" << start+1 << "," << end+1 << "]\n";
     if (start == 0 || start == 1) {
       segment.setInitialDistances(distances[chain][0],distances[chain][1]);
     }
@@ -557,13 +558,15 @@ OptimalFit Protein::fitSegment ( // adaptive superposition
       }
     }
   }
-  cout << "\n\nPrinting fit info:\n";
-  for (int i=0; i<fit.size(); i++) {
-    fit[i].printFitInfo();
-    cout << endl;
+  if (PORTION_TO_FIT == FIT_SINGLE_SEGMENT) {
+    cout << "\n\nPrinting fit info:\n";
+    for (int i=0; i<fit.size(); i++) {
+      fit[i].printFitInfo();
+      cout << endl;
+    }
+    cout << "\nBest fit: ";
+    ideal_fit.printFitInfo();
   }
-  cout << "\nBest fit: ";
-  ideal_fit.printFitInfo();
   return ideal_fit;
 }
 
@@ -608,13 +611,15 @@ OptimalFit Protein::fitSegment (  // non-adaptive method
       }
     }
   }
-  cout << "\n\nPrinting fit info:\n";
-  for (int i=0; i<fit.size(); i++) {
-    fit[i].printFitInfo();
-    cout << endl;
+  if (PORTION_TO_FIT == FIT_SINGLE_SEGMENT) {
+    cout << "\n\nPrinting fit info:\n";
+    for (int i=0; i<fit.size(); i++) {
+      fit[i].printFitInfo();
+      cout << endl;
+    }
+    cout << "\nBest fit: ";
+    ideal_fit.printFitInfo();
   }
-  cout << "\nBest fit: ";
-  ideal_fit.printFitInfo();
   return ideal_fit;
 }
 
@@ -649,13 +654,15 @@ OptimalFit Protein::fitSegment (  // dssp non-adaptive
       }
     }
   }
-  cout << "\n\nPrinting fit info:\n";
-  for (int i=0; i<fit.size(); i++) {
-    fit[i].printFitInfo();
-    cout << endl;
+  if (PORTION_TO_FIT == FIT_SINGLE_SEGMENT) {
+    cout << "\n\nPrinting fit info:\n";
+    for (int i=0; i<fit.size(); i++) {
+      fit[i].printFitInfo();
+      cout << endl;
+    }
+    cout << "\nBest fit: ";
+    ideal_fit.printFitInfo();
   }
-  cout << "\nBest fit: ";
-  ideal_fit.printFitInfo();
   return ideal_fit;
 }
 
@@ -737,6 +744,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
           log << "Segment " << i+1 << ":" << j+1 << endl;
+          cout << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -766,6 +774,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
           log << "Segment " << i+1 << ":" << j+1 << endl;
+          cout << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -792,6 +801,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
         bound = minimum(chain_size,i+MAX_SEGMENT_SIZE);
         for (j=i+1; j<chain_size; j++) {
           log << "Segment " << i+1 << ":" << j+1 << endl;
+          cout << "Segment " << i+1 << ":" << j+1 << endl;
           Segment segment(i,j,cartesian_coordinates[chain],
                           spherical_coordinates[chain],unit_coordinates[chain]);
           if (i == 0 || i == 1) {
@@ -836,8 +846,8 @@ pair<double,vector<int>> Protein::computeOptimalSegmentation(int chain)
     }
   }
   segmentation.first = optimal_msglen[chain_size-1];
-  cout << "Net optimal msglen: " << segmentation.first << " bits. ("
-       << segmentation.first/chain_size << " bpr)\n";
+  //cout << "Net optimal msglen: " << segmentation.first << " bits. ("
+  //     << segmentation.first/chain_size << " bpr)\n";
   int index = chain_size - 1;
   vector<int> backtrack; 
   backtrack.push_back(chain_size-1);

@@ -109,7 +109,7 @@ void plotMessageLengthAgainstComponents(vector<int> &, vector<double> &, struct 
 
 // sst functions
 void assignSecondaryStructure(string, string, int, int, vector<string> &, int);
-void assignSecondaryStructure(string, int, int, vector<string> &, int);
+void assignSecondaryStructure2(string, string, int, int, vector<string> &, int);
 vector<IdealModel> loadIdealModels();
 vector<int> assignMixtureComponents(vector<IdealModel> &, vector<Component> &, vector<double> &);
 vector<Mixture> loadIdealMixtureModels();

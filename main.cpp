@@ -29,14 +29,16 @@ int main(int argc, char **argv)
     visualizeMixtureComponents(parameters);
   } 
 
-  if (parameters.load_mixture == SET && parameters.sst == SET) {
+  //if (parameters.load_mixture == SET && parameters.sst == SET) {
+  /*if (parameters.sst == SET) {
     assignSecondaryStructure(parameters.mixture_file,parameters.file,
                              parameters.orientation,parameters.portion_to_fit,
                              parameters.end_points,parameters.method);
-  }
+  }*/
 
   if (parameters.dssp == SET && parameters.sst == SET) {
-    assignSecondaryStructure(parameters.file,parameters.orientation,parameters.portion_to_fit,
+    assignSecondaryStructure2(parameters.mixture_file,parameters.file,
+                             parameters.orientation,parameters.portion_to_fit,
                              parameters.end_points,parameters.method);
   }
 

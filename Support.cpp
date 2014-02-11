@@ -1316,9 +1316,9 @@ void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=1; i<=10; i++) {
+    for (int i=2; i<=20; i++) {
       //if (i % 2 == 1) {
-        int k = 10 * i;
+        int k = i;
         cout << "Running for K: " << k << endl;
         components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
@@ -1787,7 +1787,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   cout << "Wall time: " << wall_time << " secs." << endl;
 }
 
-void assignSecondaryStructure(string structure_file,
+void assignSecondaryStructure2(string mixture_file, string structure_file,
                               int orientation, int portion_to_fit,
                               vector<string> &end_points, int sst_method)
 {
@@ -1802,22 +1802,26 @@ void assignSecondaryStructure(string structure_file,
 
   // compute the message length to transmit using the sphere approach
   protein.computeSuccessiveDistances();
-  double msglen = protein.computeMessageLengthUsingSphereModel();
-  cout << "Sphere model message length: " << msglen << " bits. (" 
-       << msglen / (double)num_residues << " bpr)" << endl;
+  double sphere_msglen = protein.computeMessageLengthUsingSphereModel();
 
   // compute the message length to tansmit using the null model
   // null model: mixture model
   // read mixture data
   Mixture mixture;
+  mixture.load(mixture_file);
   protein.computeSphericalTransformation();
   protein.getUnitCoordinatesList();
+  double null_msglen = protein.computeMessageLengthUsingNullModel(mixture);
 
   // compute the message length using the compression model
   // using ideal models
   clock_t c_start = clock();
   auto t_start = std::chrono::high_resolution_clock::now();
   protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points,sst_method);
+  cout << "Sphere model message length: " << sphere_msglen << " bits. (" 
+       << sphere_msglen / (double)num_residues << " bpr)" << endl;
+  cout << "Null model message length: " << null_msglen << " bits. (" 
+       << null_msglen / (double)num_residues << " bpr)" << endl;
   clock_t c_end = clock();
   auto t_end = std::chrono::high_resolution_clock::now();
   double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
@@ -1984,6 +1988,7 @@ vector<Mixture> loadIdealMixtureModels()
   }
 
   // load ideal alpha-helix
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_helix_alpha.mixture";
   mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/helix_alpha.mixture";
   Mixture m0;
   m0.load(mixture_file);
@@ -1992,6 +1997,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m0);
 
   // load ideal pi-helix
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_helix_pi.mixture";
   mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/helix_pi.mixture";
   Mixture m1;
   m1.load(mixture_file);
@@ -2000,6 +2006,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m1);
 
   // load ideal 310-helix
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed +"/models/ideal_mixture_models/50_helix_310.mixture";
   mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed +"/models/ideal_mixture_models/helix_310.mixture";
   Mixture m2;
   m2.load(mixture_file);
@@ -2008,6 +2015,7 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m2);
 
   // load ideal sheet 
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_sheet.mixture";
   mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/sheet.mixture";
   Mixture m3;
   m3.load(mixture_file);
@@ -2016,6 +2024,9 @@ vector<Mixture> loadIdealMixtureModels()
   ideal_mixtures.push_back(m3);
 
   // load ideal coil 
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_blanks.mixture";
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_coil.mixture";
   mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
   Mixture m4;
   m4.load(mixture_file);
