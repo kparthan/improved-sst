@@ -14,7 +14,8 @@ OBJECTS = main.o \
   Segment.o \
   OptimalFit.o  \
   IdealModel.o  \
-  Superpose3D.o
+  Superpose3D.o \
+  Segmentation.o
 
 all: main 
 
@@ -61,6 +62,9 @@ IdealModel.o: IdealModel.cpp IdealModel.h Header.h
 	g++ -c $(CFLAGS) $< -o $@
 
 Superpose3D.o: Superpose3D.cpp Superpose3D.h suffstat.h 
+	g++ -c $(CFLAGS) $< -o $@
+
+Segmentation.o: Segmentation.cpp Segmentation.h 
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:

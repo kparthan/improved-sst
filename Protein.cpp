@@ -1,6 +1,7 @@
 #include "Support.h"
 #include "Message.h"
 #include "Geometry3D.h"
+#include "Segmentation.h"
 
 extern string CURRENT_DIRECTORY,STRUCTURE;
 int PORTION_TO_FIT;
@@ -489,16 +490,20 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
       }
       cout << segments[j]+1 << endl << endl;
       int a,b;
+      vector<string> model_names;
       string name;
       for (j=0; j<segments.size()-2; j++) {
         a = segments[j];
         b = segments[j+1];
         name = optimal_model[a][b].getName();
         cout << name << "-->";
+        model_names.push_back(name);
       }
       a = segments[j]; b = segments[j+1];
       name = optimal_model[a][b].getName();
       cout << name << endl;
+      model_names.push_back(name);
+      Segmentation assignment(structure,segments,model_names);
     }
   } else if (portion_to_fit == FIT_SINGLE_SEGMENT) {
     int start = boost::lexical_cast<int>(end_points[1]) - 1;

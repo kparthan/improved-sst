@@ -1,10 +1,15 @@
-The three dimensional geometry of protein structures allows for grouping
-of torsion angles between the successive protein coordinates. Mixture modelling
-of these directional data allows for segregating data with specific properties.
-Each of the secondary structural elements of protein structures exhibit specific 
-geometric interactions and this can be leveraged to build a mixture model
-for each kind of interatomic behaviour. Each of the mixture model can help
-represent a secondary structural element. Using these statistical models, we
-assign secondary structure to a stretch of residues within a protein. 
-We use Minimum Message Length encoding to infer the number of components
-and the parameters that correspond to a mixture model.
+Mixture modelling is widely  used  in  clustering  applications.   We  focus  on
+mixtures of directional data that are distributed on  a  sphere.   The  analogue
+of Normal distribution is von Mises  Fisher  (VMF)  distribution  on  a  sphere.
+We use Minimum Message Length (MML) paradigm of Bayesian inference to infer  the
+number of components and the parameters that correspond to a mixture model where
+each component is a VMF distribution.  We demonstrate its effectiveness by using
+these  models  to   delineate   secondary   structural   elements   in   protein
+structures.  The three dimensional geometry of  protein  structures  allows  for
+grouping of torsion angles between the successive protein coordinates.   Mixture
+modelling of these directional data allows for segregating  data  with  specific
+properties.   Each  of  the  secondary  structural  elements  exhibit   specific
+geometric interactions and this can  be  leveraged  to  build  a  mixture  model
+for each kind of interatomic behaviour.  Each of  the  mixture  model  can  help
+represent a secondary structural element.  Using these  statistical  models,  we
+assign  secondary  structure  to  a  stretch  of  residues  within  a   protein.

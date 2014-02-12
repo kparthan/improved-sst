@@ -474,11 +474,11 @@ OptimalFit Segment::fitIdealModel(Mixture &coil_mixture, Mixture &ideal_mixture,
   log << "\tMODEL_TYPE: " << name << endl;
 
   // state the length of segment
-  if (name.compare("sheet") == 0) {
+  /*if (name.compare("strand") == 0) {
     MSG = message.encodeUsingLogStarModel(num_residues);
-  } else {
+  } else {*/
     MSG = message.encodeUsingPoissonModel(num_residues,poisson);
-  }
+  //}
   log << "\t\tTo state the length: " << MSG << endl;
   msglen += MSG;
 

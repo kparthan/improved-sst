@@ -919,8 +919,8 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
   string type_dir;
   type_dir = DSSP_DIR + "coil/" + STRUCTURE + ".profile";
   ofstream coil(type_dir.c_str());
-  type_dir = DSSP_DIR + "sheet/" + STRUCTURE + ".profile";
-  ofstream sheet(type_dir.c_str());
+  type_dir = DSSP_DIR + "strand/" + STRUCTURE + ".profile";
+  ofstream strand(type_dir.c_str());
   type_dir = DSSP_DIR + "helix_310/" + STRUCTURE + ".profile";
   ofstream helix_310(type_dir.c_str());
   type_dir = DSSP_DIR + "helix_alpha/" + STRUCTURE + ".profile";
@@ -941,11 +941,11 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
       //if (type == ' ') cout << "yes\n";
       switch(type) {
         case 'E': // extended beta sheet
-          sheet << all_lines[i][j][CHAIN_ID];
+          strand << all_lines[i][j][CHAIN_ID];
           for (k=0; k<3; k++) {
-            sheet << fixed << setw(10) << setprecision(4) << spherical[k];
+            strand << fixed << setw(10) << setprecision(4) << spherical[k];
           }
-          sheet << endl;
+          strand << endl;
           break;
 
         case 'G': //3-10 helix
@@ -983,7 +983,7 @@ void collectData(Protein &protein, vector<vector<string>> &all_lines,
     }
   }
   coil.close();
-  sheet.close();
+  strand.close();
   helix_310.close();
   helix_alpha.close();
   helix_pi.close();
@@ -1007,8 +1007,8 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
   string type_dir;
   type_dir = DSSP_DIR + "coil/profiles/" + STRUCTURE + ".profile";
   ofstream coil(type_dir.c_str());
-  type_dir = DSSP_DIR + "sheet/profiles/" + STRUCTURE + ".profile";
-  ofstream sheet(type_dir.c_str());
+  type_dir = DSSP_DIR + "strand/profiles/" + STRUCTURE + ".profile";
+  ofstream strand(type_dir.c_str());
   type_dir = DSSP_DIR + "helix_310/profiles/" + STRUCTURE + ".profile";
   ofstream helix_310(type_dir.c_str());
   type_dir = DSSP_DIR + "helix_alpha/profiles/" + STRUCTURE + ".profile";
@@ -1031,11 +1031,11 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
         vector<double> spherical = spherical_coordinates[i][j-3];
         switch(type[0]) {
           case 'E': // extended beta sheet
-            sheet << all_lines[i][j][CHAIN_ID];
+            strand << all_lines[i][j][CHAIN_ID];
             for (k=0; k<3; k++) {
-              sheet << fixed << setw(10) << setprecision(4) << spherical[k];
+              strand << fixed << setw(10) << setprecision(4) << spherical[k];
             }
-            sheet << endl;
+            strand << endl;
             break;
 
           case 'G': //3-10 helix
@@ -1074,7 +1074,7 @@ void collectData2(Protein &protein, vector<vector<string>> &all_lines, ostream &
     }
   }
   coil.close();
-  sheet.close();
+  strand.close();
   helix_310.close();
   helix_alpha.close();
   helix_pi.close();
@@ -1155,13 +1155,13 @@ ProteinStructure *parsePDBFile(string &pdb_file)
   } else {
     cout << "Parsing PDB file ...";
     BrookhavenPDBParser parser;
-    ProteinStructure *structure = 
-        parser.getStructure(pdb_file.c_str())->select(CASelector());
-    ProteinStructure *one_model = 
-        new ProteinStructure(structure->getIdentifier());
+    ProteinStructure
+    *structure = parser.getStructure(pdb_file.c_str())->select(CASelector());
+    ProteinStructure 
+    *one_model = new ProteinStructure(structure->getIdentifier());
     one_model->select(CASelector());
-    std::shared_ptr<lcb::Model> newmodel = 
-        std::make_shared<lcb::Model>(structure->getDefaultModel());
+    std::shared_ptr<lcb::Model>
+    newmodel = std::make_shared<lcb::Model>(structure->getDefaultModel());
     one_model->addModel(newmodel);
     delete structure;
     cout << " [OK]" << endl;
@@ -2014,12 +2014,12 @@ vector<Mixture> loadIdealMixtureModels()
   m2.setDSSPFlag(dssp_sst_type);
   ideal_mixtures.push_back(m2);
 
-  // load ideal sheet 
-  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_sheet.mixture";
-  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/sheet.mixture";
+  // load ideal strand 
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_strand.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/strand.mixture";
   Mixture m3;
   m3.load(mixture_file);
-  dssp_sst_type = "sheet";
+  dssp_sst_type = "strand";
   m3.setDSSPFlag(dssp_sst_type);
   ideal_mixtures.push_back(m3);
 
@@ -2065,7 +2065,7 @@ vector<double> computeRelativeWeights(vector<Mixture> &mixtures)
  */
 double getMeanLength(string name)
 {
-  if (name.compare("sheet") == 0) {
+  if (name.compare("strand") == 0) {
     return MIN_SIZE_STRAND;
   } else if (name.compare("coil") == 0) {
     return MIN_SIZE_COIL;
