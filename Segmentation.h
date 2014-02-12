@@ -9,8 +9,11 @@ class Segmentation
     //! the structure
     ProteinStructure *structure;
 
+    //! the chain
+    string chain_id;
+
     //! the internal segmentation
-    vector<int> segments;
+    vector<array<int,2>> segments;
 
     //! corresponding ideal models
     vector<string> model_names;
@@ -20,7 +23,13 @@ class Segmentation
     Segmentation();
 
     //! Constructor
-    Segmentation(ProteinStructure *, vector<int> &, vector<string> &);
+    Segmentation(ProteinStructure *, string, vector<int> &, vector<string> &);
+
+    //! Gets the strand segments
+    vector<array<int,2>> getStrandSegments();
+
+    //! Postprocess the strand assignment
+    void postprocess();
 };
 
 #endif

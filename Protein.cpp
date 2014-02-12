@@ -503,7 +503,8 @@ void Protein::compressUsingIdealModels(Mixture &mixture, int orientation,
       name = optimal_model[a][b].getName();
       cout << name << endl;
       model_names.push_back(name);
-      Segmentation assignment(structure,segments,model_names);
+      Segmentation assignment(structure,chains[i],segments,model_names);
+      assignment.postprocess();
     }
   } else if (portion_to_fit == FIT_SINGLE_SEGMENT) {
     int start = boost::lexical_cast<int>(end_points[1]) - 1;
@@ -813,7 +814,7 @@ void Protein::computeCodeLengthMatrix(vector<IdealModel> &ideal_models,
             segment.setInitialDistances(distances[chain][0],distances[chain][1]);
           }
           if (j >= bound) {
-            ideal_fit = segment.fitNullModel(ideal_mixture_models[4],model_weights[4],log);
+            ideal_fit = segment.fitIdealModel(ideal_mixture_models[4],ideal_mixture_models[4],model_weights[4],log);
           } else {
             ideal_fit = fitSegment(ideal_mixture_models,model_weights,segment,log);
           }
