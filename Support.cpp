@@ -1734,15 +1734,6 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
 
 ////////////////////////// SST FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-/*!
- *  \brief This function assigns the secondary structure to a protein.
- *  \param mixture_file a string
- *  \param structure_file a string
- *  \param orientation an integer
- *  \param portion_to_fit an integer
- *  \param end_points a reference to a vector<string>
- *  \param sst_method an integer
- */
 void assignSecondaryStructure(string mixture_file, string structure_file,
                               int orientation, int portion_to_fit,
                               vector<string> &end_points, int sst_method)
@@ -1752,50 +1743,7 @@ void assignSecondaryStructure(string mixture_file, string structure_file,
   // read protein coordinate data
   string name = extractName(structure_file);
   ProteinStructure *p = parsePDBFile(structure_file);
-  Protein protein(p,name);
-  int num_residues = p->getNumberOfResidues();
-  cout << "Number of residues: " << num_residues << endl;
-
-  // compute the message length to transmit using the sphere approach
-  protein.computeSuccessiveDistances();
-  double msglen = protein.computeMessageLengthUsingSphereModel();
-  cout << "Sphere model message length: " << msglen << " bits. (" 
-       << msglen / (double)num_residues << " bpr)" << endl;
-
-  // compute the message length to tansmit using the null model
-  // null model: mixture model
-  // read mixture data
-  Mixture mixture;
-  mixture.load(mixture_file);
-  protein.computeSphericalTransformation();
-  protein.getUnitCoordinatesList();
-  msglen = protein.computeMessageLengthUsingNullModel(mixture);
-  cout << "Null model message length: " << msglen << " bits. (" 
-       << msglen / (double)num_residues << " bpr)" << endl;
-
-
-  // compute the message length using the compression model
-  // using ideal models
-  clock_t c_start = clock();
-  auto t_start = std::chrono::high_resolution_clock::now();
-  protein.compressUsingIdealModels(mixture,orientation,portion_to_fit,end_points,sst_method);
-  clock_t c_end = clock();
-  auto t_end = std::chrono::high_resolution_clock::now();
-  double cpu_time = double(c_end-c_start)/(double)(CLOCKS_PER_SEC);
-  double wall_time = std::chrono::duration_cast<std::chrono::seconds>(t_end-t_start).count();
-  cout << "CPU time: " << cpu_time << " secs." << endl;
-  cout << "Wall time: " << wall_time << " secs." << endl;
-}
-
-void assignSecondaryStructure2(string mixture_file, string structure_file,
-                              int orientation, int portion_to_fit,
-                              vector<string> &end_points, int sst_method)
-{
-  cout << "Assigning secondary structure to " << structure_file << endl;
-
-  // read protein coordinate data
-  string name = extractName(structure_file);
-  ProteinStructure *p = parsePDBFile(structure_file);
+  vector<ProteinStructure *> partitions = createPartitions(p);
   Protein protein(p,name);
   int num_residues = p->getNumberOfResidues();
   cout << "Number of residues: " << num_residues << endl;
@@ -2067,7 +2015,7 @@ double getMeanLength(string name)
 {
   double MEAN_ALPHA_HELIX = 4;
   double MEAN_STRAND = 5;
-  double MEAN_COIL = 1;
+  double MEAN_COIL = 2;
   double MEAN_TURN = 4;
   if (name.compare("strand") == 0) {
     return MEAN_STRAND;
@@ -2077,6 +2025,22 @@ double getMeanLength(string name)
     return MEAN_ALPHA_HELIX;
   } else {
     return MEAN_ALPHA_HELIX;
+  }
+}
+
+/*!
+ *  \brief This function is used to create partitions within the protein.
+ *  \param original a pointer to a ProteinStructure
+ *  \return the list of partitions
+ */
+vector<ProteinStructure *> createPartitions(ProteinStructure *original)
+{
+  vector<ProteinStructure *> partitions;
+  // get all chains
+  vector<string> chain_ids = structure->getChainIdentifiers();
+  for (int i=0; i<chain_ids.size(); i++) {
+    string id = chain_ids[i];
+    Chain chain = structure->getDefaultModel()[id];
   }
 }
 
