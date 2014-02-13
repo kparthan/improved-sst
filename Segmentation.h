@@ -18,6 +18,9 @@ class Segmentation
     //! corresponding ideal models
     vector<string> model_names;
 
+    //! checks the proximity of hydrogen bonded residues
+    bool checkProximity(Atom &, Atom &, Atom &, Atom &, ostream &);
+
   public:
     //! Null constructor
     Segmentation();

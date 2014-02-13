@@ -1,4 +1,7 @@
 #include "Segmentation.h"
+#include "Support.h"
+
+#define HYDROGEN_BOND_THRESHOLD 3.2 
 
 /*!
  *  \brief Null constructor module.
@@ -61,12 +64,6 @@ void Segmentation::postprocess()
   structure->undoLastSelection();
   structure->select(FullBackboneSelector());
   Chain chain = structure->getDefaultModel()[chain_id];
-  /*vector<string> residue_ids = chain.getResidueIdentifiers();
-  vector<Residue> residues;
-  for (int i=0; i<residue_ids.size(); i++) {
-    Residue res = chain[residue_ids[i]];
-    residues.push_back(res);
-  }*/
 
   vector<array<int,2>> strand_segments = getStrandSegments();
   vector<vector<Residue>> strands;
@@ -83,40 +80,162 @@ void Segmentation::postprocess()
   }
   cout << "# of strands: " << strands.size() << endl;
 
-  string CA = "CA";
-  string C = "C";
-  string N = "N";
-  string O = "O";
-
-  array<double,3> coords;
-  vector<array<double,3>> coords_N,coords_O;
-  vector<vector<array<double,3>>> all_coords_N,all_coords_O;
-
+  vector<vector<Atom>> all_atoms_N,all_atoms_O;
   for (int i=0; i<strands.size(); i++) {
+    vector<Atom> atoms_N,atoms_O;
     for (int j=0; j<strands[i].size(); j++) {
       Residue residue = strands[i][j];
-      Atom atomN = residue[N];
-      coords = atomN.getAtomicCoordinate<double>();
-      coords_N.push_back(coords);
-      Atom atomO = residue[O];
-      coords = atomO.getAtomicCoordinate<double>();
-      coords_O.push_back(coords);
+      Atom atomN = residue["N"];
+      atoms_N.push_back(atomN);
+      Atom atomO = residue["O"];
+      atoms_O.push_back(atomO);
     }
-    all_coords_N.push_back(coords_N);
-    all_coords_O.push_back(coords_O);
+    all_atoms_N.push_back(atoms_N);
+    all_atoms_O.push_back(atoms_O);
+  }
+  assert(all_atoms_N.size() == all_atoms_O.size());
+  for (int i=0; i<all_atoms_N.size(); i++) {
+    assert(all_atoms_N[i].size() == all_atoms_O[i].size());
+    //cout << all_atoms_N[i].size() << endl;
+    // print coordinates
+    /*array<double,3> coords;
+    for (int j=0; j<all_atoms_N[i].size(); j++) {
+      Atom N = all_atoms_N[i][j];
+      coords = N.getAtomicCoordinate<double>();
+      print(cout,coords);
+      Atom O = all_atoms_O[i][j];
+      coords = O.getAtomicCoordinate<double>();
+      print(cout,coords);
+      cout << endl;
+    }
+    cout << endl;*/
   }
 
-  vector<array<double,3>> other_coords_N,other_coords_O;
+  ofstream log("pruning.log");
+  // initialize pruning matrix
+  vector<bool> consider(strands.size(),1);
+  vector<vector<bool>> pruned;
   for (int i=0; i<strands.size(); i++) {
-    coords_N = all_coords_N[i];
-    coords_O = all_coords_O[i];
-    for (int j=0; j<strands.size(); j++) {
-      if (j != i) {
-        other_coords_N = all_coords_N[j];
-        other_coords_O = all_coords_O[j];
-        
+    vector<bool> tmp(strands[i].size(),1);
+    pruned.push_back(tmp);
+  }
+  Atom current_N,current_O,other_N,other_O;
+  for (int i=0; i<strands.size(); i++) {
+    log << "Strand #" << i+1 << endl;
+    log << "\tPruning from the start ...\n";
+    int j = 0;
+    while (j < strands[i].size()) { // pruning from the segment start
+      log << "\tCURRENT RESIDUE #" << j+1 << endl;
+      current_N = all_atoms_N[i][j];
+      current_O = all_atoms_O[i][j];
+      // check whether these atoms are close to any other atoms
+      for (int k=0; k<strands.size(); k++) {
+        if (k != i && consider[k] == 0) {
+          log << "\t\t" << k+1 << " is not a strand anymore ...\n";
+        }
+        if (k != i && consider[k] == 1) {
+          log << "\t\tComparing with residues in strand #" << k+1 << endl;
+          for (int m=0; m<strands[k].size(); m++) {
+            if (pruned[k][m] == 0) {
+              log << "\t\t\tResidue " << m+1 << " is pruned already ...\n";
+            } else if (pruned[k][m] == 1) {
+              log << "\t\t\tResidue " << m+1 << ":\n";
+              other_N = all_atoms_N[k][m];
+              other_O = all_atoms_O[k][m];
+              bool check = checkProximity(current_N,current_O,other_N,other_O,log);
+              if (check == 1) { // stop and begin pruning from the other end
+                log << "\t\t\tCurrent residue is retained ...\n";
+                pruned[i][j] = 1;
+                goto prune_other_end;
+              } else if (check == 0) {
+                pruned[i][j] = 0;
+                if (j == strands[i].size() - 1) {
+                  log << "\t\tStrand #" << i+1 << " discarded completely ...\n";
+                  consider[i] = 0;
+                  goto finish;
+                }
+              }
+            }
+          }
+        }
       }
+      if (pruned[i][j] == 0) {
+        log << "\t\t\tCurrent residue is pruned ...\n";
+      }
+      j++;
     }
+    prune_other_end:
+    j = strands[i].size() - 1;
+    log << "\tPruning from the end ...\n";
+    while (j >= 1) {  // pruning from the segment end
+      log << "\tCURRENT RESIDUE #" << j+1 << endl;
+      current_N = all_atoms_N[i][j];
+      current_O = all_atoms_O[i][j];
+      // check whether these atoms are close to any other atoms
+      for (int k=0; k<strands.size(); k++) {
+        if (k != i && consider[k] == 0) {
+          log << "\t\t" << k+1 << " is not a strand anymore ...\n";
+        }
+        if (k != i && consider[k] == 1) {
+          log << "\t\tComparing with residues in strand #" << k+1 << endl;
+          for (int m=0; m<strands[k].size(); m++) {
+            if (pruned[k][m] == 0) {
+              log << "\t\t\tResidue " << m+1 << " is pruned already ...\n";
+            } else if (pruned[k][m] == 1) {
+              log << "\t\t\tResidue " << m+1 << ":\n";
+              other_N = all_atoms_N[k][m];
+              other_O = all_atoms_O[k][m];
+              bool check = checkProximity(current_N,current_O,other_N,other_O,log);
+              if (check == 1) { // stop and begin pruning from the other end
+                log << "\t\t\tCurrent residue is retained ...\n";
+                pruned[i][j] = 1;
+                goto finish;
+              } else if (check == 0) {
+                pruned[i][j] = 0;
+              }
+            }
+          }
+        }
+      }
+      if (pruned[i][j] == 0) {
+        log << "\t\t\tCurrent residue is pruned ...\n";
+      }
+      j--;
+    }
+    finish:
+    for (int j=0; j<pruned[i].size(); j++) {
+      cout << pruned[i][j] << " ";
+    }
+    cout << endl;
+    log << endl;
+  }
+  log.close();
+}
+
+/*!
+ *  \brief This function checks whether a residue in one strand is involved in 
+ *  hydrogen bonding with any other strand.
+ *  \param current_N a reference to an Atom
+ *  \param current_O a reference to an Atom
+ *  \param other_N a reference to an Atom
+ *  \param other_N a reference to an Atom
+ *  \param log a reference to a ostream
+ *  \return a boolean
+ */
+bool Segmentation::checkProximity(Atom &current_N, Atom &current_O,
+                                  Atom &other_N, Atom &other_O, ostream &log)
+{
+  double d1,d2;
+  // check current_N with other_O
+  d1 = distance<double>(current_N,other_O);
+  log << "\t\t\t\tdist(current_N,other_O) : " << d1 << endl;
+  // check current_O with other_N
+  d2 = distance<double>(current_O,other_N); 
+  log << "\t\t\t\tdist(current_O,other_N) : " << d2 << endl;
+  if (d1 <= HYDROGEN_BOND_THRESHOLD || d2 <= HYDROGEN_BOND_THRESHOLD) {
+    return 1;
+  } else {
+    return 0;
   }
 }
 

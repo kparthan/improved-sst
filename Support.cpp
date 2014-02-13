@@ -500,6 +500,16 @@ void print(ostream &os, vector<double> &v)
   //os << fixed << setprecision(4) << "(" << v[0] << "," << v[1]*180/PI << "," << v[2]*180/PI <<
 ")\t";
 }
+/*!
+ *  \brief This function prints the elements of an array.
+ *  \param os a reference to a ostream
+ *  \param a a reference to a array<double,3>
+ */
+void print(ostream &os, array<double,3> &a)
+{
+  os << fixed << setprecision(4) << "(" << a[0] << "," << a[1] << "," << a[2] <<
+")\t";
+}
 
 /*!
  *  \brief This function computes the ratio of Bessel functions -- A3(k)
@@ -2013,7 +2023,7 @@ vector<double> computeRelativeWeights(vector<Mixture> &mixtures)
  */
 double getMeanLength(string name)
 {
-  double MEAN_ALPHA_HELIX = 4;
+  double MEAN_ALPHA_HELIX = 6;
   double MEAN_STRAND = 5;
   double MEAN_COIL = 2;
   double MEAN_TURN = 4;
@@ -2029,6 +2039,31 @@ double getMeanLength(string name)
 }
 
 /*!
+ *  \brief This function collects all the continuous stretches within a 
+ *  protein chain. 
+ *  \param id a reference to a string
+ *  \param atoms a reference to a vector<Atoms> 
+ *  \return whether there are chain breks or not
+ */
+vector<array<int,2>> identifyChainBreaks(string &id, vector<Atom> &atoms)
+{
+  vector<array<int,2>> stretches;
+  array<int,2> one_stretch;
+  int start = 1,end;
+  for (int i = 1; i < atoms.size(); ++i) {
+    double dist = distance<double>(atoms[i-1], atoms[i]);
+    if (dist > 4) {
+      end = i - 1;
+      one_stretch[0] = start;
+      one_stretch[1] = end;
+      stretches.push_back(one_stretch);
+      cout << "Break in chain " << id << " ...\n";
+    }
+  }
+  return stretches;
+}
+
+/*!
  *  \brief This function is used to create partitions within the protein.
  *  \param original a pointer to a ProteinStructure
  *  \return the list of partitions
@@ -2037,10 +2072,13 @@ vector<ProteinStructure *> createPartitions(ProteinStructure *original)
 {
   vector<ProteinStructure *> partitions;
   // get all chains
-  vector<string> chain_ids = structure->getChainIdentifiers();
+  vector<string> chain_ids = original->getChainIdentifiers();
   for (int i=0; i<chain_ids.size(); i++) {
     string id = chain_ids[i];
-    Chain chain = structure->getDefaultModel()[id];
+    Chain chain = original->getDefaultModel()[id];
+    vector<Atom> atoms = chain.getAtoms();
+    vector<array<int,2>> stretches = identifyChainBreaks(id,atoms);
   }
+  return partitions;
 }
 

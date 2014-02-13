@@ -3,6 +3,12 @@
 #include "Geometry3D.h"
 #include "Segmentation.h"
 
+#define MIN_SIZE_HELIX_ALPHA 6
+#define MIN_SIZE_HELIX_PI 4 
+#define MIN_SIZE_HELIX_310 4
+#define MIN_SIZE_STRAND 5 
+#define MAX_SEGMENT_SIZE 40 
+
 extern string CURRENT_DIRECTORY,STRUCTURE;
 int PORTION_TO_FIT;
 
@@ -555,7 +561,7 @@ OptimalFit Protein::fitSegment ( // adaptive superposition
   ideal_fit = segment.fitNullModel(mixture,log);
   fit.push_back(ideal_fit);
   for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX_ALPHA) ||
         (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
       current_fit = segment.fitIdealModel(ideal_models[m],mixture,orientation,log);
       fit.push_back(current_fit);
@@ -605,7 +611,7 @@ OptimalFit Protein::fitSegment (  // non-adaptive method
   ideal_fit = segment.fitNullModel(residual_mixture,sum_residual_weights,log);
   fit.push_back(ideal_fit);
   for (int m=0; m<NUM_IDEAL_MODELS; m++) {
-    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX) ||
+    if ((m != NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_HELIX_ALPHA) ||
         (m == NUM_IDEAL_MODELS-1 && segment_length >= MIN_SIZE_STRAND)) {
       Component assigned_component = components[assignment[m]];
       double weight = weights[assignment[m]];
@@ -647,12 +653,23 @@ OptimalFit Protein::fitSegment (  // dssp non-adaptive
   int segment_length = segment.length(); 
   vector<OptimalFit> fit;
   OptimalFit current_fit,ideal_fit;
+  vector<double> min_sizes(ideal_mixture_models.size()-1,0);
+  for (int i=0; i<min_sizes.size(); i++) {
+    if (i == 0) {
+      min_sizes[i] = MIN_SIZE_HELIX_ALPHA;
+    } else if (i == 1) {
+      min_sizes[i] = MIN_SIZE_HELIX_PI;
+    } else if (i == 2) {
+      min_sizes[i] = MIN_SIZE_HELIX_310;
+    } else if (i == 3) {
+      min_sizes[i] = MIN_SIZE_STRAND;
+    }
+  }
 
   ideal_fit = segment.fitIdealModel(ideal_mixture_models[4],ideal_mixture_models[4],model_weights[4],log);
   fit.push_back(ideal_fit);
   for (int m=0; m<4; m++) {
-    if ((m < 3 && segment_length >= MIN_SIZE_HELIX) ||
-        (m == 3 && segment_length >= MIN_SIZE_STRAND)) {
+    if (segment_length >= min_sizes[m]) { 
       current_fit = segment.fitIdealModel(ideal_mixture_models[4],ideal_mixture_models[m],model_weights[m],log);
       fit.push_back(current_fit);
       if (current_fit < ideal_fit) {

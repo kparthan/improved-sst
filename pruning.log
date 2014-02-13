@@ -1,0 +1,5948 @@
+Strand #1
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 28.0523
+				dist(current_O,other_N) : 28.4337
+			Residue 2:
+				dist(current_N,other_O) : 23.6772
+				dist(current_O,other_N) : 25.9361
+			Residue 3:
+				dist(current_N,other_O) : 25.4086
+				dist(current_O,other_N) : 23.9587
+			Residue 4:
+				dist(current_N,other_O) : 21.9101
+				dist(current_O,other_N) : 21.596
+			Residue 5:
+				dist(current_N,other_O) : 21.9621
+				dist(current_O,other_N) : 20.5933
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 22.2699
+				dist(current_O,other_N) : 18.6296
+			Residue 2:
+				dist(current_N,other_O) : 19.9534
+				dist(current_O,other_N) : 17.6011
+			Residue 3:
+				dist(current_N,other_O) : 18.5366
+				dist(current_O,other_N) : 17.8232
+			Residue 4:
+				dist(current_N,other_O) : 21.0941
+				dist(current_O,other_N) : 17.9174
+			Residue 5:
+				dist(current_N,other_O) : 19.4508
+				dist(current_O,other_N) : 18.4709
+			Residue 6:
+				dist(current_N,other_O) : 23.5826
+				dist(current_O,other_N) : 20.5995
+			Residue 7:
+				dist(current_N,other_O) : 22.2235
+				dist(current_O,other_N) : 21.7204
+			Residue 8:
+				dist(current_N,other_O) : 25.2513
+				dist(current_O,other_N) : 24.4424
+			Residue 9:
+				dist(current_N,other_O) : 24.3874
+				dist(current_O,other_N) : 24.7915
+			Residue 10:
+				dist(current_N,other_O) : 27.999
+				dist(current_O,other_N) : 27.1431
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 32.1958
+				dist(current_O,other_N) : 31.2789
+			Residue 2:
+				dist(current_N,other_O) : 30.0625
+				dist(current_O,other_N) : 32.0287
+			Residue 3:
+				dist(current_N,other_O) : 27.4178
+				dist(current_O,other_N) : 30.1068
+			Residue 4:
+				dist(current_N,other_O) : 24.0323
+				dist(current_O,other_N) : 27.5759
+			Residue 5:
+				dist(current_N,other_O) : 23.0642
+				dist(current_O,other_N) : 24.6261
+			Residue 6:
+				dist(current_N,other_O) : 18.6475
+				dist(current_O,other_N) : 21.6807
+			Residue 7:
+				dist(current_N,other_O) : 19.1376
+				dist(current_O,other_N) : 19.7336
+			Residue 8:
+				dist(current_N,other_O) : 14.8707
+				dist(current_O,other_N) : 17.0005
+			Residue 9:
+				dist(current_N,other_O) : 17.216
+				dist(current_O,other_N) : 15.7356
+			Residue 10:
+				dist(current_N,other_O) : 15.3473
+				dist(current_O,other_N) : 13.6669
+			Residue 11:
+				dist(current_N,other_O) : 19.9313
+				dist(current_O,other_N) : 15.5446
+			Residue 12:
+				dist(current_N,other_O) : 22.426
+				dist(current_O,other_N) : 17.53
+			Residue 13:
+				dist(current_N,other_O) : 25.0359
+				dist(current_O,other_N) : 20.7272
+			Residue 14:
+				dist(current_N,other_O) : 27.532
+				dist(current_O,other_N) : 24.3524
+			Residue 15:
+				dist(current_N,other_O) : 31.0303
+				dist(current_O,other_N) : 26.2495
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 26.7882
+				dist(current_O,other_N) : 26.3985
+			Residue 2:
+				dist(current_N,other_O) : 27.0059
+				dist(current_O,other_N) : 27.4075
+			Residue 3:
+				dist(current_N,other_O) : 25.2728
+				dist(current_O,other_N) : 25.6411
+			Residue 4:
+				dist(current_N,other_O) : 21.8747
+				dist(current_O,other_N) : 22.5304
+			Residue 5:
+				dist(current_N,other_O) : 21.3261
+				dist(current_O,other_N) : 21.4039
+			Residue 6:
+				dist(current_N,other_O) : 20.7285
+				dist(current_O,other_N) : 19.1405
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 17.8744
+				dist(current_O,other_N) : 19.4989
+			Residue 2:
+				dist(current_N,other_O) : 16.5106
+				dist(current_O,other_N) : 17.4062
+			Residue 3:
+				dist(current_N,other_O) : 18.7333
+				dist(current_O,other_N) : 17.9187
+			Residue 4:
+				dist(current_N,other_O) : 22.2237
+				dist(current_O,other_N) : 19.7076
+			Residue 5:
+				dist(current_N,other_O) : 24.157
+				dist(current_O,other_N) : 22.3623
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 28.7743
+				dist(current_O,other_N) : 29.6563
+			Residue 2:
+				dist(current_N,other_O) : 25.7374
+				dist(current_O,other_N) : 28.4855
+			Residue 3:
+				dist(current_N,other_O) : 24.2181
+				dist(current_O,other_N) : 26.209
+			Residue 4:
+				dist(current_N,other_O) : 19.6033
+				dist(current_O,other_N) : 22.8783
+			Residue 5:
+				dist(current_N,other_O) : 17.8566
+				dist(current_O,other_N) : 20.9937
+			Residue 6:
+				dist(current_N,other_O) : 14.6983
+				dist(current_O,other_N) : 17.6156
+			Residue 7:
+				dist(current_N,other_O) : 13.37
+				dist(current_O,other_N) : 16.5752
+			Residue 8:
+				dist(current_N,other_O) : 11.7851
+				dist(current_O,other_N) : 14.5246
+			Residue 9:
+				dist(current_N,other_O) : 6.75912
+				dist(current_O,other_N) : 10.9696
+			Residue 10:
+				dist(current_N,other_O) : 8.56319
+				dist(current_O,other_N) : 8.91423
+			Residue 11:
+				dist(current_N,other_O) : 8.47115
+				dist(current_O,other_N) : 7.56586
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 11.8615
+				dist(current_O,other_N) : 11.3624
+			Residue 2:
+				dist(current_N,other_O) : 10.8742
+				dist(current_O,other_N) : 10.9951
+			Residue 3:
+				dist(current_N,other_O) : 12.4627
+				dist(current_O,other_N) : 9.80926
+			Residue 4:
+				dist(current_N,other_O) : 10.7512
+				dist(current_O,other_N) : 10.395
+			Residue 5:
+				dist(current_N,other_O) : 15.1084
+				dist(current_O,other_N) : 12.8174
+			Residue 6:
+				dist(current_N,other_O) : 15.6626
+				dist(current_O,other_N) : 14.8736
+			Residue 7:
+				dist(current_N,other_O) : 19.9725
+				dist(current_O,other_N) : 17.8819
+			Residue 8:
+				dist(current_N,other_O) : 21.8641
+				dist(current_O,other_N) : 20.7033
+			Residue 9:
+				dist(current_N,other_O) : 25.4915
+				dist(current_O,other_N) : 24.0382
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 25.927
+				dist(current_O,other_N) : 24.9025
+			Residue 2:
+				dist(current_N,other_O) : 21.5544
+				dist(current_O,other_N) : 22.4781
+			Residue 3:
+				dist(current_N,other_O) : 23.0227
+				dist(current_O,other_N) : 20.5073
+			Residue 4:
+				dist(current_N,other_O) : 19.4309
+				dist(current_O,other_N) : 17.9684
+			Residue 5:
+				dist(current_N,other_O) : 19.3691
+				dist(current_O,other_N) : 16.7762
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 19.6918
+				dist(current_O,other_N) : 15.1387
+			Residue 2:
+				dist(current_N,other_O) : 17.3762
+				dist(current_O,other_N) : 14.206
+			Residue 3:
+				dist(current_N,other_O) : 16.1527
+				dist(current_O,other_N) : 14.5485
+			Residue 4:
+				dist(current_N,other_O) : 18.8112
+				dist(current_O,other_N) : 14.5137
+			Residue 5:
+				dist(current_N,other_O) : 17.5135
+				dist(current_O,other_N) : 15.334
+			Residue 6:
+				dist(current_N,other_O) : 21.7273
+				dist(current_O,other_N) : 17.4329
+			Residue 7:
+				dist(current_N,other_O) : 20.7071
+				dist(current_O,other_N) : 18.8176
+			Residue 8:
+				dist(current_N,other_O) : 23.9914
+				dist(current_O,other_N) : 21.6617
+			Residue 9:
+				dist(current_N,other_O) : 23.4106
+				dist(current_O,other_N) : 22.2826
+			Residue 10:
+				dist(current_N,other_O) : 27.1917
+				dist(current_O,other_N) : 24.7687
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 31.4554
+				dist(current_O,other_N) : 29.2403
+			Residue 2:
+				dist(current_N,other_O) : 29.2719
+				dist(current_O,other_N) : 29.8749
+			Residue 3:
+				dist(current_N,other_O) : 26.5109
+				dist(current_O,other_N) : 27.75
+			Residue 4:
+				dist(current_N,other_O) : 22.8887
+				dist(current_O,other_N) : 24.9431
+			Residue 5:
+				dist(current_N,other_O) : 21.7671
+				dist(current_O,other_N) : 21.9966
+			Residue 6:
+				dist(current_N,other_O) : 17.2051
+				dist(current_O,other_N) : 18.8677
+			Residue 7:
+				dist(current_N,other_O) : 17.4922
+				dist(current_O,other_N) : 17.0142
+			Residue 8:
+				dist(current_N,other_O) : 13.0105
+				dist(current_O,other_N) : 14.1254
+			Residue 9:
+				dist(current_N,other_O) : 15.1262
+				dist(current_O,other_N) : 12.8778
+			Residue 10:
+				dist(current_N,other_O) : 13.2896
+				dist(current_O,other_N) : 10.8498
+			Residue 11:
+				dist(current_N,other_O) : 17.7372
+				dist(current_O,other_N) : 12.9388
+			Residue 12:
+				dist(current_N,other_O) : 20.3961
+				dist(current_O,other_N) : 15.2032
+			Residue 13:
+				dist(current_N,other_O) : 22.7533
+				dist(current_O,other_N) : 18.1524
+			Residue 14:
+				dist(current_N,other_O) : 25.2441
+				dist(current_O,other_N) : 21.729
+			Residue 15:
+				dist(current_N,other_O) : 28.6318
+				dist(current_O,other_N) : 23.304
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 24.5799
+				dist(current_O,other_N) : 22.6713
+			Residue 2:
+				dist(current_N,other_O) : 24.6188
+				dist(current_O,other_N) : 23.4833
+			Residue 3:
+				dist(current_N,other_O) : 23.0763
+				dist(current_O,other_N) : 21.6427
+			Residue 4:
+				dist(current_N,other_O) : 19.5467
+				dist(current_O,other_N) : 18.5274
+			Residue 5:
+				dist(current_N,other_O) : 19.3068
+				dist(current_O,other_N) : 17.464
+			Residue 6:
+				dist(current_N,other_O) : 18.7802
+				dist(current_O,other_N) : 15.3177
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 16.9545
+				dist(current_O,other_N) : 16.9738
+			Residue 2:
+				dist(current_N,other_O) : 15.3849
+				dist(current_O,other_N) : 14.8546
+			Residue 3:
+				dist(current_N,other_O) : 17.0621
+				dist(current_O,other_N) : 14.9292
+			Residue 4:
+				dist(current_N,other_O) : 20.5135
+				dist(current_O,other_N) : 16.2989
+			Residue 5:
+				dist(current_N,other_O) : 22.1143
+				dist(current_O,other_N) : 18.706
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 27.1169
+				dist(current_O,other_N) : 25.9013
+			Residue 2:
+				dist(current_N,other_O) : 24.0186
+				dist(current_O,other_N) : 24.8846
+			Residue 3:
+				dist(current_N,other_O) : 22.8304
+				dist(current_O,other_N) : 22.8456
+			Residue 4:
+				dist(current_N,other_O) : 18.1605
+				dist(current_O,other_N) : 19.6093
+			Residue 5:
+				dist(current_N,other_O) : 16.7159
+				dist(current_O,other_N) : 18.0929
+			Residue 6:
+				dist(current_N,other_O) : 13.9228
+				dist(current_O,other_N) : 14.9185
+			Residue 7:
+				dist(current_N,other_O) : 13.1072
+				dist(current_O,other_N) : 14.3546
+			Residue 8:
+				dist(current_N,other_O) : 10.6811
+				dist(current_O,other_N) : 12.708
+			Residue 9:
+				dist(current_N,other_O) : 5.87717
+				dist(current_O,other_N) : 9.22791
+			Residue 10:
+				dist(current_N,other_O) : 7.29523
+				dist(current_O,other_N) : 7.51964
+			Residue 11:
+				dist(current_N,other_O) : 8.37298
+				dist(current_O,other_N) : 7.38321
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 10.5919
+				dist(current_O,other_N) : 11.8151
+			Residue 2:
+				dist(current_N,other_O) : 9.55627
+				dist(current_O,other_N) : 10.4989
+			Residue 3:
+				dist(current_N,other_O) : 10.5663
+				dist(current_O,other_N) : 8.11069
+			Residue 4:
+				dist(current_N,other_O) : 9.25632
+				dist(current_O,other_N) : 8.20032
+			Residue 5:
+				dist(current_N,other_O) : 13.5964
+				dist(current_O,other_N) : 10.08
+			Residue 6:
+				dist(current_N,other_O) : 14.5481
+				dist(current_O,other_N) : 12.3387
+			Residue 7:
+				dist(current_N,other_O) : 18.7347
+				dist(current_O,other_N) : 15.1268
+			Residue 8:
+				dist(current_N,other_O) : 20.6862
+				dist(current_O,other_N) : 17.9412
+			Residue 9:
+				dist(current_N,other_O) : 24.4032
+				dist(current_O,other_N) : 21.1394
+			Current residue is pruned ...
+	CURRENT RESIDUE #3
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 25.3241
+				dist(current_O,other_N) : 25.2598
+			Residue 2:
+				dist(current_N,other_O) : 20.9866
+				dist(current_O,other_N) : 22.711
+			Residue 3:
+				dist(current_N,other_O) : 21.9596
+				dist(current_O,other_N) : 21.0386
+			Residue 4:
+				dist(current_N,other_O) : 18.2917
+				dist(current_O,other_N) : 18.4859
+			Residue 5:
+				dist(current_N,other_O) : 17.6401
+				dist(current_O,other_N) : 17.1958
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 18.3394
+				dist(current_O,other_N) : 16.1709
+			Residue 2:
+				dist(current_N,other_O) : 16.0622
+				dist(current_O,other_N) : 15.6098
+			Residue 3:
+				dist(current_N,other_O) : 15.4428
+				dist(current_O,other_N) : 16.1395
+			Residue 4:
+				dist(current_N,other_O) : 18.0869
+				dist(current_O,other_N) : 15.6663
+			Residue 5:
+				dist(current_N,other_O) : 17.3116
+				dist(current_O,other_N) : 16.3848
+			Residue 6:
+				dist(current_N,other_O) : 21.4561
+				dist(current_O,other_N) : 17.9466
+			Residue 7:
+				dist(current_N,other_O) : 20.6666
+				dist(current_O,other_N) : 19.0216
+			Residue 8:
+				dist(current_N,other_O) : 24.2241
+				dist(current_O,other_N) : 21.5365
+			Residue 9:
+				dist(current_N,other_O) : 23.6353
+				dist(current_O,other_N) : 21.8176
+			Residue 10:
+				dist(current_N,other_O) : 27.5731
+				dist(current_O,other_N) : 24.0803
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 31.5309
+				dist(current_O,other_N) : 27.9779
+			Residue 2:
+				dist(current_N,other_O) : 29.096
+				dist(current_O,other_N) : 28.2896
+			Residue 3:
+				dist(current_N,other_O) : 26.5076
+				dist(current_O,other_N) : 26.0734
+			Residue 4:
+				dist(current_N,other_O) : 22.5806
+				dist(current_O,other_N) : 23.3766
+			Residue 5:
+				dist(current_N,other_O) : 21.6728
+				dist(current_O,other_N) : 20.7565
+			Residue 6:
+				dist(current_N,other_O) : 17.0197
+				dist(current_O,other_N) : 17.8769
+			Residue 7:
+				dist(current_N,other_O) : 17.4733
+				dist(current_O,other_N) : 16.6479
+			Residue 8:
+				dist(current_N,other_O) : 12.8805
+				dist(current_O,other_N) : 14.1266
+			Residue 9:
+				dist(current_N,other_O) : 14.9157
+				dist(current_O,other_N) : 13.704
+			Residue 10:
+				dist(current_N,other_O) : 13.3482
+				dist(current_O,other_N) : 12.4523
+			Residue 11:
+				dist(current_N,other_O) : 17.4296
+				dist(current_O,other_N) : 14.9706
+			Residue 12:
+				dist(current_N,other_O) : 20.3532
+				dist(current_O,other_N) : 17.604
+			Residue 13:
+				dist(current_N,other_O) : 22.2107
+				dist(current_O,other_N) : 20.2925
+			Residue 14:
+				dist(current_N,other_O) : 24.6526
+				dist(current_O,other_N) : 23.7654
+			Residue 15:
+				dist(current_N,other_O) : 27.7822
+				dist(current_O,other_N) : 25.0561
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 23.2842
+				dist(current_O,other_N) : 21.6107
+			Residue 2:
+				dist(current_N,other_O) : 23.0061
+				dist(current_O,other_N) : 22.4601
+			Residue 3:
+				dist(current_N,other_O) : 21.3871
+				dist(current_O,other_N) : 20.5399
+			Residue 4:
+				dist(current_N,other_O) : 17.5861
+				dist(current_O,other_N) : 17.1561
+			Residue 5:
+				dist(current_N,other_O) : 17.2703
+				dist(current_O,other_N) : 15.5399
+			Residue 6:
+				dist(current_N,other_O) : 16.4955
+				dist(current_O,other_N) : 13.0291
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 15.6264
+				dist(current_O,other_N) : 13.4116
+			Residue 2:
+				dist(current_N,other_O) : 14.1819
+				dist(current_O,other_N) : 11.3627
+			Residue 3:
+				dist(current_N,other_O) : 15.2794
+				dist(current_O,other_N) : 11.7851
+			Residue 4:
+				dist(current_N,other_O) : 18.9621
+				dist(current_O,other_N) : 13.6342
+			Residue 5:
+				dist(current_N,other_O) : 20.2466
+				dist(current_O,other_N) : 16.2202
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 25.4687
+				dist(current_O,other_N) : 23.6345
+			Residue 2:
+				dist(current_N,other_O) : 22.4861
+				dist(current_O,other_N) : 22.4946
+			Residue 3:
+				dist(current_N,other_O) : 21.7088
+				dist(current_O,other_N) : 20.2722
+			Residue 4:
+				dist(current_N,other_O) : 16.9645
+				dist(current_O,other_N) : 17.1091
+			Residue 5:
+				dist(current_N,other_O) : 16.0829
+				dist(current_O,other_N) : 15.5669
+			Residue 6:
+				dist(current_N,other_O) : 13.4441
+				dist(current_O,other_N) : 12.3096
+			Residue 7:
+				dist(current_N,other_O) : 13.4201
+				dist(current_O,other_N) : 12.1822
+			Residue 8:
+				dist(current_N,other_O) : 10.7346
+				dist(current_O,other_N) : 10.9401
+			Residue 9:
+				dist(current_N,other_O) : 6.54647
+				dist(current_O,other_N) : 7.87755
+			Residue 10:
+				dist(current_N,other_O) : 8.38443
+				dist(current_O,other_N) : 7.50446
+			Residue 11:
+				dist(current_N,other_O) : 10.4978
+				dist(current_O,other_N) : 8.90365
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 11.8112
+				dist(current_O,other_N) : 14.5772
+			Residue 2:
+				dist(current_N,other_O) : 10.7092
+				dist(current_O,other_N) : 13.2238
+			Residue 3:
+				dist(current_N,other_O) : 10.8118
+				dist(current_O,other_N) : 10.5001
+			Residue 4:
+				dist(current_N,other_O) : 9.53098
+				dist(current_O,other_N) : 9.38043
+			Residue 5:
+				dist(current_N,other_O) : 13.5592
+				dist(current_O,other_N) : 10.0289
+			Residue 6:
+				dist(current_N,other_O) : 14.3396
+				dist(current_O,other_N) : 11.3847
+			Residue 7:
+				dist(current_N,other_O) : 18.433
+				dist(current_O,other_N) : 13.7704
+			Residue 8:
+				dist(current_N,other_O) : 19.9849
+				dist(current_O,other_N) : 16.0539
+			Residue 9:
+				dist(current_N,other_O) : 23.8073
+				dist(current_O,other_N) : 19.1743
+			Current residue is pruned ...
+	CURRENT RESIDUE #4
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 24.421
+				dist(current_O,other_N) : 22.5396
+			Residue 2:
+				dist(current_N,other_O) : 20.2184
+				dist(current_O,other_N) : 20.292
+			Residue 3:
+				dist(current_N,other_O) : 20.5311
+				dist(current_O,other_N) : 18.4442
+			Residue 4:
+				dist(current_N,other_O) : 16.9147
+				dist(current_O,other_N) : 15.5952
+			Residue 5:
+				dist(current_N,other_O) : 15.3969
+				dist(current_O,other_N) : 13.8618
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 16.8843
+				dist(current_O,other_N) : 12.466
+			Residue 2:
+				dist(current_N,other_O) : 14.6169
+				dist(current_O,other_N) : 12.1103
+			Residue 3:
+				dist(current_N,other_O) : 14.8677
+				dist(current_O,other_N) : 13.0177
+			Residue 4:
+				dist(current_N,other_O) : 17.2456
+				dist(current_O,other_N) : 12.8711
+			Residue 5:
+				dist(current_N,other_O) : 17.1386
+				dist(current_O,other_N) : 14.2028
+			Residue 6:
+				dist(current_N,other_O) : 21.0214
+				dist(current_O,other_N) : 16.0205
+			Residue 7:
+				dist(current_N,other_O) : 20.4991
+				dist(current_O,other_N) : 17.6747
+			Residue 8:
+				dist(current_N,other_O) : 24.3283
+				dist(current_O,other_N) : 20.4767
+			Residue 9:
+				dist(current_N,other_O) : 23.7088
+				dist(current_O,other_N) : 21.3095
+			Residue 10:
+				dist(current_N,other_O) : 27.7834
+				dist(current_O,other_N) : 23.8033
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 31.2783
+				dist(current_O,other_N) : 28.3092
+			Residue 2:
+				dist(current_N,other_O) : 28.5447
+				dist(current_O,other_N) : 28.6235
+			Residue 3:
+				dist(current_N,other_O) : 26.219
+				dist(current_O,other_N) : 26.2369
+			Residue 4:
+				dist(current_N,other_O) : 21.9594
+				dist(current_O,other_N) : 23.1922
+			Residue 5:
+				dist(current_N,other_O) : 21.3721
+				dist(current_O,other_N) : 20.499
+			Residue 6:
+				dist(current_N,other_O) : 16.7481
+				dist(current_O,other_N) : 17.3429
+			Residue 7:
+				dist(current_N,other_O) : 17.464
+				dist(current_O,other_N) : 15.9959
+			Residue 8:
+				dist(current_N,other_O) : 12.9853
+				dist(current_O,other_N) : 13.2024
+			Residue 9:
+				dist(current_N,other_O) : 14.9257
+				dist(current_O,other_N) : 12.3698
+			Residue 10:
+				dist(current_N,other_O) : 13.9494
+				dist(current_O,other_N) : 10.8027
+			Residue 11:
+				dist(current_N,other_O) : 17.3439
+				dist(current_O,other_N) : 12.9907
+			Residue 12:
+				dist(current_N,other_O) : 20.5967
+				dist(current_O,other_N) : 15.4139
+			Residue 13:
+				dist(current_N,other_O) : 21.7264
+				dist(current_O,other_N) : 17.7708
+			Residue 14:
+				dist(current_N,other_O) : 23.9893
+				dist(current_O,other_N) : 21.0941
+			Residue 15:
+				dist(current_N,other_O) : 26.7698
+				dist(current_O,other_N) : 22.0145
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 21.3696
+				dist(current_O,other_N) : 19.4772
+			Residue 2:
+				dist(current_N,other_O) : 20.69
+				dist(current_O,other_N) : 19.8501
+			Residue 3:
+				dist(current_N,other_O) : 18.9232
+				dist(current_O,other_N) : 17.7667
+			Residue 4:
+				dist(current_N,other_O) : 14.8207
+				dist(current_O,other_N) : 14.4734
+			Residue 5:
+				dist(current_N,other_O) : 14.3647
+				dist(current_O,other_N) : 13.0913
+			Residue 6:
+				dist(current_N,other_O) : 13.2688
+				dist(current_O,other_N) : 10.7693
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 13.935
+				dist(current_O,other_N) : 13.8177
+			Residue 2:
+				dist(current_N,other_O) : 12.6719
+				dist(current_O,other_N) : 11.9777
+			Residue 3:
+				dist(current_N,other_O) : 12.8121
+				dist(current_O,other_N) : 11.7241
+			Residue 4:
+				dist(current_N,other_O) : 16.7128
+				dist(current_O,other_N) : 12.6951
+			Residue 5:
+				dist(current_N,other_O) : 17.5295
+				dist(current_O,other_N) : 14.6311
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 22.989
+				dist(current_O,other_N) : 21.7815
+			Residue 2:
+				dist(current_N,other_O) : 20.1951
+				dist(current_O,other_N) : 21.0155
+			Residue 3:
+				dist(current_N,other_O) : 20.0058
+				dist(current_O,other_N) : 19.3108
+			Residue 4:
+				dist(current_N,other_O) : 15.2873
+				dist(current_O,other_N) : 16.3746
+			Residue 5:
+				dist(current_N,other_O) : 15.2376
+				dist(current_O,other_N) : 15.5125
+			Residue 6:
+				dist(current_N,other_O) : 13.0003
+				dist(current_O,other_N) : 12.7429
+			Residue 7:
+				dist(current_N,other_O) : 14.0279
+				dist(current_O,other_N) : 13.1949
+			Residue 8:
+				dist(current_N,other_O) : 11.1659
+				dist(current_O,other_N) : 12.4185
+			Residue 9:
+				dist(current_N,other_O) : 8.2868
+				dist(current_O,other_N) : 9.66757
+			Residue 10:
+				dist(current_N,other_O) : 10.3371
+				dist(current_O,other_N) : 9.21338
+			Residue 11:
+				dist(current_N,other_O) : 13.3731
+				dist(current_O,other_N) : 10.5782
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 13.9569
+				dist(current_O,other_N) : 15.2727
+			Residue 2:
+				dist(current_N,other_O) : 12.6389
+				dist(current_O,other_N) : 13.3521
+			Residue 3:
+				dist(current_N,other_O) : 11.6598
+				dist(current_O,other_N) : 10.148
+			Residue 4:
+				dist(current_N,other_O) : 10.3932
+				dist(current_O,other_N) : 9.37316
+			Residue 5:
+				dist(current_N,other_O) : 13.6728
+				dist(current_O,other_N) : 9.74848
+			Residue 6:
+				dist(current_N,other_O) : 14.1543
+				dist(current_O,other_N) : 11.6167
+			Residue 7:
+				dist(current_N,other_O) : 17.9372
+				dist(current_O,other_N) : 13.6673
+			Residue 8:
+				dist(current_N,other_O) : 18.9031
+				dist(current_O,other_N) : 16.0221
+			Residue 9:
+				dist(current_N,other_O) : 22.7789
+				dist(current_O,other_N) : 18.865
+			Current residue is pruned ...
+	CURRENT RESIDUE #5
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 21.6298
+				dist(current_O,other_N) : 21.2319
+			Residue 2:
+				dist(current_N,other_O) : 17.5195
+				dist(current_O,other_N) : 19.1295
+			Residue 3:
+				dist(current_N,other_O) : 17.7856
+				dist(current_O,other_N) : 17.4923
+			Residue 4:
+				dist(current_N,other_O) : 14.553
+				dist(current_O,other_N) : 14.5521
+			Residue 5:
+				dist(current_N,other_O) : 12.8113
+				dist(current_O,other_N) : 12.5181
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 15.601
+				dist(current_O,other_N) : 11.7216
+			Residue 2:
+				dist(current_N,other_O) : 12.8314
+				dist(current_O,other_N) : 11.8462
+			Residue 3:
+				dist(current_N,other_O) : 13.2705
+				dist(current_O,other_N) : 13.0279
+			Residue 4:
+				dist(current_N,other_O) : 14.8186
+				dist(current_O,other_N) : 12.6632
+			Residue 5:
+				dist(current_N,other_O) : 14.7593
+				dist(current_O,other_N) : 14.1912
+			Residue 6:
+				dist(current_N,other_O) : 18.2515
+				dist(current_O,other_N) : 15.6047
+			Residue 7:
+				dist(current_N,other_O) : 17.6829
+				dist(current_O,other_N) : 17.3097
+			Residue 8:
+				dist(current_N,other_O) : 21.6092
+				dist(current_O,other_N) : 19.9329
+			Residue 9:
+				dist(current_N,other_O) : 20.934
+				dist(current_O,other_N) : 20.8449
+			Residue 10:
+				dist(current_N,other_O) : 25.0576
+				dist(current_O,other_N) : 23.2557
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 28.305
+				dist(current_O,other_N) : 27.6505
+			Residue 2:
+				dist(current_N,other_O) : 25.5001
+				dist(current_O,other_N) : 27.7134
+			Residue 3:
+				dist(current_N,other_O) : 23.2312
+				dist(current_O,other_N) : 25.1735
+			Residue 4:
+				dist(current_N,other_O) : 18.8244
+				dist(current_O,other_N) : 22.0233
+			Residue 5:
+				dist(current_N,other_O) : 18.3819
+				dist(current_O,other_N) : 19.6114
+			Residue 6:
+				dist(current_N,other_O) : 13.8714
+				dist(current_O,other_N) : 16.5707
+			Residue 7:
+				dist(current_N,other_O) : 14.9045
+				dist(current_O,other_N) : 15.7181
+			Residue 8:
+				dist(current_N,other_O) : 10.7887
+				dist(current_O,other_N) : 13.2119
+			Residue 9:
+				dist(current_N,other_O) : 13.1026
+				dist(current_O,other_N) : 12.8437
+			Residue 10:
+				dist(current_N,other_O) : 13.1739
+				dist(current_O,other_N) : 11.8441
+			Residue 11:
+				dist(current_N,other_O) : 15.9891
+				dist(current_O,other_N) : 13.9952
+			Residue 12:
+				dist(current_N,other_O) : 19.6218
+				dist(current_O,other_N) : 16.4562
+			Residue 13:
+				dist(current_N,other_O) : 20.3326
+				dist(current_O,other_N) : 18.3086
+			Residue 14:
+				dist(current_N,other_O) : 22.2111
+				dist(current_O,other_N) : 21.3399
+			Residue 15:
+				dist(current_N,other_O) : 25.0637
+				dist(current_O,other_N) : 21.7842
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 17.9163
+				dist(current_O,other_N) : 17.3646
+			Residue 2:
+				dist(current_N,other_O) : 17.3715
+				dist(current_O,other_N) : 17.4072
+			Residue 3:
+				dist(current_N,other_O) : 15.3495
+				dist(current_O,other_N) : 15.1596
+			Residue 4:
+				dist(current_N,other_O) : 11.4006
+				dist(current_O,other_N) : 11.7283
+			Residue 5:
+				dist(current_N,other_O) : 10.9514
+				dist(current_O,other_N) : 9.99332
+			Residue 6:
+				dist(current_N,other_O) : 10.3209
+				dist(current_O,other_N) : 7.49561
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 11.6202
+				dist(current_O,other_N) : 11.8929
+			Residue 2:
+				dist(current_N,other_O) : 9.9783
+				dist(current_O,other_N) : 10.3781
+			Residue 3:
+				dist(current_N,other_O) : 9.54353
+				dist(current_O,other_N) : 9.76978
+			Residue 4:
+				dist(current_N,other_O) : 13.1935
+				dist(current_O,other_N) : 10.2802
+			Residue 5:
+				dist(current_N,other_O) : 13.9843
+				dist(current_O,other_N) : 11.7242
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 19.5384
+				dist(current_O,other_N) : 18.775
+			Residue 2:
+				dist(current_N,other_O) : 16.6417
+				dist(current_O,other_N) : 18.1995
+			Residue 3:
+				dist(current_N,other_O) : 16.6042
+				dist(current_O,other_N) : 16.7781
+			Residue 4:
+				dist(current_N,other_O) : 11.9654
+				dist(current_O,other_N) : 14.1636
+			Residue 5:
+				dist(current_N,other_O) : 12.2778
+				dist(current_O,other_N) : 13.8922
+			Residue 6:
+				dist(current_N,other_O) : 10.7345
+				dist(current_O,other_N) : 11.6293
+			Residue 7:
+				dist(current_N,other_O) : 12.4429
+				dist(current_O,other_N) : 12.8745
+			Residue 8:
+				dist(current_N,other_O) : 9.22362
+				dist(current_O,other_N) : 12.8087
+			Residue 9:
+				dist(current_N,other_O) : 8.09868
+				dist(current_O,other_N) : 10.8394
+			Residue 10:
+				dist(current_N,other_O) : 10.0153
+				dist(current_O,other_N) : 11.1751
+			Residue 11:
+				dist(current_N,other_O) : 13.8648
+				dist(current_O,other_N) : 13.1898
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 14.5606
+				dist(current_O,other_N) : 17.9674
+			Residue 2:
+				dist(current_N,other_O) : 12.4135
+				dist(current_O,other_N) : 15.825
+			Residue 3:
+				dist(current_N,other_O) : 10.5188
+				dist(current_O,other_N) : 12.3971
+			Residue 4:
+				dist(current_N,other_O) : 8.88293
+				dist(current_O,other_N) : 11.1435
+			Residue 5:
+				dist(current_N,other_O) : 11.2199
+				dist(current_O,other_N) : 10.4923
+			Residue 6:
+				dist(current_N,other_O) : 11.5234
+				dist(current_O,other_N) : 11.8072
+			Residue 7:
+				dist(current_N,other_O) : 14.9174
+				dist(current_O,other_N) : 13.1139
+			Residue 8:
+				dist(current_N,other_O) : 15.7115
+				dist(current_O,other_N) : 14.9411
+			Residue 9:
+				dist(current_N,other_O) : 19.5615
+				dist(current_O,other_N) : 17.3889
+			Current residue is pruned ...
+	CURRENT RESIDUE #6
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 18.5173
+				dist(current_O,other_N) : 18.6955
+			Residue 2:
+				dist(current_N,other_O) : 14.5819
+				dist(current_O,other_N) : 16.6797
+			Residue 3:
+				dist(current_N,other_O) : 14.3428
+				dist(current_O,other_N) : 15.3054
+			Residue 4:
+				dist(current_N,other_O) : 11.1549
+				dist(current_O,other_N) : 12.4587
+			Residue 5:
+				dist(current_N,other_O) : 9.1719
+				dist(current_O,other_N) : 10.4742
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 12.5594
+				dist(current_O,other_N) : 11.2225
+			Residue 2:
+				dist(current_N,other_O) : 9.6171
+				dist(current_O,other_N) : 11.4472
+			Residue 3:
+				dist(current_N,other_O) : 10.5757
+				dist(current_O,other_N) : 12.3899
+			Residue 4:
+				dist(current_N,other_O) : 11.7959
+				dist(current_O,other_N) : 11.5231
+			Residue 5:
+				dist(current_N,other_O) : 12.4987
+				dist(current_O,other_N) : 12.9816
+			Residue 6:
+				dist(current_N,other_O) : 15.774
+				dist(current_O,other_N) : 13.8882
+			Residue 7:
+				dist(current_N,other_O) : 15.9092
+				dist(current_O,other_N) : 15.5902
+			Residue 8:
+				dist(current_N,other_O) : 20.0138
+				dist(current_O,other_N) : 18.022
+			Residue 9:
+				dist(current_N,other_O) : 19.9518
+				dist(current_O,other_N) : 19.095
+			Residue 10:
+				dist(current_N,other_O) : 24.0988
+				dist(current_O,other_N) : 21.4579
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 27.4946
+				dist(current_O,other_N) : 25.9389
+			Residue 2:
+				dist(current_N,other_O) : 24.8612
+				dist(current_O,other_N) : 25.8875
+			Residue 3:
+				dist(current_N,other_O) : 22.3534
+				dist(current_O,other_N) : 23.2467
+			Residue 4:
+				dist(current_N,other_O) : 17.8722
+				dist(current_O,other_N) : 19.9495
+			Residue 5:
+				dist(current_N,other_O) : 17.0243
+				dist(current_O,other_N) : 17.718
+			Residue 6:
+				dist(current_N,other_O) : 12.7112
+				dist(current_O,other_N) : 14.758
+			Residue 7:
+				dist(current_N,other_O) : 13.1839
+				dist(current_O,other_N) : 14.2682
+			Residue 8:
+				dist(current_N,other_O) : 9.42795
+				dist(current_O,other_N) : 12.0976
+			Residue 9:
+				dist(current_N,other_O) : 10.9639
+				dist(current_O,other_N) : 12.1463
+			Residue 10:
+				dist(current_N,other_O) : 11.6492
+				dist(current_O,other_N) : 11.8284
+			Residue 11:
+				dist(current_N,other_O) : 13.5343
+				dist(current_O,other_N) : 13.8956
+			Residue 12:
+				dist(current_N,other_O) : 17.3179
+				dist(current_O,other_N) : 16.4206
+			Residue 13:
+				dist(current_N,other_O) : 17.4454
+				dist(current_O,other_N) : 17.7485
+			Residue 14:
+				dist(current_N,other_O) : 19.0971
+				dist(current_O,other_N) : 20.4425
+			Residue 15:
+				dist(current_N,other_O) : 21.7796
+				dist(current_O,other_N) : 20.5522
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 14.8043
+				dist(current_O,other_N) : 14.2474
+			Residue 2:
+				dist(current_N,other_O) : 13.9856
+				dist(current_O,other_N) : 14.1094
+			Residue 3:
+				dist(current_N,other_O) : 12.5404
+				dist(current_O,other_N) : 11.8249
+			Residue 4:
+				dist(current_N,other_O) : 8.45567
+				dist(current_O,other_N) : 8.34891
+			Residue 5:
+				dist(current_N,other_O) : 9.33687
+				dist(current_O,other_N) : 6.67974
+			Residue 6:
+				dist(current_N,other_O) : 9.44763
+				dist(current_O,other_N) : 4.69309
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 12.9567
+				dist(current_O,other_N) : 11.5592
+			Residue 2:
+				dist(current_N,other_O) : 10.9632
+				dist(current_O,other_N) : 10.1874
+			Residue 3:
+				dist(current_N,other_O) : 9.25051
+				dist(current_O,other_N) : 8.71462
+			Residue 4:
+				dist(current_N,other_O) : 11.9942
+				dist(current_O,other_N) : 8.08113
+			Residue 5:
+				dist(current_N,other_O) : 11.8853
+				dist(current_O,other_N) : 8.87705
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 18.1771
+				dist(current_O,other_N) : 15.6001
+			Residue 2:
+				dist(current_N,other_O) : 15.1342
+				dist(current_O,other_N) : 15.1834
+			Residue 3:
+				dist(current_N,other_O) : 15.7299
+				dist(current_O,other_N) : 14.12
+			Residue 4:
+				dist(current_N,other_O) : 11.5184
+				dist(current_O,other_N) : 11.7815
+			Residue 5:
+				dist(current_N,other_O) : 12.3169
+				dist(current_O,other_N) : 12.1552
+			Residue 6:
+				dist(current_N,other_O) : 11.9962
+				dist(current_O,other_N) : 10.6539
+			Residue 7:
+				dist(current_N,other_O) : 13.9857
+				dist(current_O,other_N) : 12.4067
+			Residue 8:
+				dist(current_N,other_O) : 10.0761
+				dist(current_O,other_N) : 12.9353
+			Residue 9:
+				dist(current_N,other_O) : 10.273
+				dist(current_O,other_N) : 11.7544
+			Residue 10:
+				dist(current_N,other_O) : 10.8864
+				dist(current_O,other_N) : 12.5167
+			Residue 11:
+				dist(current_N,other_O) : 15.101
+				dist(current_O,other_N) : 14.908
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 14.5841
+				dist(current_O,other_N) : 19.4594
+			Residue 2:
+				dist(current_N,other_O) : 12.5139
+				dist(current_O,other_N) : 17.098
+			Residue 3:
+				dist(current_N,other_O) : 9.74455
+				dist(current_O,other_N) : 13.5652
+			Residue 4:
+				dist(current_N,other_O) : 9.25453
+				dist(current_O,other_N) : 11.9439
+			Residue 5:
+				dist(current_N,other_O) : 10.4603
+				dist(current_O,other_N) : 10.425
+			Residue 6:
+				dist(current_N,other_O) : 11.6231
+				dist(current_O,other_N) : 11.3177
+			Residue 7:
+				dist(current_N,other_O) : 14.1327
+				dist(current_O,other_N) : 11.8519
+			Residue 8:
+				dist(current_N,other_O) : 15.1949
+				dist(current_O,other_N) : 13.2939
+			Residue 9:
+				dist(current_N,other_O) : 18.8618
+				dist(current_O,other_N) : 15.2825
+			Current residue is pruned ...
+	CURRENT RESIDUE #7
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 19.313
+				dist(current_O,other_N) : 18.7308
+			Residue 2:
+				dist(current_N,other_O) : 15.8468
+				dist(current_O,other_N) : 17.1624
+			Residue 3:
+				dist(current_N,other_O) : 14.5833
+				dist(current_O,other_N) : 16.0396
+			Residue 4:
+				dist(current_N,other_O) : 11.696
+				dist(current_O,other_N) : 13.2238
+			Residue 5:
+				dist(current_N,other_O) : 8.30444
+				dist(current_O,other_N) : 10.8518
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 12.5364
+				dist(current_O,other_N) : 11.6818
+			Residue 2:
+				dist(current_N,other_O) : 10.1316
+				dist(current_O,other_N) : 12.5645
+			Residue 3:
+				dist(current_N,other_O) : 12.2629
+				dist(current_O,other_N) : 13.932
+			Residue 4:
+				dist(current_N,other_O) : 13.1659
+				dist(current_O,other_N) : 13.2554
+			Residue 5:
+				dist(current_N,other_O) : 14.7269
+				dist(current_O,other_N) : 14.9806
+			Residue 6:
+				dist(current_N,other_O) : 17.4479
+				dist(current_O,other_N) : 15.5684
+			Residue 7:
+				dist(current_N,other_O) : 17.9633
+				dist(current_O,other_N) : 17.348
+			Residue 8:
+				dist(current_N,other_O) : 22.088
+				dist(current_O,other_N) : 19.5184
+			Residue 9:
+				dist(current_N,other_O) : 22.0309
+				dist(current_O,other_N) : 20.7166
+			Residue 10:
+				dist(current_N,other_O) : 26.1255
+				dist(current_O,other_N) : 22.9199
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 28.9557
+				dist(current_O,other_N) : 27.189
+			Residue 2:
+				dist(current_N,other_O) : 26.0861
+				dist(current_O,other_N) : 26.8654
+			Residue 3:
+				dist(current_N,other_O) : 23.9618
+				dist(current_O,other_N) : 24.1283
+			Residue 4:
+				dist(current_N,other_O) : 19.3576
+				dist(current_O,other_N) : 20.8234
+			Residue 5:
+				dist(current_N,other_O) : 18.901
+				dist(current_O,other_N) : 19.028
+			Residue 6:
+				dist(current_N,other_O) : 14.9953
+				dist(current_O,other_N) : 16.3716
+			Residue 7:
+				dist(current_N,other_O) : 15.6112
+				dist(current_O,other_N) : 16.3696
+			Residue 8:
+				dist(current_N,other_O) : 12.4165
+				dist(current_O,other_N) : 14.5915
+			Residue 9:
+				dist(current_N,other_O) : 13.4438
+				dist(current_O,other_N) : 14.8428
+			Residue 10:
+				dist(current_N,other_O) : 14.3306
+				dist(current_O,other_N) : 14.7407
+			Residue 11:
+				dist(current_N,other_O) : 15.3868
+				dist(current_O,other_N) : 16.4652
+			Residue 12:
+				dist(current_N,other_O) : 19.0963
+				dist(current_O,other_N) : 18.6934
+			Residue 13:
+				dist(current_N,other_O) : 18.4274
+				dist(current_O,other_N) : 19.5029
+			Residue 14:
+				dist(current_N,other_O) : 19.846
+				dist(current_O,other_N) : 21.7703
+			Residue 15:
+				dist(current_N,other_O) : 21.8809
+				dist(current_O,other_N) : 21.2915
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 14.4721
+				dist(current_O,other_N) : 13.7677
+			Residue 2:
+				dist(current_N,other_O) : 12.8728
+				dist(current_O,other_N) : 12.8471
+			Residue 3:
+				dist(current_N,other_O) : 11.4157
+				dist(current_O,other_N) : 10.3061
+			Residue 4:
+				dist(current_N,other_O) : 6.81164
+				dist(current_O,other_N) : 6.95262
+			Residue 5:
+				dist(current_N,other_O) : 7.77972
+				dist(current_O,other_N) : 4.63911
+			Residue 6:
+				dist(current_N,other_O) : 7.35649
+				dist(current_O,other_N) : 2.73046
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #11
+		Comparing with residues in strand #2
+			Residue 1:
+				dist(current_N,other_O) : 9.27273
+				dist(current_O,other_N) : 7.28598
+			Residue 2:
+				dist(current_N,other_O) : 8.41918
+				dist(current_O,other_N) : 8.2534
+			Residue 3:
+				dist(current_N,other_O) : 4.75294
+				dist(current_O,other_N) : 7.40754
+			Residue 4:
+				dist(current_N,other_O) : 6.45475
+				dist(current_O,other_N) : 6.28819
+			Residue 5:
+				dist(current_N,other_O) : 5.51936
+				dist(current_O,other_N) : 5.80604
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 11.052
+				dist(current_O,other_N) : 11.4219
+			Residue 2:
+				dist(current_N,other_O) : 9.10645
+				dist(current_O,other_N) : 11.3529
+			Residue 3:
+				dist(current_N,other_O) : 11.0414
+				dist(current_O,other_N) : 10.7817
+			Residue 4:
+				dist(current_N,other_O) : 8.11454
+				dist(current_O,other_N) : 9.88068
+			Residue 5:
+				dist(current_N,other_O) : 11.4398
+				dist(current_O,other_N) : 11.3691
+			Residue 6:
+				dist(current_N,other_O) : 11.0553
+				dist(current_O,other_N) : 11.2919
+			Residue 7:
+				dist(current_N,other_O) : 13.9001
+				dist(current_O,other_N) : 13.9454
+			Residue 8:
+				dist(current_N,other_O) : 17.2139
+				dist(current_O,other_N) : 15.9619
+			Residue 9:
+				dist(current_N,other_O) : 19.1864
+				dist(current_O,other_N) : 18.9109
+			Residue 10:
+				dist(current_N,other_O) : 22.4392
+				dist(current_O,other_N) : 21.3133
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 25.48
+				dist(current_O,other_N) : 27.2529
+			Residue 2:
+				dist(current_N,other_O) : 23.83
+				dist(current_O,other_N) : 27.6543
+			Residue 3:
+				dist(current_N,other_O) : 21.089
+				dist(current_O,other_N) : 25.2507
+			Residue 4:
+				dist(current_N,other_O) : 17.5305
+				dist(current_O,other_N) : 21.6587
+			Residue 5:
+				dist(current_N,other_O) : 15.7771
+				dist(current_O,other_N) : 19.7077
+			Residue 6:
+				dist(current_N,other_O) : 14.3724
+				dist(current_O,other_N) : 17.1961
+			Residue 7:
+				dist(current_N,other_O) : 13.2198
+				dist(current_O,other_N) : 16.4503
+			Residue 8:
+				dist(current_N,other_O) : 13.6254
+				dist(current_O,other_N) : 15.329
+			Residue 9:
+				dist(current_N,other_O) : 12.3643
+				dist(current_O,other_N) : 14.6755
+			Residue 10:
+				dist(current_N,other_O) : 15.4922
+				dist(current_O,other_N) : 15.1322
+			Residue 11:
+				dist(current_N,other_O) : 12.8962
+				dist(current_O,other_N) : 14.6591
+			Residue 12:
+				dist(current_N,other_O) : 15.8805
+				dist(current_O,other_N) : 15.2329
+			Residue 13:
+				dist(current_N,other_O) : 13.1979
+				dist(current_O,other_N) : 13.5223
+			Residue 14:
+				dist(current_N,other_O) : 12.387
+				dist(current_O,other_N) : 13.4645
+			Residue 15:
+				dist(current_N,other_O) : 13.8467
+				dist(current_O,other_N) : 11.5317
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 5.30881
+				dist(current_O,other_N) : 10.0483
+			Residue 2:
+				dist(current_N,other_O) : 2.97811
+				dist(current_O,other_N) : 7.68181
+			Current residue is retained ...
+
+Strand #2
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 18.7308
+				dist(current_O,other_N) : 19.313
+			Residue 8:
+				dist(current_N,other_O) : 15.028
+				dist(current_O,other_N) : 17.6564
+			Residue 9:
+				dist(current_N,other_O) : 11.5883
+				dist(current_O,other_N) : 14.1823
+			Residue 10:
+				dist(current_N,other_O) : 8.78886
+				dist(current_O,other_N) : 11.8335
+			Residue 11:
+				dist(current_N,other_O) : 7.28598
+				dist(current_O,other_N) : 9.27273
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 14.6801
+				dist(current_O,other_N) : 16.8168
+			Residue 2:
+				dist(current_N,other_O) : 13.1704
+				dist(current_O,other_N) : 15.253
+			Residue 3:
+				dist(current_N,other_O) : 13.0276
+				dist(current_O,other_N) : 12.5236
+			Residue 4:
+				dist(current_N,other_O) : 8.90688
+				dist(current_O,other_N) : 9.96479
+			Residue 5:
+				dist(current_N,other_O) : 11.0834
+				dist(current_O,other_N) : 8.5503
+			Residue 6:
+				dist(current_N,other_O) : 8.39217
+				dist(current_O,other_N) : 6.7776
+			Residue 7:
+				dist(current_N,other_O) : 12.4507
+				dist(current_O,other_N) : 8.21583
+			Residue 8:
+				dist(current_N,other_O) : 14.2108
+				dist(current_O,other_N) : 9.55556
+			Residue 9:
+				dist(current_N,other_O) : 17.8447
+				dist(current_O,other_N) : 13.0229
+			Residue 10:
+				dist(current_N,other_O) : 20.0668
+				dist(current_O,other_N) : 15.378
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 23.9783
+				dist(current_O,other_N) : 22.0139
+			Residue 2:
+				dist(current_N,other_O) : 23.7202
+				dist(current_O,other_N) : 23.2024
+			Residue 3:
+				dist(current_N,other_O) : 20.2445
+				dist(current_O,other_N) : 21.3669
+			Residue 4:
+				dist(current_N,other_O) : 18.1603
+				dist(current_O,other_N) : 18.088
+			Residue 5:
+				dist(current_N,other_O) : 15.1316
+				dist(current_O,other_N) : 15.7749
+			Residue 6:
+				dist(current_N,other_O) : 15.4585
+				dist(current_O,other_N) : 13.6672
+			Residue 7:
+				dist(current_N,other_O) : 12.9163
+				dist(current_O,other_N) : 12.2889
+			Residue 8:
+				dist(current_N,other_O) : 15.3947
+				dist(current_O,other_N) : 12.186
+			Residue 9:
+				dist(current_N,other_O) : 13.2
+				dist(current_O,other_N) : 11.7697
+			Residue 10:
+				dist(current_N,other_O) : 16.7395
+				dist(current_O,other_N) : 13.4899
+			Residue 11:
+				dist(current_N,other_O) : 13.0187
+				dist(current_O,other_N) : 12.7656
+			Residue 12:
+				dist(current_N,other_O) : 14.6349
+				dist(current_O,other_N) : 13.4834
+			Residue 13:
+				dist(current_N,other_O) : 12.1169
+				dist(current_O,other_N) : 11.6052
+			Residue 14:
+				dist(current_N,other_O) : 9.70325
+				dist(current_O,other_N) : 11.0953
+			Residue 15:
+				dist(current_N,other_O) : 11.7305
+				dist(current_O,other_N) : 11.0567
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 8.20808
+				dist(current_O,other_N) : 10.1213
+			Residue 2:
+				dist(current_N,other_O) : 9.30049
+				dist(current_O,other_N) : 10.8228
+			Residue 3:
+				dist(current_N,other_O) : 13.115
+				dist(current_O,other_N) : 11.9504
+			Residue 4:
+				dist(current_N,other_O) : 15.0318
+				dist(current_O,other_N) : 13.6805
+			Residue 5:
+				dist(current_N,other_O) : 19.1172
+				dist(current_O,other_N) : 16.9454
+			Residue 6:
+				dist(current_N,other_O) : 22.0136
+				dist(current_O,other_N) : 19.4657
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 26.2461
+				dist(current_O,other_N) : 27.0708
+			Residue 2:
+				dist(current_N,other_O) : 23.6833
+				dist(current_O,other_N) : 25.2656
+			Residue 3:
+				dist(current_N,other_O) : 21.3688
+				dist(current_O,other_N) : 22.4133
+			Residue 4:
+				dist(current_N,other_O) : 18.9481
+				dist(current_O,other_N) : 19.5372
+			Residue 5:
+				dist(current_N,other_O) : 17.1207
+				dist(current_O,other_N) : 19.0411
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 21.3189
+				dist(current_O,other_N) : 19.6996
+			Residue 2:
+				dist(current_N,other_O) : 18.7185
+				dist(current_O,other_N) : 19.7569
+			Residue 3:
+				dist(current_N,other_O) : 20.0478
+				dist(current_O,other_N) : 20.3186
+			Residue 4:
+				dist(current_N,other_O) : 20.0696
+				dist(current_O,other_N) : 19.1114
+			Residue 5:
+				dist(current_N,other_O) : 20.5979
+				dist(current_O,other_N) : 19.9908
+			Residue 6:
+				dist(current_N,other_O) : 23.7711
+				dist(current_O,other_N) : 20.7092
+			Residue 7:
+				dist(current_N,other_O) : 25.0297
+				dist(current_O,other_N) : 20.8517
+			Residue 8:
+				dist(current_N,other_O) : 21.2532
+				dist(current_O,other_N) : 21.2725
+			Residue 9:
+				dist(current_N,other_O) : 24.5629
+				dist(current_O,other_N) : 21.4267
+			Residue 10:
+				dist(current_N,other_O) : 22.0946
+				dist(current_O,other_N) : 21.156
+			Residue 11:
+				dist(current_N,other_O) : 25.3263
+				dist(current_O,other_N) : 22.207
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 22.7528
+				dist(current_O,other_N) : 22.1364
+			Residue 2:
+				dist(current_N,other_O) : 20.9761
+				dist(current_O,other_N) : 19.7582
+			Residue 3:
+				dist(current_N,other_O) : 17.8243
+				dist(current_O,other_N) : 18.128
+			Residue 4:
+				dist(current_N,other_O) : 20.0028
+				dist(current_O,other_N) : 17.4875
+			Residue 5:
+				dist(current_N,other_O) : 16.816
+				dist(current_O,other_N) : 15.9762
+			Residue 6:
+				dist(current_N,other_O) : 19.8535
+				dist(current_O,other_N) : 16.9373
+			Residue 7:
+				dist(current_N,other_O) : 17.5195
+				dist(current_O,other_N) : 16.1611
+			Residue 8:
+				dist(current_N,other_O) : 19.9996
+				dist(current_O,other_N) : 17.7
+			Residue 9:
+				dist(current_N,other_O) : 20.7568
+				dist(current_O,other_N) : 17.7752
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 17.1624
+				dist(current_O,other_N) : 15.8468
+			Residue 8:
+				dist(current_N,other_O) : 13.6645
+				dist(current_O,other_N) : 14.5772
+			Residue 9:
+				dist(current_N,other_O) : 10.4237
+				dist(current_O,other_N) : 11.4227
+			Residue 10:
+				dist(current_N,other_O) : 8.53658
+				dist(current_O,other_N) : 9.80927
+			Residue 11:
+				dist(current_N,other_O) : 8.2534
+				dist(current_O,other_N) : 8.41918
+		Comparing with residues in strand #3
+			Residue 1:
+				dist(current_N,other_O) : 14.532
+				dist(current_O,other_N) : 14.3026
+			Residue 2:
+				dist(current_N,other_O) : 12.2458
+				dist(current_O,other_N) : 12.4912
+			Residue 3:
+				dist(current_N,other_O) : 11.5042
+				dist(current_O,other_N) : 9.61519
+			Residue 4:
+				dist(current_N,other_O) : 6.91006
+				dist(current_O,other_N) : 6.40108
+			Residue 5:
+				dist(current_N,other_O) : 8.12059
+				dist(current_O,other_N) : 4.4393
+			Residue 6:
+				dist(current_N,other_O) : 5.11146
+				dist(current_O,other_N) : 2.67214
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #5
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 10.8518
+				dist(current_O,other_N) : 8.30444
+			Residue 8:
+				dist(current_N,other_O) : 6.13248
+				dist(current_O,other_N) : 6.56351
+			Residue 9:
+				dist(current_N,other_O) : 5.83835
+				dist(current_O,other_N) : 4.30869
+			Residue 10:
+				dist(current_N,other_O) : 2.83795
+				dist(current_O,other_N) : 2.86611
+			Current residue is retained ...
+
+Strand #3
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 11.6818
+				dist(current_O,other_N) : 12.5364
+			Residue 8:
+				dist(current_N,other_O) : 7.65015
+				dist(current_O,other_N) : 12.0046
+			Residue 9:
+				dist(current_N,other_O) : 10.8382
+				dist(current_O,other_N) : 11.0061
+			Residue 10:
+				dist(current_N,other_O) : 9.0521
+				dist(current_O,other_N) : 9.69344
+			Residue 11:
+				dist(current_N,other_O) : 11.4219
+				dist(current_O,other_N) : 11.052
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 14.3026
+				dist(current_O,other_N) : 14.532
+			Residue 3:
+				dist(current_N,other_O) : 11.5081
+				dist(current_O,other_N) : 11.8391
+			Residue 4:
+				dist(current_N,other_O) : 7.91289
+				dist(current_O,other_N) : 9.01227
+			Residue 5:
+				dist(current_N,other_O) : 6.13865
+				dist(current_O,other_N) : 6.64503
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 33.8942
+				dist(current_O,other_N) : 32.3076
+			Residue 2:
+				dist(current_N,other_O) : 31.964
+				dist(current_O,other_N) : 33.1521
+			Residue 3:
+				dist(current_N,other_O) : 28.8689
+				dist(current_O,other_N) : 30.7936
+			Residue 4:
+				dist(current_N,other_O) : 24.7876
+				dist(current_O,other_N) : 27.156
+			Residue 5:
+				dist(current_N,other_O) : 22.6903
+				dist(current_O,other_N) : 24.2436
+			Residue 6:
+				dist(current_N,other_O) : 19.2795
+				dist(current_O,other_N) : 20.8209
+			Residue 7:
+				dist(current_N,other_O) : 17.4629
+				dist(current_O,other_N) : 18.6535
+			Residue 8:
+				dist(current_N,other_O) : 14.8078
+				dist(current_O,other_N) : 15.8823
+			Residue 9:
+				dist(current_N,other_O) : 12.3838
+				dist(current_O,other_N) : 13.2868
+			Residue 10:
+				dist(current_N,other_O) : 12.1026
+				dist(current_O,other_N) : 11.0754
+			Residue 11:
+				dist(current_N,other_O) : 10.8283
+				dist(current_O,other_N) : 9.53471
+			Residue 12:
+				dist(current_N,other_O) : 13.1708
+				dist(current_O,other_N) : 8.70578
+			Residue 13:
+				dist(current_N,other_O) : 11.2057
+				dist(current_O,other_N) : 8.23369
+			Residue 14:
+				dist(current_N,other_O) : 13.015
+				dist(current_O,other_N) : 9.86116
+			Residue 15:
+				dist(current_N,other_O) : 13.7609
+				dist(current_O,other_N) : 9.16467
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 15.9186
+				dist(current_O,other_N) : 18.1358
+			Residue 2:
+				dist(current_N,other_O) : 13.4814
+				dist(current_O,other_N) : 16.9565
+			Residue 3:
+				dist(current_N,other_O) : 15.5598
+				dist(current_O,other_N) : 15.4114
+			Residue 4:
+				dist(current_N,other_O) : 12.1862
+				dist(current_O,other_N) : 14.6555
+			Residue 5:
+				dist(current_N,other_O) : 15.9572
+				dist(current_O,other_N) : 16.1189
+			Residue 6:
+				dist(current_N,other_O) : 16.4262
+				dist(current_O,other_N) : 16.5297
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 23.0765
+				dist(current_O,other_N) : 24.9689
+			Residue 2:
+				dist(current_N,other_O) : 21.1137
+				dist(current_O,other_N) : 23.4634
+			Residue 3:
+				dist(current_N,other_O) : 18.2042
+				dist(current_O,other_N) : 21.6986
+			Residue 4:
+				dist(current_N,other_O) : 19.4055
+				dist(current_O,other_N) : 20.1187
+			Residue 5:
+				dist(current_N,other_O) : 17.011
+				dist(current_O,other_N) : 19.8849
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 24.0498
+				dist(current_O,other_N) : 23.7733
+			Residue 2:
+				dist(current_N,other_O) : 21.3495
+				dist(current_O,other_N) : 24.2678
+			Residue 3:
+				dist(current_N,other_O) : 23.309
+				dist(current_O,other_N) : 24.4545
+			Residue 4:
+				dist(current_N,other_O) : 20.2976
+				dist(current_O,other_N) : 22.5372
+			Residue 5:
+				dist(current_N,other_O) : 21.4772
+				dist(current_O,other_N) : 23.1915
+			Residue 6:
+				dist(current_N,other_O) : 22.1804
+				dist(current_O,other_N) : 22.1098
+			Residue 7:
+				dist(current_N,other_O) : 23.8596
+				dist(current_O,other_N) : 22.7151
+			Residue 8:
+				dist(current_N,other_O) : 19.2729
+				dist(current_O,other_N) : 22.379
+			Residue 9:
+				dist(current_N,other_O) : 19.342
+				dist(current_O,other_N) : 20.405
+			Residue 10:
+				dist(current_N,other_O) : 17.7709
+				dist(current_O,other_N) : 19.128
+			Residue 11:
+				dist(current_N,other_O) : 21.2549
+				dist(current_O,other_N) : 19.2005
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 16.863
+				dist(current_O,other_N) : 19.1306
+			Residue 2:
+				dist(current_N,other_O) : 17.1303
+				dist(current_O,other_N) : 16.5109
+			Residue 3:
+				dist(current_N,other_O) : 14.3022
+				dist(current_O,other_N) : 14.2743
+			Residue 4:
+				dist(current_N,other_O) : 17.0939
+				dist(current_O,other_N) : 15.5077
+			Residue 5:
+				dist(current_N,other_O) : 17.5181
+				dist(current_O,other_N) : 16.0209
+			Residue 6:
+				dist(current_N,other_O) : 20.4979
+				dist(current_O,other_N) : 18.8252
+			Residue 7:
+				dist(current_N,other_O) : 21.6343
+				dist(current_O,other_N) : 19.926
+			Residue 8:
+				dist(current_N,other_O) : 23.396
+				dist(current_O,other_N) : 22.4887
+			Residue 9:
+				dist(current_N,other_O) : 26.4065
+				dist(current_O,other_N) : 24.1598
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 12.5645
+				dist(current_O,other_N) : 10.1316
+			Residue 8:
+				dist(current_N,other_O) : 8.08406
+				dist(current_O,other_N) : 9.58733
+			Residue 9:
+				dist(current_N,other_O) : 10.9908
+				dist(current_O,other_N) : 8.25246
+			Residue 10:
+				dist(current_N,other_O) : 8.82249
+				dist(current_O,other_N) : 7.41569
+			Residue 11:
+				dist(current_N,other_O) : 11.3529
+				dist(current_O,other_N) : 9.10645
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 12.4912
+				dist(current_O,other_N) : 12.2458
+			Residue 3:
+				dist(current_N,other_O) : 10.3218
+				dist(current_O,other_N) : 9.61751
+			Residue 4:
+				dist(current_N,other_O) : 6.31703
+				dist(current_O,other_N) : 6.4532
+			Residue 5:
+				dist(current_N,other_O) : 6.25634
+				dist(current_O,other_N) : 4.22806
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 32.6294
+				dist(current_O,other_N) : 28.7583
+			Residue 2:
+				dist(current_N,other_O) : 30.9493
+				dist(current_O,other_N) : 29.5601
+			Residue 3:
+				dist(current_N,other_O) : 27.569
+				dist(current_O,other_N) : 27.1873
+			Residue 4:
+				dist(current_N,other_O) : 23.6639
+				dist(current_O,other_N) : 23.5667
+			Residue 5:
+				dist(current_N,other_O) : 21.1902
+				dist(current_O,other_N) : 20.6224
+			Residue 6:
+				dist(current_N,other_O) : 17.7712
+				dist(current_O,other_N) : 17.1663
+			Residue 7:
+				dist(current_N,other_O) : 15.5247
+				dist(current_O,other_N) : 15.0598
+			Residue 8:
+				dist(current_N,other_O) : 12.8958
+				dist(current_O,other_N) : 12.2678
+			Residue 9:
+				dist(current_N,other_O) : 10.0034
+				dist(current_O,other_N) : 9.90218
+			Residue 10:
+				dist(current_N,other_O) : 9.56306
+				dist(current_O,other_N) : 8.06766
+			Residue 11:
+				dist(current_N,other_O) : 8.15582
+				dist(current_O,other_N) : 7.31183
+			Residue 12:
+				dist(current_N,other_O) : 10.5771
+				dist(current_O,other_N) : 7.88965
+			Residue 13:
+				dist(current_N,other_O) : 9.04428
+				dist(current_O,other_N) : 8.09385
+			Residue 14:
+				dist(current_N,other_O) : 11.156
+				dist(current_O,other_N) : 10.4338
+			Residue 15:
+				dist(current_N,other_O) : 12.6305
+				dist(current_O,other_N) : 10.4217
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 15.4755
+				dist(current_O,other_N) : 15.2162
+			Residue 2:
+				dist(current_N,other_O) : 13.59
+				dist(current_O,other_N) : 14.5453
+			Residue 3:
+				dist(current_N,other_O) : 15.7516
+				dist(current_O,other_N) : 12.992
+			Residue 4:
+				dist(current_N,other_O) : 12.658
+				dist(current_O,other_N) : 11.8429
+			Residue 5:
+				dist(current_N,other_O) : 16.513
+				dist(current_O,other_N) : 13.3103
+			Residue 6:
+				dist(current_N,other_O) : 17.3073
+				dist(current_O,other_N) : 13.7767
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 23.0461
+				dist(current_O,other_N) : 21.9607
+			Residue 2:
+				dist(current_N,other_O) : 20.8289
+				dist(current_O,other_N) : 20.2807
+			Residue 3:
+				dist(current_N,other_O) : 18.3706
+				dist(current_O,other_N) : 18.3677
+			Residue 4:
+				dist(current_N,other_O) : 19.4341
+				dist(current_O,other_N) : 16.7524
+			Residue 5:
+				dist(current_N,other_O) : 17.4682
+				dist(current_O,other_N) : 16.8048
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 24.44
+				dist(current_O,other_N) : 21.1051
+			Residue 2:
+				dist(current_N,other_O) : 21.4715
+				dist(current_O,other_N) : 21.2989
+			Residue 3:
+				dist(current_N,other_O) : 23.0096
+				dist(current_O,other_N) : 21.1871
+			Residue 4:
+				dist(current_N,other_O) : 19.9396
+				dist(current_O,other_N) : 19.0671
+			Residue 5:
+				dist(current_N,other_O) : 20.6641
+				dist(current_O,other_N) : 19.5561
+			Residue 6:
+				dist(current_N,other_O) : 21.4013
+				dist(current_O,other_N) : 18.4728
+			Residue 7:
+				dist(current_N,other_O) : 22.7118
+				dist(current_O,other_N) : 19.0209
+			Residue 8:
+				dist(current_N,other_O) : 17.9545
+				dist(current_O,other_N) : 18.7544
+			Residue 9:
+				dist(current_N,other_O) : 18.0726
+				dist(current_O,other_N) : 16.9837
+			Residue 10:
+				dist(current_N,other_O) : 15.9653
+				dist(current_O,other_N) : 15.9371
+			Residue 11:
+				dist(current_N,other_O) : 19.2802
+				dist(current_O,other_N) : 16.4264
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 14.6066
+				dist(current_O,other_N) : 17.1476
+			Residue 2:
+				dist(current_N,other_O) : 14.9473
+				dist(current_O,other_N) : 14.4011
+			Residue 3:
+				dist(current_N,other_O) : 12.1773
+				dist(current_O,other_N) : 11.7456
+			Residue 4:
+				dist(current_N,other_O) : 15.4566
+				dist(current_O,other_N) : 12.3693
+			Residue 5:
+				dist(current_N,other_O) : 15.8644
+				dist(current_O,other_N) : 12.4584
+			Residue 6:
+				dist(current_N,other_O) : 19.2947
+				dist(current_O,other_N) : 15.1298
+			Residue 7:
+				dist(current_N,other_O) : 20.4192
+				dist(current_O,other_N) : 16.1628
+			Residue 8:
+				dist(current_N,other_O) : 22.6793
+				dist(current_O,other_N) : 18.7469
+			Residue 9:
+				dist(current_N,other_O) : 25.6665
+				dist(current_O,other_N) : 20.5039
+			Current residue is pruned ...
+	CURRENT RESIDUE #3
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.932
+				dist(current_O,other_N) : 12.2629
+			Residue 8:
+				dist(current_N,other_O) : 9.16986
+				dist(current_O,other_N) : 12.1035
+			Residue 9:
+				dist(current_N,other_O) : 11.0229
+				dist(current_O,other_N) : 10.5897
+			Residue 10:
+				dist(current_N,other_O) : 8.36655
+				dist(current_O,other_N) : 9.98819
+			Residue 11:
+				dist(current_N,other_O) : 10.7817
+				dist(current_O,other_N) : 11.0414
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 9.61519
+				dist(current_O,other_N) : 11.5042
+			Residue 3:
+				dist(current_N,other_O) : 8.32457
+				dist(current_O,other_N) : 8.83547
+			Residue 4:
+				dist(current_N,other_O) : 4.30764
+				dist(current_O,other_N) : 6.53262
+			Residue 5:
+				dist(current_N,other_O) : 6.90045
+				dist(current_O,other_N) : 6.51673
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 30.4533
+				dist(current_O,other_N) : 26.8191
+			Residue 2:
+				dist(current_N,other_O) : 29.1567
+				dist(current_O,other_N) : 27.9443
+			Residue 3:
+				dist(current_N,other_O) : 25.4457
+				dist(current_O,other_N) : 25.7786
+			Residue 4:
+				dist(current_N,other_O) : 21.869
+				dist(current_O,other_N) : 22.2846
+			Residue 5:
+				dist(current_N,other_O) : 18.8993
+				dist(current_O,other_N) : 19.0486
+			Residue 6:
+				dist(current_N,other_O) : 15.751
+				dist(current_O,other_N) : 15.5414
+			Residue 7:
+				dist(current_N,other_O) : 12.8756
+				dist(current_O,other_N) : 12.8665
+			Residue 8:
+				dist(current_N,other_O) : 10.7858
+				dist(current_O,other_N) : 9.93883
+			Residue 9:
+				dist(current_N,other_O) : 7.1001
+				dist(current_O,other_N) : 6.92739
+			Residue 10:
+				dist(current_N,other_O) : 7.17599
+				dist(current_O,other_N) : 4.75833
+			Residue 11:
+				dist(current_N,other_O) : 4.74893
+				dist(current_O,other_N) : 3.34578
+			Residue 12:
+				dist(current_N,other_O) : 7.56434
+				dist(current_O,other_N) : 4.6583
+			Residue 13:
+				dist(current_N,other_O) : 6.4295
+				dist(current_O,other_N) : 5.78768
+			Residue 14:
+				dist(current_N,other_O) : 8.56983
+				dist(current_O,other_N) : 8.93903
+			Residue 15:
+				dist(current_N,other_O) : 11.164
+				dist(current_O,other_N) : 10.2767
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 14.3042
+				dist(current_O,other_N) : 15.5659
+			Residue 2:
+				dist(current_N,other_O) : 13.1923
+				dist(current_O,other_N) : 15.7894
+			Residue 3:
+				dist(current_N,other_O) : 15.5693
+				dist(current_O,other_N) : 14.697
+			Residue 4:
+				dist(current_N,other_O) : 13.2016
+				dist(current_O,other_N) : 13.5882
+			Residue 5:
+				dist(current_N,other_O) : 17.1884
+				dist(current_O,other_N) : 15.1999
+			Residue 6:
+				dist(current_N,other_O) : 18.5208
+				dist(current_O,other_N) : 15.6787
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 23.2461
+				dist(current_O,other_N) : 22.8718
+			Residue 2:
+				dist(current_N,other_O) : 20.7289
+				dist(current_O,other_N) : 20.8104
+			Residue 3:
+				dist(current_N,other_O) : 18.7275
+				dist(current_O,other_N) : 18.8576
+			Residue 4:
+				dist(current_N,other_O) : 19.2966
+				dist(current_O,other_N) : 17.433
+			Residue 5:
+				dist(current_N,other_O) : 17.7567
+				dist(current_O,other_N) : 18.1074
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 24.441
+				dist(current_O,other_N) : 22.6356
+			Residue 2:
+				dist(current_N,other_O) : 21.2296
+				dist(current_O,other_N) : 22.4183
+			Residue 3:
+				dist(current_N,other_O) : 22.3213
+				dist(current_O,other_N) : 21.8727
+			Residue 4:
+				dist(current_N,other_O) : 19.4692
+				dist(current_O,other_N) : 19.3754
+			Residue 5:
+				dist(current_N,other_O) : 19.6935
+				dist(current_O,other_N) : 19.2989
+			Residue 6:
+				dist(current_N,other_O) : 20.7346
+				dist(current_O,other_N) : 18.0115
+			Residue 7:
+				dist(current_N,other_O) : 21.6474
+				dist(current_O,other_N) : 17.8807
+			Residue 8:
+				dist(current_N,other_O) : 16.7827
+				dist(current_O,other_N) : 17.2162
+			Residue 9:
+				dist(current_N,other_O) : 17.3809
+				dist(current_O,other_N) : 15.3866
+			Residue 10:
+				dist(current_N,other_O) : 14.5919
+				dist(current_O,other_N) : 13.9113
+			Residue 11:
+				dist(current_N,other_O) : 17.7273
+				dist(current_O,other_N) : 13.9424
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 12.9908
+				dist(current_O,other_N) : 13.7999
+			Residue 2:
+				dist(current_N,other_O) : 13.0735
+				dist(current_O,other_N) : 11.0567
+			Residue 3:
+				dist(current_N,other_O) : 10.2411
+				dist(current_O,other_N) : 8.81455
+			Residue 4:
+				dist(current_N,other_O) : 14.0482
+				dist(current_O,other_N) : 9.76467
+			Residue 5:
+				dist(current_N,other_O) : 13.9772
+				dist(current_O,other_N) : 10.342
+			Residue 6:
+				dist(current_N,other_O) : 17.9467
+				dist(current_O,other_N) : 13.3291
+			Residue 7:
+				dist(current_N,other_O) : 18.7222
+				dist(current_O,other_N) : 14.7374
+			Residue 8:
+				dist(current_N,other_O) : 21.5717
+				dist(current_O,other_N) : 17.763
+			Residue 9:
+				dist(current_N,other_O) : 24.3506
+				dist(current_O,other_N) : 19.7811
+			Current residue is pruned ...
+	CURRENT RESIDUE #4
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.2554
+				dist(current_O,other_N) : 13.1659
+			Residue 8:
+				dist(current_N,other_O) : 8.68773
+				dist(current_O,other_N) : 12.2233
+			Residue 9:
+				dist(current_N,other_O) : 9.4715
+				dist(current_O,other_N) : 9.54263
+			Residue 10:
+				dist(current_N,other_O) : 7.35068
+				dist(current_O,other_N) : 8.27537
+			Residue 11:
+				dist(current_N,other_O) : 9.88068
+				dist(current_O,other_N) : 8.11454
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 6.40108
+				dist(current_O,other_N) : 6.91006
+			Residue 3:
+				dist(current_N,other_O) : 6.35902
+				dist(current_O,other_N) : 4.44047
+			Residue 4:
+				dist(current_N,other_O) : 2.86043
+				dist(current_O,other_N) : 2.85897
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #10
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 22.9199
+				dist(current_O,other_N) : 26.1255
+			Residue 8:
+				dist(current_N,other_O) : 21.7369
+				dist(current_O,other_N) : 25.4371
+			Residue 9:
+				dist(current_N,other_O) : 19.2942
+				dist(current_O,other_N) : 23.1946
+			Residue 10:
+				dist(current_N,other_O) : 20.4499
+				dist(current_O,other_N) : 23.4466
+			Residue 11:
+				dist(current_N,other_O) : 21.3133
+				dist(current_O,other_N) : 22.4392
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 14.2628
+				dist(current_O,other_N) : 17.2013
+			Residue 3:
+				dist(current_N,other_O) : 18.2007
+				dist(current_O,other_N) : 18.8512
+			Residue 4:
+				dist(current_N,other_O) : 19.7396
+				dist(current_O,other_N) : 20.6264
+			Residue 5:
+				dist(current_N,other_O) : 21.8767
+				dist(current_O,other_N) : 23.4645
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 8.92499
+				dist(current_O,other_N) : 4.52865
+			Residue 2:
+				dist(current_N,other_O) : 9.92062
+				dist(current_O,other_N) : 6.94503
+			Residue 3:
+				dist(current_N,other_O) : 5.18261
+				dist(current_O,other_N) : 6.89838
+			Residue 4:
+				dist(current_N,other_O) : 6.79992
+				dist(current_O,other_N) : 6.79054
+			Residue 5:
+				dist(current_N,other_O) : 4.62359
+				dist(current_O,other_N) : 6.64538
+			Residue 6:
+				dist(current_N,other_O) : 8.92025
+				dist(current_O,other_N) : 9.27385
+			Residue 7:
+				dist(current_N,other_O) : 10.1336
+				dist(current_O,other_N) : 10.8257
+			Residue 8:
+				dist(current_N,other_O) : 14.2559
+				dist(current_O,other_N) : 14.0955
+			Residue 9:
+				dist(current_N,other_O) : 16.6601
+				dist(current_O,other_N) : 16.98
+			Residue 10:
+				dist(current_N,other_O) : 20.4179
+				dist(current_O,other_N) : 20.5022
+			Residue 11:
+				dist(current_N,other_O) : 20.4844
+				dist(current_O,other_N) : 22.228
+			Residue 12:
+				dist(current_N,other_O) : 22.9665
+				dist(current_O,other_N) : 24.9236
+			Residue 13:
+				dist(current_N,other_O) : 23.8597
+				dist(current_O,other_N) : 25.3362
+			Residue 14:
+				dist(current_N,other_O) : 23.0919
+				dist(current_O,other_N) : 26.5683
+			Residue 15:
+				dist(current_N,other_O) : 27.1142
+				dist(current_O,other_N) : 28.0768
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 15.4677
+				dist(current_O,other_N) : 15.9063
+			Residue 2:
+				dist(current_N,other_O) : 19.0953
+				dist(current_O,other_N) : 19.5943
+			Residue 3:
+				dist(current_N,other_O) : 17.8275
+				dist(current_O,other_N) : 20.9593
+			Residue 4:
+				dist(current_N,other_O) : 20.0298
+				dist(current_O,other_N) : 21.0215
+			Residue 5:
+				dist(current_N,other_O) : 20.6646
+				dist(current_O,other_N) : 22.4241
+			Residue 6:
+				dist(current_N,other_O) : 23.579
+				dist(current_O,other_N) : 24.0675
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 20.8363
+				dist(current_O,other_N) : 25.4238
+			Residue 2:
+				dist(current_N,other_O) : 18.3919
+				dist(current_O,other_N) : 23.389
+			Residue 3:
+				dist(current_N,other_O) : 19.5903
+				dist(current_O,other_N) : 21.0893
+			Residue 4:
+				dist(current_N,other_O) : 16.9743
+				dist(current_O,other_N) : 19.5535
+			Residue 5:
+				dist(current_N,other_O) : 19.3007
+				dist(current_O,other_N) : 20.9283
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 19.8268
+				dist(current_O,other_N) : 21.8408
+			Residue 2:
+				dist(current_N,other_O) : 17.0936
+				dist(current_O,other_N) : 19.8255
+			Residue 3:
+				dist(current_N,other_O) : 14.3414
+				dist(current_O,other_N) : 18.1628
+			Residue 4:
+				dist(current_N,other_O) : 15.3284
+				dist(current_O,other_N) : 16.7565
+			Residue 5:
+				dist(current_N,other_O) : 13.124
+				dist(current_O,other_N) : 15.557
+			Residue 6:
+				dist(current_N,other_O) : 16.2556
+				dist(current_O,other_N) : 16.9694
+			Residue 7:
+				dist(current_N,other_O) : 15.7885
+				dist(current_O,other_N) : 15.5897
+			Residue 8:
+				dist(current_N,other_O) : 15.2057
+				dist(current_O,other_N) : 16.3282
+			Residue 9:
+				dist(current_N,other_O) : 19.8692
+				dist(current_O,other_N) : 18.9841
+			Residue 10:
+				dist(current_N,other_O) : 18.7288
+				dist(current_O,other_N) : 20.2327
+			Residue 11:
+				dist(current_N,other_O) : 20.7059
+				dist(current_O,other_N) : 22.2484
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 23.2478
+				dist(current_O,other_N) : 24.3379
+			Residue 2:
+				dist(current_N,other_O) : 19.1969
+				dist(current_O,other_N) : 23.2958
+			Residue 3:
+				dist(current_N,other_O) : 17.6373
+				dist(current_O,other_N) : 22.3646
+			Residue 4:
+				dist(current_N,other_O) : 16.1875
+				dist(current_O,other_N) : 19.6985
+			Residue 5:
+				dist(current_N,other_O) : 12.1511
+				dist(current_O,other_N) : 17.0912
+			Residue 6:
+				dist(current_N,other_O) : 12.2389
+				dist(current_O,other_N) : 14.8112
+			Residue 7:
+				dist(current_N,other_O) : 8.57727
+				dist(current_O,other_N) : 12.7944
+			Residue 8:
+				dist(current_N,other_O) : 11.6451
+				dist(current_O,other_N) : 12.0919
+			Residue 9:
+				dist(current_N,other_O) : 10.6975
+				dist(current_O,other_N) : 11.2272
+			Current residue is pruned ...
+	CURRENT RESIDUE #9
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 20.7166
+				dist(current_O,other_N) : 22.0309
+			Residue 8:
+				dist(current_N,other_O) : 19.15
+				dist(current_O,other_N) : 21.4405
+			Residue 9:
+				dist(current_N,other_O) : 16.9395
+				dist(current_O,other_N) : 19.3432
+			Residue 10:
+				dist(current_N,other_O) : 17.8501
+				dist(current_O,other_N) : 19.8309
+			Residue 11:
+				dist(current_N,other_O) : 18.9109
+				dist(current_O,other_N) : 19.1864
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 11.4397
+				dist(current_O,other_N) : 14.6802
+			Residue 3:
+				dist(current_N,other_O) : 15.5296
+				dist(current_O,other_N) : 15.9738
+			Residue 4:
+				dist(current_N,other_O) : 16.8292
+				dist(current_O,other_N) : 17.2926
+			Residue 5:
+				dist(current_N,other_O) : 19.1559
+				dist(current_O,other_N) : 19.8874
+		Comparing with residues in strand #4
+			Residue 1:
+				dist(current_N,other_O) : 11.74
+				dist(current_O,other_N) : 7.25629
+			Residue 2:
+				dist(current_N,other_O) : 12.0536
+				dist(current_O,other_N) : 8.80942
+			Residue 3:
+				dist(current_N,other_O) : 7.32512
+				dist(current_O,other_N) : 7.44409
+			Residue 4:
+				dist(current_N,other_O) : 6.96486
+				dist(current_O,other_N) : 5.4346
+			Residue 5:
+				dist(current_N,other_O) : 2.92657
+				dist(current_O,other_N) : 3.2417
+			Current residue is retained ...
+
+Strand #4
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 27.189
+				dist(current_O,other_N) : 28.9557
+			Residue 8:
+				dist(current_N,other_O) : 27.0083
+				dist(current_O,other_N) : 28.0648
+			Residue 9:
+				dist(current_N,other_O) : 24.5358
+				dist(current_O,other_N) : 26.0106
+			Residue 10:
+				dist(current_N,other_O) : 26.4299
+				dist(current_O,other_N) : 26.5051
+			Residue 11:
+				dist(current_N,other_O) : 27.2529
+				dist(current_O,other_N) : 25.48
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 21.0336
+				dist(current_O,other_N) : 21.4298
+			Residue 3:
+				dist(current_N,other_O) : 24.6664
+				dist(current_O,other_N) : 23.4313
+			Residue 4:
+				dist(current_N,other_O) : 26.1854
+				dist(current_O,other_N) : 25.0197
+			Residue 5:
+				dist(current_N,other_O) : 27.7182
+				dist(current_O,other_N) : 27.4663
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 23.3625
+				dist(current_O,other_N) : 26.8811
+			Residue 5:
+				dist(current_N,other_O) : 19.8844
+				dist(current_O,other_N) : 24.1932
+			Residue 6:
+				dist(current_N,other_O) : 17.597
+				dist(current_O,other_N) : 21.0285
+			Residue 7:
+				dist(current_N,other_O) : 13.5701
+				dist(current_O,other_N) : 17.815
+			Residue 8:
+				dist(current_N,other_O) : 11.1079
+				dist(current_O,other_N) : 14.6249
+			Residue 9:
+				dist(current_N,other_O) : 7.25629
+				dist(current_O,other_N) : 11.74
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 20.6736
+				dist(current_O,other_N) : 17.7725
+			Residue 2:
+				dist(current_N,other_O) : 24.3047
+				dist(current_O,other_N) : 21.2255
+			Residue 3:
+				dist(current_N,other_O) : 22.0879
+				dist(current_O,other_N) : 22.7392
+			Residue 4:
+				dist(current_N,other_O) : 24.5664
+				dist(current_O,other_N) : 22.9619
+			Residue 5:
+				dist(current_N,other_O) : 24.0427
+				dist(current_O,other_N) : 23.9166
+			Residue 6:
+				dist(current_N,other_O) : 26.7193
+				dist(current_O,other_N) : 25.6612
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 22.08
+				dist(current_O,other_N) : 25.6914
+			Residue 2:
+				dist(current_N,other_O) : 20.3182
+				dist(current_O,other_N) : 24.2401
+			Residue 3:
+				dist(current_N,other_O) : 22.3105
+				dist(current_O,other_N) : 22.1112
+			Residue 4:
+				dist(current_N,other_O) : 19.5712
+				dist(current_O,other_N) : 20.5767
+			Residue 5:
+				dist(current_N,other_O) : 22.6739
+				dist(current_O,other_N) : 21.4913
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 21.1152
+				dist(current_O,other_N) : 20.8019
+			Residue 2:
+				dist(current_N,other_O) : 19.2301
+				dist(current_O,other_N) : 18.6355
+			Residue 3:
+				dist(current_N,other_O) : 15.6684
+				dist(current_O,other_N) : 17.1383
+			Residue 4:
+				dist(current_N,other_O) : 17.6864
+				dist(current_O,other_N) : 16.8966
+			Residue 5:
+				dist(current_N,other_O) : 15.4243
+				dist(current_O,other_N) : 16.203
+			Residue 6:
+				dist(current_N,other_O) : 18.1555
+				dist(current_O,other_N) : 18.5688
+			Residue 7:
+				dist(current_N,other_O) : 17.5369
+				dist(current_O,other_N) : 17.9647
+			Residue 8:
+				dist(current_N,other_O) : 18.8208
+				dist(current_O,other_N) : 19.4802
+			Residue 9:
+				dist(current_N,other_O) : 23.4286
+				dist(current_O,other_N) : 22.7406
+			Residue 10:
+				dist(current_N,other_O) : 23.3225
+				dist(current_O,other_N) : 24.7102
+			Residue 11:
+				dist(current_N,other_O) : 24.9207
+				dist(current_O,other_N) : 27.3119
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 28.7777
+				dist(current_O,other_N) : 30.4215
+			Residue 2:
+				dist(current_N,other_O) : 24.457
+				dist(current_O,other_N) : 29.2922
+			Residue 3:
+				dist(current_N,other_O) : 23.2786
+				dist(current_O,other_N) : 27.9218
+			Residue 4:
+				dist(current_N,other_O) : 20.7738
+				dist(current_O,other_N) : 24.8899
+			Residue 5:
+				dist(current_N,other_O) : 17.2074
+				dist(current_O,other_N) : 21.8222
+			Residue 6:
+				dist(current_N,other_O) : 15.5135
+				dist(current_O,other_N) : 18.9448
+			Residue 7:
+				dist(current_N,other_O) : 12.1711
+				dist(current_O,other_N) : 16.2584
+			Residue 8:
+				dist(current_N,other_O) : 13.1609
+				dist(current_O,other_N) : 14.0104
+			Residue 9:
+				dist(current_N,other_O) : 10.7362
+				dist(current_O,other_N) : 11.7721
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 26.8654
+				dist(current_O,other_N) : 26.0861
+			Residue 8:
+				dist(current_N,other_O) : 27.1522
+				dist(current_O,other_N) : 25.2553
+			Residue 9:
+				dist(current_N,other_O) : 24.5719
+				dist(current_O,other_N) : 23.547
+			Residue 10:
+				dist(current_N,other_O) : 26.8584
+				dist(current_O,other_N) : 24.4481
+			Residue 11:
+				dist(current_N,other_O) : 27.6543
+				dist(current_O,other_N) : 23.83
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 22.2079
+				dist(current_O,other_N) : 21.0547
+			Residue 3:
+				dist(current_N,other_O) : 25.4874
+				dist(current_O,other_N) : 22.8455
+			Residue 4:
+				dist(current_N,other_O) : 27.0295
+				dist(current_O,other_N) : 23.9055
+			Residue 5:
+				dist(current_N,other_O) : 28.1034
+				dist(current_O,other_N) : 25.8845
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 24.4406
+				dist(current_O,other_N) : 25.6914
+			Residue 5:
+				dist(current_N,other_O) : 21.2183
+				dist(current_O,other_N) : 23.3689
+			Residue 6:
+				dist(current_N,other_O) : 18.9539
+				dist(current_O,other_N) : 20.3926
+			Residue 7:
+				dist(current_N,other_O) : 14.9497
+				dist(current_O,other_N) : 17.5107
+			Residue 8:
+				dist(current_N,other_O) : 13.0101
+				dist(current_O,other_N) : 14.8278
+			Residue 9:
+				dist(current_N,other_O) : 8.80942
+				dist(current_O,other_N) : 12.0536
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 20.7681
+				dist(current_O,other_N) : 16.1064
+			Residue 2:
+				dist(current_N,other_O) : 24.3037
+				dist(current_O,other_N) : 19.4007
+			Residue 3:
+				dist(current_N,other_O) : 21.6639
+				dist(current_O,other_N) : 20.5731
+			Residue 4:
+				dist(current_N,other_O) : 24.2963
+				dist(current_O,other_N) : 20.3843
+			Residue 5:
+				dist(current_N,other_O) : 23.34
+				dist(current_O,other_N) : 20.8528
+			Residue 6:
+				dist(current_N,other_O) : 25.9384
+				dist(current_O,other_N) : 22.3759
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 21.0964
+				dist(current_O,other_N) : 21.7287
+			Residue 2:
+				dist(current_N,other_O) : 19.6408
+				dist(current_O,other_N) : 20.4878
+			Residue 3:
+				dist(current_N,other_O) : 21.5688
+				dist(current_O,other_N) : 18.4644
+			Residue 4:
+				dist(current_N,other_O) : 18.6611
+				dist(current_O,other_N) : 17.0663
+			Residue 5:
+				dist(current_N,other_O) : 21.8895
+				dist(current_O,other_N) : 17.9976
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 19.5301
+				dist(current_O,other_N) : 17.5771
+			Residue 2:
+				dist(current_N,other_O) : 18.0377
+				dist(current_O,other_N) : 15.1884
+			Residue 3:
+				dist(current_N,other_O) : 14.4125
+				dist(current_O,other_N) : 13.3491
+			Residue 4:
+				dist(current_N,other_O) : 16.9613
+				dist(current_O,other_N) : 13.2594
+			Residue 5:
+				dist(current_N,other_O) : 15.0835
+				dist(current_O,other_N) : 12.6385
+			Residue 6:
+				dist(current_N,other_O) : 17.888
+				dist(current_O,other_N) : 15.2886
+			Residue 7:
+				dist(current_N,other_O) : 17.716
+				dist(current_O,other_N) : 15.1707
+			Residue 8:
+				dist(current_N,other_O) : 19.3672
+				dist(current_O,other_N) : 17.0906
+			Residue 9:
+				dist(current_N,other_O) : 24.0552
+				dist(current_O,other_N) : 20.5003
+			Residue 10:
+				dist(current_N,other_O) : 24.427
+				dist(current_O,other_N) : 22.8443
+			Residue 11:
+				dist(current_N,other_O) : 26.2965
+				dist(current_O,other_N) : 25.8225
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 30.2943
+				dist(current_O,other_N) : 29.7522
+			Residue 2:
+				dist(current_N,other_O) : 25.8737
+				dist(current_O,other_N) : 28.4734
+			Residue 3:
+				dist(current_N,other_O) : 24.5029
+				dist(current_O,other_N) : 26.6925
+			Residue 4:
+				dist(current_N,other_O) : 21.6754
+				dist(current_O,other_N) : 23.4429
+			Residue 5:
+				dist(current_N,other_O) : 18.133
+				dist(current_O,other_N) : 20.142
+			Residue 6:
+				dist(current_N,other_O) : 15.8178
+				dist(current_O,other_N) : 17.0158
+			Residue 7:
+				dist(current_N,other_O) : 12.4356
+				dist(current_O,other_N) : 14.102
+			Residue 8:
+				dist(current_N,other_O) : 12.3511
+				dist(current_O,other_N) : 11.2079
+			Residue 9:
+				dist(current_N,other_O) : 9.3844
+				dist(current_O,other_N) : 8.64085
+			Current residue is pruned ...
+	CURRENT RESIDUE #3
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 24.1283
+				dist(current_O,other_N) : 23.9618
+			Residue 8:
+				dist(current_N,other_O) : 24.5056
+				dist(current_O,other_N) : 23.1765
+			Residue 9:
+				dist(current_N,other_O) : 21.9221
+				dist(current_O,other_N) : 21.1797
+			Residue 10:
+				dist(current_N,other_O) : 24.3763
+				dist(current_O,other_N) : 21.8231
+			Residue 11:
+				dist(current_N,other_O) : 25.2507
+				dist(current_O,other_N) : 21.089
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 20.1854
+				dist(current_O,other_N) : 17.3621
+			Residue 3:
+				dist(current_N,other_O) : 23.2487
+				dist(current_O,other_N) : 19.0447
+			Residue 4:
+				dist(current_N,other_O) : 24.7081
+				dist(current_O,other_N) : 20.3168
+			Residue 5:
+				dist(current_N,other_O) : 25.5474
+				dist(current_O,other_N) : 22.647
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 22.2749
+				dist(current_O,other_N) : 21.8951
+			Residue 5:
+				dist(current_N,other_O) : 19.2558
+				dist(current_O,other_N) : 19.277
+			Residue 6:
+				dist(current_N,other_O) : 17.1059
+				dist(current_O,other_N) : 16.2495
+			Residue 7:
+				dist(current_N,other_O) : 13.1344
+				dist(current_O,other_N) : 13.1249
+			Residue 8:
+				dist(current_N,other_O) : 11.8362
+				dist(current_O,other_N) : 10.3049
+			Residue 9:
+				dist(current_N,other_O) : 7.44409
+				dist(current_O,other_N) : 7.32512
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 18.2997
+				dist(current_O,other_N) : 13.818
+			Residue 2:
+				dist(current_N,other_O) : 21.751
+				dist(current_O,other_N) : 17.4392
+			Residue 3:
+				dist(current_N,other_O) : 18.9539
+				dist(current_O,other_N) : 18.6447
+			Residue 4:
+				dist(current_N,other_O) : 21.5534
+				dist(current_O,other_N) : 18.484
+			Residue 5:
+				dist(current_N,other_O) : 20.5734
+				dist(current_O,other_N) : 19.4393
+			Residue 6:
+				dist(current_N,other_O) : 23.2065
+				dist(current_O,other_N) : 21.057
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 18.752
+				dist(current_O,other_N) : 21.7501
+			Residue 2:
+				dist(current_N,other_O) : 17.2208
+				dist(current_O,other_N) : 20.0258
+			Residue 3:
+				dist(current_N,other_O) : 18.9019
+				dist(current_O,other_N) : 17.7205
+			Residue 4:
+				dist(current_N,other_O) : 15.9025
+				dist(current_O,other_N) : 16.1145
+			Residue 5:
+				dist(current_N,other_O) : 19.1132
+				dist(current_O,other_N) : 17.3152
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 16.9572
+				dist(current_O,other_N) : 17.8858
+			Residue 2:
+				dist(current_N,other_O) : 15.3109
+				dist(current_O,other_N) : 15.6539
+			Residue 3:
+				dist(current_N,other_O) : 11.7021
+				dist(current_O,other_N) : 13.8204
+			Residue 4:
+				dist(current_N,other_O) : 14.3039
+				dist(current_O,other_N) : 12.8074
+			Residue 5:
+				dist(current_N,other_O) : 12.647
+				dist(current_O,other_N) : 11.8714
+			Residue 6:
+				dist(current_N,other_O) : 15.7367
+				dist(current_O,other_N) : 13.9737
+			Residue 7:
+				dist(current_N,other_O) : 15.9806
+				dist(current_O,other_N) : 13.3008
+			Residue 8:
+				dist(current_N,other_O) : 17.3479
+				dist(current_O,other_N) : 14.7801
+			Residue 9:
+				dist(current_N,other_O) : 22.1697
+				dist(current_O,other_N) : 17.8742
+			Residue 10:
+				dist(current_N,other_O) : 22.6457
+				dist(current_O,other_N) : 19.7712
+			Residue 11:
+				dist(current_N,other_O) : 24.8743
+				dist(current_O,other_N) : 22.4352
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 28.634
+				dist(current_O,other_N) : 25.7121
+			Residue 2:
+				dist(current_N,other_O) : 24.1962
+				dist(current_O,other_N) : 24.4125
+			Residue 3:
+				dist(current_N,other_O) : 22.5656
+				dist(current_O,other_N) : 22.8423
+			Residue 4:
+				dist(current_N,other_O) : 19.709
+				dist(current_O,other_N) : 19.7793
+			Residue 5:
+				dist(current_N,other_O) : 16.0643
+				dist(current_O,other_N) : 16.6353
+			Residue 6:
+				dist(current_N,other_O) : 13.63
+				dist(current_O,other_N) : 13.8142
+			Residue 7:
+				dist(current_N,other_O) : 10.0448
+				dist(current_O,other_N) : 11.0878
+			Residue 8:
+				dist(current_N,other_O) : 9.70002
+				dist(current_O,other_N) : 9.11696
+			Residue 9:
+				dist(current_N,other_O) : 6.69379
+				dist(current_O,other_N) : 7.29224
+			Current residue is pruned ...
+	CURRENT RESIDUE #4
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 20.8234
+				dist(current_O,other_N) : 19.3576
+			Residue 8:
+				dist(current_N,other_O) : 20.9382
+				dist(current_O,other_N) : 18.6109
+			Residue 9:
+				dist(current_N,other_O) : 18.3065
+				dist(current_O,other_N) : 16.8173
+			Residue 10:
+				dist(current_N,other_O) : 20.7069
+				dist(current_O,other_N) : 17.8033
+			Residue 11:
+				dist(current_N,other_O) : 21.6587
+				dist(current_O,other_N) : 17.5305
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 16.7155
+				dist(current_O,other_N) : 15.1102
+			Residue 3:
+				dist(current_N,other_O) : 19.6491
+				dist(current_O,other_N) : 16.3897
+			Residue 4:
+				dist(current_N,other_O) : 21.0641
+				dist(current_O,other_N) : 17.0259
+			Residue 5:
+				dist(current_N,other_O) : 21.8792
+				dist(current_O,other_N) : 18.9017
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 18.7201
+				dist(current_O,other_N) : 18.4378
+			Residue 5:
+				dist(current_N,other_O) : 15.915
+				dist(current_O,other_N) : 16.2289
+			Residue 6:
+				dist(current_N,other_O) : 13.808
+				dist(current_O,other_N) : 13.4902
+			Residue 7:
+				dist(current_N,other_O) : 9.98061
+				dist(current_O,other_N) : 10.9305
+			Residue 8:
+				dist(current_N,other_O) : 9.47934
+				dist(current_O,other_N) : 9.13369
+			Residue 9:
+				dist(current_N,other_O) : 5.4346
+				dist(current_O,other_N) : 6.96486
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 14.7797
+				dist(current_O,other_N) : 10.7384
+			Residue 2:
+				dist(current_N,other_O) : 18.2141
+				dist(current_O,other_N) : 14.2392
+			Residue 3:
+				dist(current_N,other_O) : 15.5492
+				dist(current_O,other_N) : 14.9624
+			Residue 4:
+				dist(current_N,other_O) : 18.0947
+				dist(current_O,other_N) : 14.2665
+			Residue 5:
+				dist(current_N,other_O) : 17.509
+				dist(current_O,other_N) : 14.9599
+			Residue 6:
+				dist(current_N,other_O) : 20.3109
+				dist(current_O,other_N) : 16.4274
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 16.8841
+				dist(current_O,other_N) : 17.6068
+			Residue 2:
+				dist(current_N,other_O) : 14.9949
+				dist(current_O,other_N) : 15.818
+			Residue 3:
+				dist(current_N,other_O) : 16.163
+				dist(current_O,other_N) : 13.32
+			Residue 4:
+				dist(current_N,other_O) : 13.0448
+				dist(current_O,other_N) : 11.5453
+			Residue 5:
+				dist(current_N,other_O) : 15.9967
+				dist(current_O,other_N) : 12.8928
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 14.833
+				dist(current_O,other_N) : 14.6013
+			Residue 2:
+				dist(current_N,other_O) : 12.647
+				dist(current_O,other_N) : 12.3225
+			Residue 3:
+				dist(current_N,other_O) : 9.32481
+				dist(current_O,other_N) : 10.1657
+			Residue 4:
+				dist(current_N,other_O) : 11.6107
+				dist(current_O,other_N) : 8.51533
+			Residue 5:
+				dist(current_N,other_O) : 10.1542
+				dist(current_O,other_N) : 7.59925
+			Residue 6:
+				dist(current_N,other_O) : 13.7318
+				dist(current_O,other_N) : 9.76023
+			Residue 7:
+				dist(current_N,other_O) : 14.373
+				dist(current_O,other_N) : 9.60438
+			Residue 8:
+				dist(current_N,other_O) : 14.8579
+				dist(current_O,other_N) : 11.4239
+			Residue 9:
+				dist(current_N,other_O) : 19.8385
+				dist(current_O,other_N) : 14.366
+			Residue 10:
+				dist(current_N,other_O) : 20.0736
+				dist(current_O,other_N) : 16.4407
+			Residue 11:
+				dist(current_N,other_O) : 22.7044
+				dist(current_O,other_N) : 19.4159
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 25.8712
+				dist(current_O,other_N) : 23.3029
+			Residue 2:
+				dist(current_N,other_O) : 21.5103
+				dist(current_O,other_N) : 21.7182
+			Residue 3:
+				dist(current_N,other_O) : 19.5408
+				dist(current_O,other_N) : 19.6557
+			Residue 4:
+				dist(current_N,other_O) : 16.971
+				dist(current_O,other_N) : 16.4652
+			Residue 5:
+				dist(current_N,other_O) : 13.0605
+				dist(current_O,other_N) : 13.0503
+			Residue 6:
+				dist(current_N,other_O) : 11.0433
+				dist(current_O,other_N) : 10.1803
+			Residue 7:
+				dist(current_N,other_O) : 6.95524
+				dist(current_O,other_N) : 7.09287
+			Residue 8:
+				dist(current_N,other_O) : 7.20015
+				dist(current_O,other_N) : 4.76198
+			Residue 9:
+				dist(current_N,other_O) : 4.85919
+				dist(current_O,other_N) : 2.99594
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #15
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 21.2915
+				dist(current_O,other_N) : 21.8809
+			Residue 8:
+				dist(current_N,other_O) : 16.4201
+				dist(current_O,other_N) : 20.5644
+			Residue 9:
+				dist(current_N,other_O) : 16.0541
+				dist(current_O,other_N) : 18.0908
+			Residue 10:
+				dist(current_N,other_O) : 11.6746
+				dist(current_O,other_N) : 15.2176
+			Residue 11:
+				dist(current_N,other_O) : 11.5317
+				dist(current_O,other_N) : 13.8467
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 11.3345
+				dist(current_O,other_N) : 13.5924
+			Residue 3:
+				dist(current_N,other_O) : 9.41809
+				dist(current_O,other_N) : 11.721
+			Residue 4:
+				dist(current_N,other_O) : 9.3296
+				dist(current_O,other_N) : 11.6561
+			Residue 5:
+				dist(current_N,other_O) : 12.8251
+				dist(current_O,other_N) : 12.0555
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 10.3436
+				dist(current_O,other_N) : 12.3248
+			Residue 5:
+				dist(current_N,other_O) : 13.8273
+				dist(current_O,other_N) : 13.7955
+			Residue 6:
+				dist(current_N,other_O) : 14.5753
+				dist(current_O,other_N) : 15.3188
+			Residue 7:
+				dist(current_N,other_O) : 18.9504
+				dist(current_O,other_N) : 18.3839
+			Residue 8:
+				dist(current_N,other_O) : 21.3592
+				dist(current_O,other_N) : 20.9518
+			Residue 9:
+				dist(current_N,other_O) : 25.3427
+				dist(current_O,other_N) : 24.4145
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 16.8028
+				dist(current_O,other_N) : 20.1158
+			Residue 2:
+				dist(current_N,other_O) : 15.9254
+				dist(current_O,other_N) : 18.8859
+			Residue 3:
+				dist(current_N,other_O) : 20.0259
+				dist(current_O,other_N) : 18.7177
+			Residue 4:
+				dist(current_N,other_O) : 19.3471
+				dist(current_O,other_N) : 19.9415
+			Residue 5:
+				dist(current_N,other_O) : 23.9344
+				dist(current_O,other_N) : 22.6933
+			Residue 6:
+				dist(current_N,other_O) : 25.8232
+				dist(current_O,other_N) : 24.3882
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 30.9971
+				dist(current_O,other_N) : 33.345
+			Residue 2:
+				dist(current_N,other_O) : 28.3654
+				dist(current_O,other_N) : 31.746
+			Residue 3:
+				dist(current_N,other_O) : 26.1082
+				dist(current_O,other_N) : 29.3977
+			Residue 4:
+				dist(current_N,other_O) : 25.4725
+				dist(current_O,other_N) : 26.9945
+			Residue 5:
+				dist(current_N,other_O) : 23.3649
+				dist(current_O,other_N) : 26.23
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 29.3672
+				dist(current_O,other_N) : 27.755
+			Residue 2:
+				dist(current_N,other_O) : 26.4382
+				dist(current_O,other_N) : 28.5484
+			Residue 3:
+				dist(current_N,other_O) : 27.8337
+				dist(current_O,other_N) : 29.4549
+			Residue 4:
+				dist(current_N,other_O) : 26.1314
+				dist(current_O,other_N) : 28.1124
+			Residue 5:
+				dist(current_N,other_O) : 26.3495
+				dist(current_O,other_N) : 29.1065
+			Residue 6:
+				dist(current_N,other_O) : 28.2243
+				dist(current_O,other_N) : 28.9031
+			Residue 7:
+				dist(current_N,other_O) : 28.9555
+				dist(current_O,other_N) : 29.227
+			Residue 8:
+				dist(current_N,other_O) : 24.2301
+				dist(current_O,other_N) : 29.0689
+			Residue 9:
+				dist(current_N,other_O) : 25.5298
+				dist(current_O,other_N) : 27.8038
+			Residue 10:
+				dist(current_N,other_O) : 22.092
+				dist(current_O,other_N) : 26.5148
+			Residue 11:
+				dist(current_N,other_O) : 24.5593
+				dist(current_O,other_N) : 26.3728
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 19.1747
+				dist(current_O,other_N) : 24.522
+			Residue 2:
+				dist(current_N,other_O) : 19.7663
+				dist(current_O,other_N) : 22.1548
+			Residue 3:
+				dist(current_N,other_O) : 17.398
+				dist(current_O,other_N) : 20.9731
+			Residue 4:
+				dist(current_N,other_O) : 21.5381
+				dist(current_O,other_N) : 22.2185
+			Residue 5:
+				dist(current_N,other_O) : 20.3751
+				dist(current_O,other_N) : 22.3862
+			Residue 6:
+				dist(current_N,other_O) : 24.6427
+				dist(current_O,other_N) : 24.8021
+			Residue 7:
+				dist(current_N,other_O) : 24.1226
+				dist(current_O,other_N) : 25.2224
+			Residue 8:
+				dist(current_N,other_O) : 27.2856
+				dist(current_O,other_N) : 27.5164
+			Residue 9:
+				dist(current_N,other_O) : 29.1807
+				dist(current_O,other_N) : 28.3508
+			Current residue is pruned ...
+	CURRENT RESIDUE #14
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 21.7703
+				dist(current_O,other_N) : 19.846
+			Residue 8:
+				dist(current_N,other_O) : 16.8981
+				dist(current_O,other_N) : 18.7439
+			Residue 9:
+				dist(current_N,other_O) : 16.9213
+				dist(current_O,other_N) : 16.1421
+			Residue 10:
+				dist(current_N,other_O) : 12.9629
+				dist(current_O,other_N) : 13.6258
+			Residue 11:
+				dist(current_N,other_O) : 13.4645
+				dist(current_O,other_N) : 12.387
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 10.6131
+				dist(current_O,other_N) : 10.5586
+			Residue 3:
+				dist(current_N,other_O) : 10.1999
+				dist(current_O,other_N) : 8.3939
+			Residue 4:
+				dist(current_N,other_O) : 9.50873
+				dist(current_O,other_N) : 8.62655
+			Residue 5:
+				dist(current_N,other_O) : 13.7235
+				dist(current_O,other_N) : 9.99212
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 9.49697
+				dist(current_O,other_N) : 8.82496
+			Residue 5:
+				dist(current_N,other_O) : 12.1098
+				dist(current_O,other_N) : 9.59743
+			Residue 6:
+				dist(current_N,other_O) : 13.3942
+				dist(current_O,other_N) : 11.1832
+			Residue 7:
+				dist(current_N,other_O) : 17.5174
+				dist(current_O,other_N) : 14.1804
+			Residue 8:
+				dist(current_N,other_O) : 19.7875
+				dist(current_O,other_N) : 16.9067
+			Residue 9:
+				dist(current_N,other_O) : 23.8637
+				dist(current_O,other_N) : 20.3076
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 17.5793
+				dist(current_O,other_N) : 17.6326
+			Residue 2:
+				dist(current_N,other_O) : 17.2701
+				dist(current_O,other_N) : 17.1824
+			Residue 3:
+				dist(current_N,other_O) : 20.8465
+				dist(current_O,other_N) : 17.0937
+			Residue 4:
+				dist(current_N,other_O) : 19.9966
+				dist(current_O,other_N) : 17.9464
+			Residue 5:
+				dist(current_N,other_O) : 24.3247
+				dist(current_O,other_N) : 20.6986
+			Residue 6:
+				dist(current_N,other_O) : 26.2248
+				dist(current_O,other_N) : 22.3122
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 30.406
+				dist(current_O,other_N) : 30.6754
+			Residue 2:
+				dist(current_N,other_O) : 27.6398
+				dist(current_O,other_N) : 28.8203
+			Residue 3:
+				dist(current_N,other_O) : 25.9506
+				dist(current_O,other_N) : 26.4407
+			Residue 4:
+				dist(current_N,other_O) : 25.528
+				dist(current_O,other_N) : 24.1776
+			Residue 5:
+				dist(current_N,other_O) : 24.0025
+				dist(current_O,other_N) : 23.8939
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 29.9757
+				dist(current_O,other_N) : 26.0487
+			Residue 2:
+				dist(current_N,other_O) : 26.7907
+				dist(current_O,other_N) : 26.4209
+			Residue 3:
+				dist(current_N,other_O) : 27.6381
+				dist(current_O,other_N) : 26.8648
+			Residue 4:
+				dist(current_N,other_O) : 25.6637
+				dist(current_O,other_N) : 25.1649
+			Residue 5:
+				dist(current_N,other_O) : 25.3652
+				dist(current_O,other_N) : 25.7708
+			Residue 6:
+				dist(current_N,other_O) : 27.0008
+				dist(current_O,other_N) : 25.4191
+			Residue 7:
+				dist(current_N,other_O) : 27.2743
+				dist(current_O,other_N) : 25.405
+			Residue 8:
+				dist(current_N,other_O) : 22.5536
+				dist(current_O,other_N) : 25.0875
+			Residue 9:
+				dist(current_N,other_O) : 23.6425
+				dist(current_O,other_N) : 23.8878
+			Residue 10:
+				dist(current_N,other_O) : 19.8219
+				dist(current_O,other_N) : 22.5352
+			Residue 11:
+				dist(current_N,other_O) : 21.8571
+				dist(current_O,other_N) : 22.3604
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 16.376
+				dist(current_O,other_N) : 20.4678
+			Residue 2:
+				dist(current_N,other_O) : 17.1477
+				dist(current_O,other_N) : 18.1071
+			Residue 3:
+				dist(current_N,other_O) : 15.2042
+				dist(current_O,other_N) : 17.0352
+			Residue 4:
+				dist(current_N,other_O) : 19.6151
+				dist(current_O,other_N) : 18.155
+			Residue 5:
+				dist(current_N,other_O) : 18.6912
+				dist(current_O,other_N) : 18.3406
+			Residue 6:
+				dist(current_N,other_O) : 23.2457
+				dist(current_O,other_N) : 20.7592
+			Residue 7:
+				dist(current_N,other_O) : 22.9767
+				dist(current_O,other_N) : 21.3123
+			Residue 8:
+				dist(current_N,other_O) : 26.5833
+				dist(current_O,other_N) : 23.8178
+			Residue 9:
+				dist(current_N,other_O) : 28.5765
+				dist(current_O,other_N) : 24.8668
+			Current residue is pruned ...
+	CURRENT RESIDUE #13
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 19.5029
+				dist(current_O,other_N) : 18.4274
+			Residue 8:
+				dist(current_N,other_O) : 14.7365
+				dist(current_O,other_N) : 17.7295
+			Residue 9:
+				dist(current_N,other_O) : 15.5052
+				dist(current_O,other_N) : 15.6343
+			Residue 10:
+				dist(current_N,other_O) : 12.1415
+				dist(current_O,other_N) : 13.6049
+			Residue 11:
+				dist(current_N,other_O) : 13.5223
+				dist(current_O,other_N) : 13.1979
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 9.7004
+				dist(current_O,other_N) : 12.2925
+			Residue 3:
+				dist(current_N,other_O) : 9.87393
+				dist(current_O,other_N) : 9.72056
+			Residue 4:
+				dist(current_N,other_O) : 7.87097
+				dist(current_O,other_N) : 8.99132
+			Residue 5:
+				dist(current_N,other_O) : 12.1037
+				dist(current_O,other_N) : 9.66297
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 7.59919
+				dist(current_O,other_N) : 7.58635
+			Residue 5:
+				dist(current_N,other_O) : 9.91271
+				dist(current_O,other_N) : 8.92769
+			Residue 6:
+				dist(current_N,other_O) : 12.3349
+				dist(current_O,other_N) : 11.399
+			Residue 7:
+				dist(current_N,other_O) : 15.9556
+				dist(current_O,other_N) : 14.5971
+			Residue 8:
+				dist(current_N,other_O) : 18.6686
+				dist(current_O,other_N) : 17.7221
+			Residue 9:
+				dist(current_N,other_O) : 22.2937
+				dist(current_O,other_N) : 20.9258
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 16.9189
+				dist(current_O,other_N) : 18.7796
+			Residue 2:
+				dist(current_N,other_O) : 16.6582
+				dist(current_O,other_N) : 18.4249
+			Residue 3:
+				dist(current_N,other_O) : 19.5823
+				dist(current_O,other_N) : 17.9203
+			Residue 4:
+				dist(current_N,other_O) : 18.1704
+				dist(current_O,other_N) : 18.1225
+			Residue 5:
+				dist(current_N,other_O) : 22.2057
+				dist(current_O,other_N) : 20.4783
+			Residue 6:
+				dist(current_N,other_O) : 23.9134
+				dist(current_O,other_N) : 21.6053
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 27.6207
+				dist(current_O,other_N) : 29.6708
+			Residue 2:
+				dist(current_N,other_O) : 24.8551
+				dist(current_O,other_N) : 27.7454
+			Residue 3:
+				dist(current_N,other_O) : 23.4482
+				dist(current_O,other_N) : 25.601
+			Residue 4:
+				dist(current_N,other_O) : 23.4904
+				dist(current_O,other_N) : 23.7084
+			Residue 5:
+				dist(current_N,other_O) : 22.3182
+				dist(current_O,other_N) : 23.7478
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 28.4965
+				dist(current_O,other_N) : 26.8012
+			Residue 2:
+				dist(current_N,other_O) : 25.1544
+				dist(current_O,other_N) : 27.0391
+			Residue 3:
+				dist(current_N,other_O) : 25.7458
+				dist(current_O,other_N) : 27.1696
+			Residue 4:
+				dist(current_N,other_O) : 23.2999
+				dist(current_O,other_N) : 25.156
+			Residue 5:
+				dist(current_N,other_O) : 22.8258
+				dist(current_O,other_N) : 25.4927
+			Residue 6:
+				dist(current_N,other_O) : 24.0865
+				dist(current_O,other_N) : 24.6974
+			Residue 7:
+				dist(current_N,other_O) : 24.2477
+				dist(current_O,other_N) : 24.5619
+			Residue 8:
+				dist(current_N,other_O) : 19.4515
+				dist(current_O,other_N) : 23.9766
+			Residue 9:
+				dist(current_N,other_O) : 20.1889
+				dist(current_O,other_N) : 22.3551
+			Residue 10:
+				dist(current_N,other_O) : 16.3624
+				dist(current_O,other_N) : 20.7086
+			Residue 11:
+				dist(current_N,other_O) : 18.4527
+				dist(current_O,other_N) : 20.2062
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 12.9377
+				dist(current_O,other_N) : 18.0961
+			Residue 2:
+				dist(current_N,other_O) : 13.7148
+				dist(current_O,other_N) : 15.7406
+			Residue 3:
+				dist(current_N,other_O) : 11.798
+				dist(current_O,other_N) : 14.7356
+			Residue 4:
+				dist(current_N,other_O) : 16.3495
+				dist(current_O,other_N) : 16.3099
+			Residue 5:
+				dist(current_N,other_O) : 15.9169
+				dist(current_O,other_N) : 17.0271
+			Residue 6:
+				dist(current_N,other_O) : 20.5299
+				dist(current_O,other_N) : 19.8197
+			Residue 7:
+				dist(current_N,other_O) : 20.8056
+				dist(current_O,other_N) : 20.8398
+			Residue 8:
+				dist(current_N,other_O) : 24.4659
+				dist(current_O,other_N) : 23.65
+			Residue 9:
+				dist(current_N,other_O) : 26.8008
+				dist(current_O,other_N) : 25.1192
+			Current residue is pruned ...
+	CURRENT RESIDUE #12
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 18.6934
+				dist(current_O,other_N) : 19.0963
+			Residue 8:
+				dist(current_N,other_O) : 14.2289
+				dist(current_O,other_N) : 18.9327
+			Residue 9:
+				dist(current_N,other_O) : 15.7966
+				dist(current_O,other_N) : 17.1953
+			Residue 10:
+				dist(current_N,other_O) : 13.2083
+				dist(current_O,other_N) : 15.8648
+			Residue 11:
+				dist(current_N,other_O) : 15.2329
+				dist(current_O,other_N) : 15.8805
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 10.6127
+				dist(current_O,other_N) : 13.9077
+			Residue 3:
+				dist(current_N,other_O) : 11.4775
+				dist(current_O,other_N) : 11.424
+			Residue 4:
+				dist(current_N,other_O) : 8.57918
+				dist(current_O,other_N) : 10.8477
+			Residue 5:
+				dist(current_N,other_O) : 12.3832
+				dist(current_O,other_N) : 11.9226
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 7.91986
+				dist(current_O,other_N) : 8.1275
+			Residue 5:
+				dist(current_N,other_O) : 9.26399
+				dist(current_O,other_N) : 8.43915
+			Residue 6:
+				dist(current_N,other_O) : 12.7269
+				dist(current_O,other_N) : 11.2298
+			Residue 7:
+				dist(current_N,other_O) : 15.5814
+				dist(current_O,other_N) : 13.9486
+			Residue 8:
+				dist(current_N,other_O) : 18.5213
+				dist(current_O,other_N) : 17.1647
+			Residue 9:
+				dist(current_N,other_O) : 21.6656
+				dist(current_O,other_N) : 20.013
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 17.7973
+				dist(current_O,other_N) : 20.2848
+			Residue 2:
+				dist(current_N,other_O) : 17.6606
+				dist(current_O,other_N) : 20.6469
+			Residue 3:
+				dist(current_N,other_O) : 19.8492
+				dist(current_O,other_N) : 20.1378
+			Residue 4:
+				dist(current_N,other_O) : 17.9154
+				dist(current_O,other_N) : 19.806
+			Residue 5:
+				dist(current_N,other_O) : 21.4962
+				dist(current_O,other_N) : 21.8496
+			Residue 6:
+				dist(current_N,other_O) : 22.9518
+				dist(current_O,other_N) : 22.5791
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 25.9249
+				dist(current_O,other_N) : 29.6062
+			Residue 2:
+				dist(current_N,other_O) : 23.1704
+				dist(current_O,other_N) : 27.4049
+			Residue 3:
+				dist(current_N,other_O) : 22.2154
+				dist(current_O,other_N) : 25.455
+			Residue 4:
+				dist(current_N,other_O) : 22.7888
+				dist(current_O,other_N) : 24.0139
+			Residue 5:
+				dist(current_N,other_O) : 22.085
+				dist(current_O,other_N) : 24.7054
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 28.3333
+				dist(current_O,other_N) : 28.5592
+			Residue 2:
+				dist(current_N,other_O) : 24.8617
+				dist(current_O,other_N) : 28.384
+			Residue 3:
+				dist(current_N,other_O) : 25.092
+				dist(current_O,other_N) : 27.9595
+			Residue 4:
+				dist(current_N,other_O) : 22.1627
+				dist(current_O,other_N) : 25.5057
+			Residue 5:
+				dist(current_N,other_O) : 21.3861
+				dist(current_O,other_N) : 25.2459
+			Residue 6:
+				dist(current_N,other_O) : 22.1414
+				dist(current_O,other_N) : 24.0239
+			Residue 7:
+				dist(current_N,other_O) : 22.0297
+				dist(current_O,other_N) : 23.3324
+			Residue 8:
+				dist(current_N,other_O) : 17.2189
+				dist(current_O,other_N) : 22.2975
+			Residue 9:
+				dist(current_N,other_O) : 17.3862
+				dist(current_O,other_N) : 20.4245
+			Residue 10:
+				dist(current_N,other_O) : 13.4308
+				dist(current_O,other_N) : 18.3465
+			Residue 11:
+				dist(current_N,other_O) : 15.3289
+				dist(current_O,other_N) : 17.2429
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 9.59171
+				dist(current_O,other_N) : 14.1413
+			Residue 2:
+				dist(current_N,other_O) : 10.651
+				dist(current_O,other_N) : 12.0427
+			Residue 3:
+				dist(current_N,other_O) : 9.10192
+				dist(current_O,other_N) : 11.8087
+			Residue 4:
+				dist(current_N,other_O) : 13.8714
+				dist(current_O,other_N) : 13.888
+			Residue 5:
+				dist(current_N,other_O) : 14.1842
+				dist(current_O,other_N) : 15.3035
+			Residue 6:
+				dist(current_N,other_O) : 18.8266
+				dist(current_O,other_N) : 18.3253
+			Residue 7:
+				dist(current_N,other_O) : 19.7503
+				dist(current_O,other_N) : 19.8632
+			Residue 8:
+				dist(current_N,other_O) : 23.4998
+				dist(current_O,other_N) : 23.0455
+			Residue 9:
+				dist(current_N,other_O) : 26.1415
+				dist(current_O,other_N) : 24.935
+			Current residue is pruned ...
+	CURRENT RESIDUE #11
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 16.4652
+				dist(current_O,other_N) : 15.3868
+			Residue 8:
+				dist(current_N,other_O) : 12.368
+				dist(current_O,other_N) : 15.2079
+			Residue 9:
+				dist(current_N,other_O) : 13.9369
+				dist(current_O,other_N) : 13.4754
+			Residue 10:
+				dist(current_N,other_O) : 12.2206
+				dist(current_O,other_N) : 12.4926
+			Residue 11:
+				dist(current_N,other_O) : 14.6591
+				dist(current_O,other_N) : 12.8962
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 9.07594
+				dist(current_O,other_N) : 11.6858
+			Residue 3:
+				dist(current_N,other_O) : 10.7063
+				dist(current_O,other_N) : 9.05918
+			Residue 4:
+				dist(current_N,other_O) : 7.67028
+				dist(current_O,other_N) : 7.78711
+			Residue 5:
+				dist(current_N,other_O) : 11.2198
+				dist(current_O,other_N) : 8.73974
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 6.21046
+				dist(current_O,other_N) : 4.35814
+			Residue 5:
+				dist(current_N,other_O) : 6.54803
+				dist(current_O,other_N) : 4.96576
+			Residue 6:
+				dist(current_N,other_O) : 10.6715
+				dist(current_O,other_N) : 8.21967
+			Residue 7:
+				dist(current_N,other_O) : 12.8599
+				dist(current_O,other_N) : 11.2362
+			Residue 8:
+				dist(current_N,other_O) : 16.1027
+				dist(current_O,other_N) : 14.7057
+			Residue 9:
+				dist(current_N,other_O) : 18.7579
+				dist(current_O,other_N) : 17.4462
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 15.9177
+				dist(current_O,other_N) : 17.0615
+			Residue 2:
+				dist(current_N,other_O) : 16.1525
+				dist(current_O,other_N) : 17.5152
+			Residue 3:
+				dist(current_N,other_O) : 17.6213
+				dist(current_O,other_N) : 16.7985
+			Residue 4:
+				dist(current_N,other_O) : 15.6767
+				dist(current_O,other_N) : 16.1137
+			Residue 5:
+				dist(current_N,other_O) : 18.8651
+				dist(current_O,other_N) : 18.0018
+			Residue 6:
+				dist(current_N,other_O) : 20.4046
+				dist(current_O,other_N) : 18.6702
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 22.6705
+				dist(current_O,other_N) : 25.6525
+			Residue 2:
+				dist(current_N,other_O) : 19.8639
+				dist(current_O,other_N) : 23.4745
+			Residue 3:
+				dist(current_N,other_O) : 19.2005
+				dist(current_O,other_N) : 21.4797
+			Residue 4:
+				dist(current_N,other_O) : 19.8231
+				dist(current_O,other_N) : 20.0255
+			Residue 5:
+				dist(current_N,other_O) : 19.565
+				dist(current_O,other_N) : 20.7719
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 25.6109
+				dist(current_O,other_N) : 24.9391
+			Residue 2:
+				dist(current_N,other_O) : 22.0542
+				dist(current_O,other_N) : 24.6748
+			Residue 3:
+				dist(current_N,other_O) : 21.9771
+				dist(current_O,other_N) : 24.1355
+			Residue 4:
+				dist(current_N,other_O) : 18.9221
+				dist(current_O,other_N) : 21.627
+			Residue 5:
+				dist(current_N,other_O) : 17.9711
+				dist(current_O,other_N) : 21.4
+			Residue 6:
+				dist(current_N,other_O) : 18.6952
+				dist(current_O,other_N) : 20.1743
+			Residue 7:
+				dist(current_N,other_O) : 18.5832
+				dist(current_O,other_N) : 19.6808
+			Residue 8:
+				dist(current_N,other_O) : 13.7715
+				dist(current_O,other_N) : 18.8189
+			Residue 9:
+				dist(current_N,other_O) : 14.2763
+				dist(current_O,other_N) : 17.0395
+			Residue 10:
+				dist(current_N,other_O) : 10.4365
+				dist(current_O,other_N) : 15.263
+			Residue 11:
+				dist(current_N,other_O) : 12.8749
+				dist(current_O,other_N) : 14.76
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 8.40024
+				dist(current_O,other_N) : 13.2006
+			Residue 2:
+				dist(current_N,other_O) : 8.06305
+				dist(current_O,other_N) : 10.6534
+			Residue 3:
+				dist(current_N,other_O) : 5.85372
+				dist(current_O,other_N) : 9.35714
+			Residue 4:
+				dist(current_N,other_O) : 10.4965
+				dist(current_O,other_N) : 10.8262
+			Residue 5:
+				dist(current_N,other_O) : 10.7317
+				dist(current_O,other_N) : 11.7981
+			Residue 6:
+				dist(current_N,other_O) : 15.3547
+				dist(current_O,other_N) : 14.7998
+			Residue 7:
+				dist(current_N,other_O) : 16.451
+				dist(current_O,other_N) : 16.2654
+			Residue 8:
+				dist(current_N,other_O) : 20.2098
+				dist(current_O,other_N) : 19.4087
+			Residue 9:
+				dist(current_N,other_O) : 22.9611
+				dist(current_O,other_N) : 21.3665
+			Current residue is pruned ...
+	CURRENT RESIDUE #10
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 14.7407
+				dist(current_O,other_N) : 14.3306
+			Residue 8:
+				dist(current_N,other_O) : 11.278
+				dist(current_O,other_N) : 14.9465
+			Residue 9:
+				dist(current_N,other_O) : 13.0136
+				dist(current_O,other_N) : 14.1065
+			Residue 10:
+				dist(current_N,other_O) : 12.3659
+				dist(current_O,other_N) : 14.2607
+			Residue 11:
+				dist(current_N,other_O) : 15.1322
+				dist(current_O,other_N) : 15.4922
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 9.28676
+				dist(current_O,other_N) : 14.7141
+			Residue 3:
+				dist(current_N,other_O) : 11.3571
+				dist(current_O,other_N) : 12.3523
+			Residue 4:
+				dist(current_N,other_O) : 8.35947
+				dist(current_O,other_N) : 10.7421
+			Residue 5:
+				dist(current_N,other_O) : 11.0744
+				dist(current_O,other_N) : 11.1931
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 6.57335
+				dist(current_O,other_N) : 6.64908
+			Residue 5:
+				dist(current_N,other_O) : 5.62369
+				dist(current_O,other_N) : 6.69332
+			Residue 6:
+				dist(current_N,other_O) : 10.1845
+				dist(current_O,other_N) : 9.76023
+			Residue 7:
+				dist(current_N,other_O) : 11.3418
+				dist(current_O,other_N) : 12.0044
+			Residue 8:
+				dist(current_N,other_O) : 14.8775
+				dist(current_O,other_N) : 15.4465
+			Residue 9:
+				dist(current_N,other_O) : 16.795
+				dist(current_O,other_N) : 17.4349
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1:
+				dist(current_N,other_O) : 15.1318
+				dist(current_O,other_N) : 18.6429
+			Residue 2:
+				dist(current_N,other_O) : 15.6436
+				dist(current_O,other_N) : 19.563
+			Residue 3:
+				dist(current_N,other_O) : 16.23
+				dist(current_O,other_N) : 18.5606
+			Residue 4:
+				dist(current_N,other_O) : 14.1516
+				dist(current_O,other_N) : 17.0097
+			Residue 5:
+				dist(current_N,other_O) : 16.7524
+				dist(current_O,other_N) : 18.1276
+			Residue 6:
+				dist(current_N,other_O) : 18.2546
+				dist(current_O,other_N) : 18.03
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 19.7007
+				dist(current_O,other_N) : 23.5488
+			Residue 2:
+				dist(current_N,other_O) : 16.8731
+				dist(current_O,other_N) : 21.1751
+			Residue 3:
+				dist(current_N,other_O) : 16.5868
+				dist(current_O,other_N) : 19.604
+			Residue 4:
+				dist(current_N,other_O) : 17.4324
+				dist(current_O,other_N) : 18.9087
+			Residue 5:
+				dist(current_N,other_O) : 17.6956
+				dist(current_O,other_N) : 20.3975
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 23.5191
+				dist(current_O,other_N) : 25.7
+			Residue 2:
+				dist(current_N,other_O) : 19.9068
+				dist(current_O,other_N) : 25.0425
+			Residue 3:
+				dist(current_N,other_O) : 19.4918
+				dist(current_O,other_N) : 23.8626
+			Residue 4:
+				dist(current_N,other_O) : 16.18
+				dist(current_O,other_N) : 20.8956
+			Residue 5:
+				dist(current_N,other_O) : 15.0316
+				dist(current_O,other_N) : 20.0243
+			Residue 6:
+				dist(current_N,other_O) : 15.5567
+				dist(current_O,other_N) : 18.117
+			Residue 7:
+				dist(current_N,other_O) : 15.4423
+				dist(current_O,other_N) : 17.1967
+			Residue 8:
+				dist(current_N,other_O) : 10.608
+				dist(current_O,other_N) : 15.8289
+			Residue 9:
+				dist(current_N,other_O) : 11.3206
+				dist(current_O,other_N) : 13.4896
+			Residue 10:
+				dist(current_N,other_O) : 7.74985
+				dist(current_O,other_N) : 11.2297
+			Residue 11:
+				dist(current_N,other_O) : 10.8401
+				dist(current_O,other_N) : 10.2203
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 8.0542
+				dist(current_O,other_N) : 8.97045
+			Residue 2:
+				dist(current_N,other_O) : 6.17565
+				dist(current_O,other_N) : 6.26617
+			Residue 3:
+				dist(current_N,other_O) : 3.03312
+				dist(current_O,other_N) : 4.71206
+			Current residue is retained ...
+
+Strand #5
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.7677
+				dist(current_O,other_N) : 14.4721
+			Residue 8:
+				dist(current_N,other_O) : 12.5319
+				dist(current_O,other_N) : 12.2289
+			Residue 9:
+				dist(current_N,other_O) : 8.143
+				dist(current_O,other_N) : 8.76873
+			Residue 10:
+				dist(current_N,other_O) : 9.9119
+				dist(current_O,other_N) : 7.33442
+			Residue 11:
+				dist(current_N,other_O) : 10.0483
+				dist(current_O,other_N) : 5.30881
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 9.59638
+				dist(current_O,other_N) : 6.93091
+			Residue 3:
+				dist(current_N,other_O) : 9.71519
+				dist(current_O,other_N) : 7.92886
+			Residue 4:
+				dist(current_N,other_O) : 12.1749
+				dist(current_O,other_N) : 8.01578
+			Residue 5:
+				dist(current_N,other_O) : 12.1643
+				dist(current_O,other_N) : 9.1631
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 11.4012
+				dist(current_O,other_N) : 11.739
+			Residue 5:
+				dist(current_N,other_O) : 11.7976
+				dist(current_O,other_N) : 11.4975
+			Residue 6:
+				dist(current_N,other_O) : 9.40948
+				dist(current_O,other_N) : 9.58912
+			Residue 7:
+				dist(current_N,other_O) : 9.97887
+				dist(current_O,other_N) : 10.5454
+			Residue 8:
+				dist(current_N,other_O) : 12.3654
+				dist(current_O,other_N) : 11.367
+			Residue 9:
+				dist(current_N,other_O) : 13.1285
+				dist(current_O,other_N) : 13.5452
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 10.7384
+				dist(current_O,other_N) : 14.7797
+			Residue 5:
+				dist(current_N,other_O) : 10.0178
+				dist(current_O,other_N) : 13.338
+			Residue 6:
+				dist(current_N,other_O) : 10.631
+				dist(current_O,other_N) : 11.4942
+			Residue 7:
+				dist(current_N,other_O) : 11.2977
+				dist(current_O,other_N) : 11.9728
+			Residue 8:
+				dist(current_N,other_O) : 13.6344
+				dist(current_O,other_N) : 12.1087
+			Residue 9:
+				dist(current_N,other_O) : 14.5166
+				dist(current_O,other_N) : 13.1608
+			Residue 10:
+				dist(current_N,other_O) : 18.6429
+				dist(current_O,other_N) : 15.1318
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #6
+			Residue 1:
+				dist(current_N,other_O) : 18.1978
+				dist(current_O,other_N) : 20.1418
+			Residue 2:
+				dist(current_N,other_O) : 16.0364
+				dist(current_O,other_N) : 18.9565
+			Residue 3:
+				dist(current_N,other_O) : 13.6899
+				dist(current_O,other_N) : 15.9879
+			Residue 4:
+				dist(current_N,other_O) : 10.1268
+				dist(current_O,other_N) : 12.5522
+			Residue 5:
+				dist(current_N,other_O) : 9.11979
+				dist(current_O,other_N) : 10.9794
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 11.8606
+				dist(current_O,other_N) : 10.7951
+			Residue 2:
+				dist(current_N,other_O) : 9.22025
+				dist(current_O,other_N) : 11.1524
+			Residue 3:
+				dist(current_N,other_O) : 10.5849
+				dist(current_O,other_N) : 12.3283
+			Residue 4:
+				dist(current_N,other_O) : 11.7202
+				dist(current_O,other_N) : 11.9479
+			Residue 5:
+				dist(current_N,other_O) : 13.0819
+				dist(current_O,other_N) : 13.9846
+			Residue 6:
+				dist(current_N,other_O) : 16.8546
+				dist(current_O,other_N) : 15.509
+			Residue 7:
+				dist(current_N,other_O) : 19.0247
+				dist(current_O,other_N) : 16.9551
+			Residue 8:
+				dist(current_N,other_O) : 16.497
+				dist(current_O,other_N) : 18.365
+			Residue 9:
+				dist(current_N,other_O) : 20.7692
+				dist(current_O,other_N) : 19.1385
+			Residue 10:
+				dist(current_N,other_O) : 20.0958
+				dist(current_O,other_N) : 20.0395
+			Residue 11:
+				dist(current_N,other_O) : 23.9622
+				dist(current_O,other_N) : 22.3399
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 23.8795
+				dist(current_O,other_N) : 24.8163
+			Residue 2:
+				dist(current_N,other_O) : 20.6578
+				dist(current_O,other_N) : 22.2522
+			Residue 3:
+				dist(current_N,other_O) : 17.267
+				dist(current_O,other_N) : 19.4819
+			Residue 4:
+				dist(current_N,other_O) : 16.9584
+				dist(current_O,other_N) : 17.7128
+			Residue 5:
+				dist(current_N,other_O) : 13.1817
+				dist(current_O,other_N) : 15.0196
+			Residue 6:
+				dist(current_N,other_O) : 13.8469
+				dist(current_O,other_N) : 14.8906
+			Residue 7:
+				dist(current_N,other_O) : 10.8332
+				dist(current_O,other_N) : 13.1029
+			Residue 8:
+				dist(current_N,other_O) : 11.4431
+				dist(current_O,other_N) : 13.2773
+			Residue 9:
+				dist(current_N,other_O) : 11.9643
+				dist(current_O,other_N) : 12.6471
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 12.8471
+				dist(current_O,other_N) : 12.8728
+			Residue 8:
+				dist(current_N,other_O) : 11.5219
+				dist(current_O,other_N) : 10.3277
+			Residue 9:
+				dist(current_N,other_O) : 6.63928
+				dist(current_O,other_N) : 6.93798
+			Residue 10:
+				dist(current_N,other_O) : 8.19338
+				dist(current_O,other_N) : 4.83144
+			Residue 11:
+				dist(current_N,other_O) : 7.68181
+				dist(current_O,other_N) : 2.97811
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #6
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 2.73046
+				dist(current_O,other_N) : 7.35649
+			Current residue is retained ...
+
+Strand #6
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 11.7265
+				dist(current_O,other_N) : 13.5271
+			Residue 8:
+				dist(current_N,other_O) : 15.9048
+				dist(current_O,other_N) : 14.2762
+			Residue 9:
+				dist(current_N,other_O) : 17.2018
+				dist(current_O,other_N) : 15.6596
+			Residue 10:
+				dist(current_N,other_O) : 21.4536
+				dist(current_O,other_N) : 18.7581
+			Residue 11:
+				dist(current_N,other_O) : 23.933
+				dist(current_O,other_N) : 20.9041
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 23.73
+				dist(current_O,other_N) : 23.5213
+			Residue 3:
+				dist(current_N,other_O) : 23.9499
+				dist(current_O,other_N) : 23.2918
+			Residue 4:
+				dist(current_N,other_O) : 22.3557
+				dist(current_O,other_N) : 21.5937
+			Residue 5:
+				dist(current_N,other_O) : 19.6057
+				dist(current_O,other_N) : 20.9368
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 22.4199
+				dist(current_O,other_N) : 21.3083
+			Residue 5:
+				dist(current_N,other_O) : 21.8322
+				dist(current_O,other_N) : 21.1326
+			Residue 6:
+				dist(current_N,other_O) : 23.4986
+				dist(current_O,other_N) : 20.5483
+			Residue 7:
+				dist(current_N,other_O) : 21.4937
+				dist(current_O,other_N) : 20.1591
+			Residue 8:
+				dist(current_N,other_O) : 24.6518
+				dist(current_O,other_N) : 20.8633
+			Residue 9:
+				dist(current_N,other_O) : 21.9096
+				dist(current_O,other_N) : 19.8632
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 17.6068
+				dist(current_O,other_N) : 16.8841
+			Residue 5:
+				dist(current_N,other_O) : 19.9289
+				dist(current_O,other_N) : 16.1801
+			Residue 6:
+				dist(current_N,other_O) : 17.0405
+				dist(current_O,other_N) : 15.1731
+			Residue 7:
+				dist(current_N,other_O) : 20.4511
+				dist(current_O,other_N) : 16.6275
+			Residue 8:
+				dist(current_N,other_O) : 18.3249
+				dist(current_O,other_N) : 16.3589
+			Residue 9:
+				dist(current_N,other_O) : 21.9388
+				dist(current_O,other_N) : 18.4807
+			Residue 10:
+				dist(current_N,other_O) : 23.5488
+				dist(current_O,other_N) : 19.7007
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 20.1359
+				dist(current_O,other_N) : 19.5208
+			Residue 3:
+				dist(current_N,other_O) : 15.7847
+				dist(current_O,other_N) : 18.1171
+			Residue 4:
+				dist(current_N,other_O) : 13.7402
+				dist(current_O,other_N) : 14.9744
+			Residue 5:
+				dist(current_N,other_O) : 9.36033
+				dist(current_O,other_N) : 12.3395
+			Residue 6:
+				dist(current_N,other_O) : 7.86026
+				dist(current_O,other_N) : 10.4682
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 13.4206
+				dist(current_O,other_N) : 15.7053
+			Residue 2:
+				dist(current_N,other_O) : 12.2915
+				dist(current_O,other_N) : 13.7841
+			Residue 3:
+				dist(current_N,other_O) : 11.9047
+				dist(current_O,other_N) : 10.724
+			Residue 4:
+				dist(current_N,other_O) : 8.87212
+				dist(current_O,other_N) : 8.56368
+			Residue 5:
+				dist(current_N,other_O) : 10.9227
+				dist(current_O,other_N) : 7.22002
+			Residue 6:
+				dist(current_N,other_O) : 9.57719
+				dist(current_O,other_N) : 5.90919
+			Residue 7:
+				dist(current_N,other_O) : 13.1135
+				dist(current_O,other_N) : 8.30486
+			Residue 8:
+				dist(current_N,other_O) : 13.7615
+				dist(current_O,other_N) : 10.1006
+			Residue 9:
+				dist(current_N,other_O) : 14.9904
+				dist(current_O,other_N) : 11.4696
+			Residue 10:
+				dist(current_N,other_O) : 18.6928
+				dist(current_O,other_N) : 14.3854
+			Residue 11:
+				dist(current_N,other_O) : 22.2064
+				dist(current_O,other_N) : 17.9148
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 25.2019
+				dist(current_O,other_N) : 24.3655
+			Residue 2:
+				dist(current_N,other_O) : 21.9151
+				dist(current_O,other_N) : 22.8824
+			Residue 3:
+				dist(current_N,other_O) : 19.9667
+				dist(current_O,other_N) : 19.9479
+			Residue 4:
+				dist(current_N,other_O) : 16.3278
+				dist(current_O,other_N) : 16.9132
+			Residue 5:
+				dist(current_N,other_O) : 16.6161
+				dist(current_O,other_N) : 14.4301
+			Residue 6:
+				dist(current_N,other_O) : 13.2961
+				dist(current_O,other_N) : 12.3636
+			Residue 7:
+				dist(current_N,other_O) : 15.4742
+				dist(current_O,other_N) : 11.6849
+			Residue 8:
+				dist(current_N,other_O) : 12.678
+				dist(current_O,other_N) : 10.5197
+			Residue 9:
+				dist(current_N,other_O) : 15.6944
+				dist(current_O,other_N) : 12.0597
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 11.132
+				dist(current_O,other_N) : 12.0477
+			Residue 8:
+				dist(current_N,other_O) : 14.7142
+				dist(current_O,other_N) : 12.7231
+			Residue 9:
+				dist(current_N,other_O) : 16.1329
+				dist(current_O,other_N) : 13.6995
+			Residue 10:
+				dist(current_N,other_O) : 20.1922
+				dist(current_O,other_N) : 16.6833
+			Residue 11:
+				dist(current_N,other_O) : 22.8265
+				dist(current_O,other_N) : 18.7236
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 21.7346
+				dist(current_O,other_N) : 20.8463
+			Residue 3:
+				dist(current_N,other_O) : 22.3409
+				dist(current_O,other_N) : 20.568
+			Residue 4:
+				dist(current_N,other_O) : 20.6304
+				dist(current_O,other_N) : 18.9581
+			Residue 5:
+				dist(current_N,other_O) : 18.3372
+				dist(current_O,other_N) : 18.5498
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 20.4052
+				dist(current_O,other_N) : 18.6048
+			Residue 5:
+				dist(current_N,other_O) : 19.4974
+				dist(current_O,other_N) : 18.2406
+			Residue 6:
+				dist(current_N,other_O) : 21.3556
+				dist(current_O,other_N) : 17.6258
+			Residue 7:
+				dist(current_N,other_O) : 19.2206
+				dist(current_O,other_N) : 17.2182
+			Residue 8:
+				dist(current_N,other_O) : 22.4102
+				dist(current_O,other_N) : 18.0518
+			Residue 9:
+				dist(current_N,other_O) : 19.7558
+				dist(current_O,other_N) : 17.188
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 15.818
+				dist(current_O,other_N) : 14.9949
+			Residue 5:
+				dist(current_N,other_O) : 17.8014
+				dist(current_O,other_N) : 13.8225
+			Residue 6:
+				dist(current_N,other_O) : 14.6419
+				dist(current_O,other_N) : 12.4513
+			Residue 7:
+				dist(current_N,other_O) : 18.0186
+				dist(current_O,other_N) : 13.6898
+			Residue 8:
+				dist(current_N,other_O) : 15.7837
+				dist(current_O,other_N) : 13.3436
+			Residue 9:
+				dist(current_N,other_O) : 19.5815
+				dist(current_O,other_N) : 15.5074
+			Residue 10:
+				dist(current_N,other_O) : 21.1751
+				dist(current_O,other_N) : 16.8731
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 19.2261
+				dist(current_O,other_N) : 17.6036
+			Residue 3:
+				dist(current_N,other_O) : 15.0603
+				dist(current_O,other_N) : 16.2802
+			Residue 4:
+				dist(current_N,other_O) : 12.9208
+				dist(current_O,other_N) : 13.1407
+			Residue 5:
+				dist(current_N,other_O) : 9.03963
+				dist(current_O,other_N) : 10.938
+			Residue 6:
+				dist(current_N,other_O) : 8.17862
+				dist(current_O,other_N) : 9.39552
+		Comparing with residues in strand #7
+			Residue 1:
+				dist(current_N,other_O) : 13.8614
+				dist(current_O,other_N) : 15.1308
+			Residue 2:
+				dist(current_N,other_O) : 12.0301
+				dist(current_O,other_N) : 13.1687
+			Residue 3:
+				dist(current_N,other_O) : 11.0791
+				dist(current_O,other_N) : 10.0752
+			Residue 4:
+				dist(current_N,other_O) : 7.26402
+				dist(current_O,other_N) : 7.15104
+			Residue 5:
+				dist(current_N,other_O) : 8.67796
+				dist(current_O,other_N) : 5.30608
+			Residue 6:
+				dist(current_N,other_O) : 6.96722
+				dist(current_O,other_N) : 3.13393
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #5
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 7.5747
+				dist(current_O,other_N) : 10.4513
+			Residue 8:
+				dist(current_N,other_O) : 10.5139
+				dist(current_O,other_N) : 8.59349
+			Residue 9:
+				dist(current_N,other_O) : 9.20544
+				dist(current_O,other_N) : 7.7245
+			Residue 10:
+				dist(current_N,other_O) : 13.7226
+				dist(current_O,other_N) : 9.54188
+			Residue 11:
+				dist(current_N,other_O) : 15.5028
+				dist(current_O,other_N) : 10.8111
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 16.5989
+				dist(current_O,other_N) : 15.4797
+			Residue 3:
+				dist(current_N,other_O) : 16.1511
+				dist(current_O,other_N) : 15.6051
+			Residue 4:
+				dist(current_N,other_O) : 15.891
+				dist(current_O,other_N) : 14.0263
+			Residue 5:
+				dist(current_N,other_O) : 13.1931
+				dist(current_O,other_N) : 13.0993
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 16.1197
+				dist(current_O,other_N) : 15.8632
+			Residue 5:
+				dist(current_N,other_O) : 16.3877
+				dist(current_O,other_N) : 16.4134
+			Residue 6:
+				dist(current_N,other_O) : 16.7192
+				dist(current_O,other_N) : 15.4157
+			Residue 7:
+				dist(current_N,other_O) : 15.7294
+				dist(current_O,other_N) : 16.1086
+			Residue 8:
+				dist(current_N,other_O) : 18.983
+				dist(current_O,other_N) : 17.0317
+			Residue 9:
+				dist(current_N,other_O) : 17.4192
+				dist(current_O,other_N) : 17.7751
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 12.8928
+				dist(current_O,other_N) : 15.9967
+			Residue 5:
+				dist(current_N,other_O) : 14.5784
+				dist(current_O,other_N) : 15.2126
+			Residue 6:
+				dist(current_N,other_O) : 12.6838
+				dist(current_O,other_N) : 13.6225
+			Residue 7:
+				dist(current_N,other_O) : 15.4528
+				dist(current_O,other_N) : 15.0001
+			Residue 8:
+				dist(current_N,other_O) : 14.8787
+				dist(current_O,other_N) : 14.7085
+			Residue 9:
+				dist(current_N,other_O) : 17.4833
+				dist(current_O,other_N) : 16.2917
+			Residue 10:
+				dist(current_N,other_O) : 20.3975
+				dist(current_O,other_N) : 17.6956
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 11.0873
+				dist(current_O,other_N) : 8.56785
+			Residue 3:
+				dist(current_N,other_O) : 6.35325
+				dist(current_O,other_N) : 6.82844
+			Residue 4:
+				dist(current_N,other_O) : 6.24328
+				dist(current_O,other_N) : 4.54362
+			Residue 5:
+				dist(current_N,other_O) : 2.91891
+				dist(current_O,other_N) : 2.88822
+			Current residue is retained ...
+
+Strand #7
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.4509
+				dist(current_O,other_N) : 17.0443
+			Residue 8:
+				dist(current_N,other_O) : 15.442
+				dist(current_O,other_N) : 15.5026
+			Residue 9:
+				dist(current_N,other_O) : 12.0198
+				dist(current_O,other_N) : 14.7212
+			Residue 10:
+				dist(current_N,other_O) : 15.7876
+				dist(current_O,other_N) : 16.1536
+			Residue 11:
+				dist(current_N,other_O) : 16.04
+				dist(current_O,other_N) : 16.5603
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 18.8556
+				dist(current_O,other_N) : 19.6819
+			Residue 3:
+				dist(current_N,other_O) : 17.8439
+				dist(current_O,other_N) : 20.6309
+			Residue 4:
+				dist(current_N,other_O) : 19.2344
+				dist(current_O,other_N) : 19.8751
+			Residue 5:
+				dist(current_N,other_O) : 16.7801
+				dist(current_O,other_N) : 19.6307
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 19.5457
+				dist(current_O,other_N) : 22.1493
+			Residue 5:
+				dist(current_N,other_O) : 20.2112
+				dist(current_O,other_N) : 22.0248
+			Residue 6:
+				dist(current_N,other_O) : 18.8735
+				dist(current_O,other_N) : 20.2406
+			Residue 7:
+				dist(current_N,other_O) : 18.3095
+				dist(current_O,other_N) : 19.8826
+			Residue 8:
+				dist(current_N,other_O) : 20.6135
+				dist(current_O,other_N) : 19.5772
+			Residue 9:
+				dist(current_N,other_O) : 19.2935
+				dist(current_O,other_N) : 19.3566
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 14.6013
+				dist(current_O,other_N) : 14.833
+			Residue 5:
+				dist(current_N,other_O) : 16.7366
+				dist(current_O,other_N) : 15.6586
+			Residue 6:
+				dist(current_N,other_O) : 16.8258
+				dist(current_O,other_N) : 15.6735
+			Residue 7:
+				dist(current_N,other_O) : 19.2848
+				dist(current_O,other_N) : 18.2167
+			Residue 8:
+				dist(current_N,other_O) : 20.2225
+				dist(current_O,other_N) : 19.054
+			Residue 9:
+				dist(current_N,other_O) : 22.1536
+				dist(current_O,other_N) : 21.454
+			Residue 10:
+				dist(current_N,other_O) : 25.7
+				dist(current_O,other_N) : 23.5191
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 11.2096
+				dist(current_O,other_N) : 12.1003
+			Residue 3:
+				dist(current_N,other_O) : 7.3411
+				dist(current_O,other_N) : 11.715
+			Residue 4:
+				dist(current_N,other_O) : 10.6689
+				dist(current_O,other_N) : 10.9829
+			Residue 5:
+				dist(current_N,other_O) : 9.53085
+				dist(current_O,other_N) : 9.89968
+			Residue 6:
+				dist(current_N,other_O) : 11.9514
+				dist(current_O,other_N) : 11.5588
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 15.1308
+				dist(current_O,other_N) : 13.8614
+			Residue 3:
+				dist(current_N,other_O) : 11.7954
+				dist(current_O,other_N) : 11.7687
+			Residue 4:
+				dist(current_N,other_O) : 7.92457
+				dist(current_O,other_N) : 9.23507
+			Residue 5:
+				dist(current_N,other_O) : 6.32241
+				dist(current_O,other_N) : 6.84411
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 30.3275
+				dist(current_O,other_N) : 31.6006
+			Residue 2:
+				dist(current_N,other_O) : 26.9245
+				dist(current_O,other_N) : 29.4234
+			Residue 3:
+				dist(current_N,other_O) : 23.5979
+				dist(current_O,other_N) : 26.2477
+			Residue 4:
+				dist(current_N,other_O) : 21.8953
+				dist(current_O,other_N) : 23.3935
+			Residue 5:
+				dist(current_N,other_O) : 19.0201
+				dist(current_O,other_N) : 20.0497
+			Residue 6:
+				dist(current_N,other_O) : 17.3914
+				dist(current_O,other_N) : 18.0976
+			Residue 7:
+				dist(current_N,other_O) : 15.2684
+				dist(current_O,other_N) : 15.5197
+			Residue 8:
+				dist(current_N,other_O) : 12.4094
+				dist(current_O,other_N) : 13.0124
+			Residue 9:
+				dist(current_N,other_O) : 12.563
+				dist(current_O,other_N) : 11.1822
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.5671
+				dist(current_O,other_N) : 14.4449
+			Residue 8:
+				dist(current_N,other_O) : 15.6843
+				dist(current_O,other_N) : 12.9673
+			Residue 9:
+				dist(current_N,other_O) : 12.5498
+				dist(current_O,other_N) : 11.9181
+			Residue 10:
+				dist(current_N,other_O) : 16.5049
+				dist(current_O,other_N) : 13.481
+			Residue 11:
+				dist(current_N,other_O) : 17.1149
+				dist(current_O,other_N) : 14.0179
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 18.564
+				dist(current_O,other_N) : 16.7468
+			Residue 3:
+				dist(current_N,other_O) : 18.224
+				dist(current_O,other_N) : 17.5307
+			Residue 4:
+				dist(current_N,other_O) : 19.4307
+				dist(current_O,other_N) : 16.7173
+			Residue 5:
+				dist(current_N,other_O) : 17.317
+				dist(current_O,other_N) : 16.6593
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 19.3182
+				dist(current_O,other_N) : 18.7766
+			Residue 5:
+				dist(current_N,other_O) : 19.3859
+				dist(current_O,other_N) : 18.504
+			Residue 6:
+				dist(current_N,other_O) : 18.1247
+				dist(current_O,other_N) : 16.7532
+			Residue 7:
+				dist(current_N,other_O) : 16.9326
+				dist(current_O,other_N) : 16.4184
+			Residue 8:
+				dist(current_N,other_O) : 19.1161
+				dist(current_O,other_N) : 16.3603
+			Residue 9:
+				dist(current_N,other_O) : 17.2724
+				dist(current_O,other_N) : 16.2745
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 12.3225
+				dist(current_O,other_N) : 12.647
+			Residue 5:
+				dist(current_N,other_O) : 14.9214
+				dist(current_O,other_N) : 12.8014
+			Residue 6:
+				dist(current_N,other_O) : 15.0956
+				dist(current_O,other_N) : 12.3244
+			Residue 7:
+				dist(current_N,other_O) : 18.0197
+				dist(current_O,other_N) : 14.6752
+			Residue 8:
+				dist(current_N,other_O) : 19.0308
+				dist(current_O,other_N) : 15.3865
+			Residue 9:
+				dist(current_N,other_O) : 21.4552
+				dist(current_O,other_N) : 17.787
+			Residue 10:
+				dist(current_N,other_O) : 25.0425
+				dist(current_O,other_N) : 19.9068
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 12.2256
+				dist(current_O,other_N) : 10.0226
+			Residue 3:
+				dist(current_N,other_O) : 7.85616
+				dist(current_O,other_N) : 9.48654
+			Residue 4:
+				dist(current_N,other_O) : 10.9504
+				dist(current_O,other_N) : 8.25441
+			Residue 5:
+				dist(current_N,other_O) : 9.18182
+				dist(current_O,other_N) : 7.4167
+			Residue 6:
+				dist(current_N,other_O) : 11.7211
+				dist(current_O,other_N) : 9.29751
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 13.1687
+				dist(current_O,other_N) : 12.0301
+			Residue 3:
+				dist(current_N,other_O) : 10.4791
+				dist(current_O,other_N) : 9.43728
+			Residue 4:
+				dist(current_N,other_O) : 6.25466
+				dist(current_O,other_N) : 6.33737
+			Residue 5:
+				dist(current_N,other_O) : 6.35232
+				dist(current_O,other_N) : 4.28116
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 29.3179
+				dist(current_O,other_N) : 27.9864
+			Residue 2:
+				dist(current_N,other_O) : 25.6604
+				dist(current_O,other_N) : 25.7972
+			Residue 3:
+				dist(current_N,other_O) : 22.5082
+				dist(current_O,other_N) : 22.6572
+			Residue 4:
+				dist(current_N,other_O) : 20.369
+				dist(current_O,other_N) : 19.8009
+			Residue 5:
+				dist(current_N,other_O) : 17.4325
+				dist(current_O,other_N) : 16.4358
+			Residue 6:
+				dist(current_N,other_O) : 15.3266
+				dist(current_O,other_N) : 14.5735
+			Residue 7:
+				dist(current_N,other_O) : 13.1426
+				dist(current_O,other_N) : 12.0361
+			Residue 8:
+				dist(current_N,other_O) : 9.88294
+				dist(current_O,other_N) : 9.85578
+			Residue 9:
+				dist(current_N,other_O) : 9.95244
+				dist(current_O,other_N) : 8.45118
+			Current residue is pruned ...
+	CURRENT RESIDUE #3
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 13.2277
+				dist(current_O,other_N) : 15.9815
+			Residue 8:
+				dist(current_N,other_O) : 15.6011
+				dist(current_O,other_N) : 15.057
+			Residue 9:
+				dist(current_N,other_O) : 13.2224
+				dist(current_O,other_N) : 14.1182
+			Residue 10:
+				dist(current_N,other_O) : 17.3682
+				dist(current_O,other_N) : 15.8918
+			Residue 11:
+				dist(current_N,other_O) : 18.5374
+				dist(current_O,other_N) : 16.4293
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 18.4952
+				dist(current_O,other_N) : 17.5205
+			Residue 3:
+				dist(current_N,other_O) : 18.8677
+				dist(current_O,other_N) : 18.4055
+			Residue 4:
+				dist(current_N,other_O) : 19.5578
+				dist(current_O,other_N) : 17.9129
+			Residue 5:
+				dist(current_N,other_O) : 17.7123
+				dist(current_O,other_N) : 18.4169
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 19.0501
+				dist(current_O,other_N) : 19.4968
+			Residue 5:
+				dist(current_N,other_O) : 18.4403
+				dist(current_O,other_N) : 18.5628
+			Residue 6:
+				dist(current_N,other_O) : 17.6404
+				dist(current_O,other_N) : 16.5487
+			Residue 7:
+				dist(current_N,other_O) : 15.6953
+				dist(current_O,other_N) : 15.4196
+			Residue 8:
+				dist(current_N,other_O) : 17.9242
+				dist(current_O,other_N) : 14.8785
+			Residue 9:
+				dist(current_N,other_O) : 15.3991
+				dist(current_O,other_N) : 13.9225
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 10.1657
+				dist(current_O,other_N) : 9.32481
+			Residue 5:
+				dist(current_N,other_O) : 13.2776
+				dist(current_O,other_N) : 9.7377
+			Residue 6:
+				dist(current_N,other_O) : 13.0871
+				dist(current_O,other_N) : 9.92448
+			Residue 7:
+				dist(current_N,other_O) : 16.6122
+				dist(current_O,other_N) : 12.7611
+			Residue 8:
+				dist(current_N,other_O) : 17.3519
+				dist(current_O,other_N) : 14.0377
+			Residue 9:
+				dist(current_N,other_O) : 20.4236
+				dist(current_O,other_N) : 16.9747
+			Residue 10:
+				dist(current_N,other_O) : 23.8626
+				dist(current_O,other_N) : 19.4918
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 13.7696
+				dist(current_O,other_N) : 12.639
+			Residue 3:
+				dist(current_N,other_O) : 9.06554
+				dist(current_O,other_N) : 12.4589
+			Residue 4:
+				dist(current_N,other_O) : 11.1962
+				dist(current_O,other_N) : 10.9884
+			Residue 5:
+				dist(current_N,other_O) : 8.58532
+				dist(current_O,other_N) : 10.2381
+			Residue 6:
+				dist(current_N,other_O) : 10.97
+				dist(current_O,other_N) : 11.4129
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 10.0752
+				dist(current_O,other_N) : 11.0791
+			Residue 3:
+				dist(current_N,other_O) : 8.36101
+				dist(current_O,other_N) : 8.56493
+			Residue 4:
+				dist(current_N,other_O) : 4.27667
+				dist(current_O,other_N) : 6.34169
+			Residue 5:
+				dist(current_N,other_O) : 6.88119
+				dist(current_O,other_N) : 6.75289
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 27.5491
+				dist(current_O,other_N) : 26.4522
+			Residue 2:
+				dist(current_N,other_O) : 23.6526
+				dist(current_O,other_N) : 24.5495
+			Residue 3:
+				dist(current_N,other_O) : 20.7794
+				dist(current_O,other_N) : 21.6864
+			Residue 4:
+				dist(current_N,other_O) : 18.0338
+				dist(current_O,other_N) : 18.4839
+			Residue 5:
+				dist(current_N,other_O) : 15.2966
+				dist(current_O,other_N) : 14.9688
+			Residue 6:
+				dist(current_N,other_O) : 12.4839
+				dist(current_O,other_N) : 12.3793
+			Residue 7:
+				dist(current_N,other_O) : 10.6799
+				dist(current_O,other_N) : 9.53476
+			Residue 8:
+				dist(current_N,other_O) : 6.7765
+				dist(current_O,other_N) : 6.51002
+			Residue 9:
+				dist(current_N,other_O) : 7.41097
+				dist(current_O,other_N) : 4.80543
+			Current residue is pruned ...
+	CURRENT RESIDUE #4
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 11.7393
+				dist(current_O,other_N) : 12.2387
+			Residue 8:
+				dist(current_N,other_O) : 13.8228
+				dist(current_O,other_N) : 11.9402
+			Residue 9:
+				dist(current_N,other_O) : 12.1581
+				dist(current_O,other_N) : 11.7375
+			Residue 10:
+				dist(current_N,other_O) : 16.2381
+				dist(current_O,other_N) : 14.1954
+			Residue 11:
+				dist(current_N,other_O) : 17.9302
+				dist(current_O,other_N) : 15.5906
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 16.6563
+				dist(current_O,other_N) : 17.309
+			Residue 3:
+				dist(current_N,other_O) : 17.5289
+				dist(current_O,other_N) : 17.4741
+			Residue 4:
+				dist(current_N,other_O) : 17.6702
+				dist(current_O,other_N) : 16.305
+			Residue 5:
+				dist(current_N,other_O) : 16.1681
+				dist(current_O,other_N) : 16.3546
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 16.884
+				dist(current_O,other_N) : 16.9109
+			Residue 5:
+				dist(current_N,other_O) : 15.8579
+				dist(current_O,other_N) : 16.2781
+			Residue 6:
+				dist(current_N,other_O) : 15.6806
+				dist(current_O,other_N) : 14.9976
+			Residue 7:
+				dist(current_N,other_O) : 13.4351
+				dist(current_O,other_N) : 14.3892
+			Residue 8:
+				dist(current_N,other_O) : 16.0424
+				dist(current_O,other_N) : 14.8276
+			Residue 9:
+				dist(current_N,other_O) : 13.4836
+				dist(current_O,other_N) : 14.1693
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 8.51533
+				dist(current_O,other_N) : 11.6107
+			Residue 5:
+				dist(current_N,other_O) : 11.2117
+				dist(current_O,other_N) : 10.6211
+			Residue 6:
+				dist(current_N,other_O) : 10.1372
+				dist(current_O,other_N) : 9.40807
+			Residue 7:
+				dist(current_N,other_O) : 13.8805
+				dist(current_O,other_N) : 11.2867
+			Residue 8:
+				dist(current_N,other_O) : 14.1983
+				dist(current_O,other_N) : 11.5759
+			Residue 9:
+				dist(current_N,other_O) : 17.6315
+				dist(current_O,other_N) : 14.1649
+			Residue 10:
+				dist(current_N,other_O) : 20.8956
+				dist(current_O,other_N) : 16.18
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 13.5203
+				dist(current_O,other_N) : 13.5289
+			Residue 3:
+				dist(current_N,other_O) : 8.96335
+				dist(current_O,other_N) : 12.5877
+			Residue 4:
+				dist(current_N,other_O) : 10.0613
+				dist(current_O,other_N) : 9.9696
+			Residue 5:
+				dist(current_N,other_O) : 7.5475
+				dist(current_O,other_N) : 8.51653
+			Residue 6:
+				dist(current_N,other_O) : 9.98451
+				dist(current_O,other_N) : 8.51772
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 7.15104
+				dist(current_O,other_N) : 7.26402
+			Residue 3:
+				dist(current_N,other_O) : 6.17084
+				dist(current_O,other_N) : 4.41703
+			Residue 4:
+				dist(current_N,other_O) : 2.75559
+				dist(current_O,other_N) : 2.79693
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #11
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 18.5389
+				dist(current_O,other_N) : 18.6807
+			Residue 8:
+				dist(current_N,other_O) : 17.2754
+				dist(current_O,other_N) : 20.2772
+			Residue 9:
+				dist(current_N,other_O) : 19.9248
+				dist(current_O,other_N) : 20.5381
+			Residue 10:
+				dist(current_N,other_O) : 20.8277
+				dist(current_O,other_N) : 22.1128
+			Residue 11:
+				dist(current_N,other_O) : 23.8803
+				dist(current_O,other_N) : 23.7802
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 17.9286
+				dist(current_O,other_N) : 22.4005
+			Residue 3:
+				dist(current_N,other_O) : 20.5007
+				dist(current_O,other_N) : 20.9085
+			Residue 4:
+				dist(current_N,other_O) : 17.5054
+				dist(current_O,other_N) : 19.7492
+			Residue 5:
+				dist(current_N,other_O) : 18.8209
+				dist(current_O,other_N) : 20.3803
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 15.8347
+				dist(current_O,other_N) : 16.4328
+			Residue 5:
+				dist(current_N,other_O) : 13.3712
+				dist(current_O,other_N) : 15.2073
+			Residue 6:
+				dist(current_N,other_O) : 17.4221
+				dist(current_O,other_N) : 16.5239
+			Residue 7:
+				dist(current_N,other_O) : 16.0943
+				dist(current_O,other_N) : 16.5009
+			Residue 8:
+				dist(current_N,other_O) : 18.8802
+				dist(current_O,other_N) : 18.6568
+			Residue 9:
+				dist(current_N,other_O) : 18.726
+				dist(current_O,other_N) : 18.569
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 19.4159
+				dist(current_O,other_N) : 22.7044
+			Residue 5:
+				dist(current_N,other_O) : 17.4912
+				dist(current_O,other_N) : 19.5004
+			Residue 6:
+				dist(current_N,other_O) : 13.3001
+				dist(current_O,other_N) : 16.9209
+			Residue 7:
+				dist(current_N,other_O) : 12.9459
+				dist(current_O,other_N) : 14.4684
+			Residue 8:
+				dist(current_N,other_O) : 9.11378
+				dist(current_O,other_N) : 12.4485
+			Residue 9:
+				dist(current_N,other_O) : 11.4975
+				dist(current_O,other_N) : 11.5556
+			Residue 10:
+				dist(current_N,other_O) : 10.2203
+				dist(current_O,other_N) : 10.8401
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 23.1916
+				dist(current_O,other_N) : 25.9947
+			Residue 3:
+				dist(current_N,other_O) : 22.0266
+				dist(current_O,other_N) : 25.0425
+			Residue 4:
+				dist(current_N,other_O) : 19.4441
+				dist(current_O,other_N) : 22.6187
+			Residue 5:
+				dist(current_N,other_O) : 19.8623
+				dist(current_O,other_N) : 22.5141
+			Residue 6:
+				dist(current_N,other_O) : 20.3882
+				dist(current_O,other_N) : 21.399
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 15.6011
+				dist(current_O,other_N) : 19.5032
+			Residue 3:
+				dist(current_N,other_O) : 17.6585
+				dist(current_O,other_N) : 19.0232
+			Residue 4:
+				dist(current_N,other_O) : 19.9472
+				dist(current_O,other_N) : 20.0388
+			Residue 5:
+				dist(current_N,other_O) : 21.8781
+				dist(current_O,other_N) : 22.9804
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 7.36939
+				dist(current_O,other_N) : 5.22682
+			Residue 2:
+				dist(current_N,other_O) : 4.42691
+				dist(current_O,other_N) : 5.83668
+			Residue 3:
+				dist(current_N,other_O) : 6.62079
+				dist(current_O,other_N) : 6.61586
+			Residue 4:
+				dist(current_N,other_O) : 5.53917
+				dist(current_O,other_N) : 6.55347
+			Residue 5:
+				dist(current_N,other_O) : 9.63857
+				dist(current_O,other_N) : 9.27743
+			Residue 6:
+				dist(current_N,other_O) : 11.7143
+				dist(current_O,other_N) : 11.0328
+			Residue 7:
+				dist(current_N,other_O) : 15.3779
+				dist(current_O,other_N) : 14.187
+			Residue 8:
+				dist(current_N,other_O) : 18.511
+				dist(current_O,other_N) : 17.4238
+			Residue 9:
+				dist(current_N,other_O) : 21.8257
+				dist(current_O,other_N) : 20.7106
+			Current residue is pruned ...
+	CURRENT RESIDUE #10
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 16.055
+				dist(current_O,other_N) : 14.4797
+			Residue 8:
+				dist(current_N,other_O) : 15.4214
+				dist(current_O,other_N) : 15.9609
+			Residue 9:
+				dist(current_N,other_O) : 17.7439
+				dist(current_O,other_N) : 16.205
+			Residue 10:
+				dist(current_N,other_O) : 19.3282
+				dist(current_O,other_N) : 17.9385
+			Residue 11:
+				dist(current_N,other_O) : 22.3837
+				dist(current_O,other_N) : 19.7652
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 16.8503
+				dist(current_O,other_N) : 19.156
+			Residue 3:
+				dist(current_N,other_O) : 19.336
+				dist(current_O,other_N) : 17.6435
+			Residue 4:
+				dist(current_N,other_O) : 16.6505
+				dist(current_O,other_N) : 16.1664
+			Residue 5:
+				dist(current_N,other_O) : 17.4203
+				dist(current_O,other_N) : 16.5496
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 15.0025
+				dist(current_O,other_N) : 13.0597
+			Residue 5:
+				dist(current_N,other_O) : 12.4587
+				dist(current_O,other_N) : 12.1024
+			Residue 6:
+				dist(current_N,other_O) : 16.1333
+				dist(current_O,other_N) : 13.3968
+			Residue 7:
+				dist(current_N,other_O) : 14.2991
+				dist(current_O,other_N) : 13.7122
+			Residue 8:
+				dist(current_N,other_O) : 17.3064
+				dist(current_O,other_N) : 16.1439
+			Residue 9:
+				dist(current_N,other_O) : 16.5018
+				dist(current_O,other_N) : 16.3479
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 16.4407
+				dist(current_O,other_N) : 20.0736
+			Residue 5:
+				dist(current_N,other_O) : 15.0914
+				dist(current_O,other_N) : 16.8376
+			Residue 6:
+				dist(current_N,other_O) : 10.7312
+				dist(current_O,other_N) : 13.8938
+			Residue 7:
+				dist(current_N,other_O) : 11.4291
+				dist(current_O,other_N) : 11.5554
+			Residue 8:
+				dist(current_N,other_O) : 7.68105
+				dist(current_O,other_N) : 9.10111
+			Residue 9:
+				dist(current_N,other_O) : 11.2699
+				dist(current_O,other_N) : 8.334
+			Residue 10:
+				dist(current_N,other_O) : 11.2297
+				dist(current_O,other_N) : 7.74985
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 21.0251
+				dist(current_O,other_N) : 21.9331
+			Residue 3:
+				dist(current_N,other_O) : 19.2744
+				dist(current_O,other_N) : 20.8319
+			Residue 4:
+				dist(current_N,other_O) : 16.8652
+				dist(current_O,other_N) : 18.2836
+			Residue 5:
+				dist(current_N,other_O) : 16.7765
+				dist(current_O,other_N) : 18.123
+			Residue 6:
+				dist(current_N,other_O) : 17.397
+				dist(current_O,other_N) : 17.0566
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 11.9933
+				dist(current_O,other_N) : 15.9959
+			Residue 3:
+				dist(current_N,other_O) : 14.2696
+				dist(current_O,other_N) : 15.2046
+			Residue 4:
+				dist(current_N,other_O) : 16.5329
+				dist(current_O,other_N) : 15.9469
+			Residue 5:
+				dist(current_N,other_O) : 18.7897
+				dist(current_O,other_N) : 18.743
+		Comparing with residues in strand #8
+			Residue 1:
+				dist(current_N,other_O) : 10.2455
+				dist(current_O,other_N) : 7.53828
+			Residue 2:
+				dist(current_N,other_O) : 6.42637
+				dist(current_O,other_N) : 6.28691
+			Residue 3:
+				dist(current_N,other_O) : 6.73502
+				dist(current_O,other_N) : 4.50491
+			Residue 4:
+				dist(current_N,other_O) : 3.0515
+				dist(current_O,other_N) : 2.68679
+			Current residue is retained ...
+
+Strand #8
+	Pruning from the start ...
+	CURRENT RESIDUE #1
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 22.9623
+				dist(current_O,other_N) : 17.7595
+			Residue 8:
+				dist(current_N,other_O) : 20.4289
+				dist(current_O,other_N) : 19.1262
+			Residue 9:
+				dist(current_N,other_O) : 22.8638
+				dist(current_O,other_N) : 19.1135
+			Residue 10:
+				dist(current_N,other_O) : 22.4256
+				dist(current_O,other_N) : 19.9156
+			Residue 11:
+				dist(current_N,other_O) : 25.1502
+				dist(current_O,other_N) : 21.4866
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 18.3243
+				dist(current_O,other_N) : 20.4928
+			Residue 3:
+				dist(current_N,other_O) : 21.1405
+				dist(current_O,other_N) : 18.3484
+			Residue 4:
+				dist(current_N,other_O) : 18.2057
+				dist(current_O,other_N) : 16.8991
+			Residue 5:
+				dist(current_N,other_O) : 20.8023
+				dist(current_O,other_N) : 17.2036
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 16.3127
+				dist(current_O,other_N) : 12.8443
+			Residue 5:
+				dist(current_N,other_O) : 14.0332
+				dist(current_O,other_N) : 12.5068
+			Residue 6:
+				dist(current_N,other_O) : 18.0881
+				dist(current_O,other_N) : 15.042
+			Residue 7:
+				dist(current_N,other_O) : 17.8205
+				dist(current_O,other_N) : 16.3633
+			Residue 8:
+				dist(current_N,other_O) : 20.0233
+				dist(current_O,other_N) : 19.377
+			Residue 9:
+				dist(current_N,other_O) : 21.298
+				dist(current_O,other_N) : 20.5518
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 23.3029
+				dist(current_O,other_N) : 25.8712
+			Residue 5:
+				dist(current_N,other_O) : 20.2775
+				dist(current_O,other_N) : 22.3832
+			Residue 6:
+				dist(current_N,other_O) : 16.7425
+				dist(current_O,other_N) : 19.1965
+			Residue 7:
+				dist(current_N,other_O) : 14.6195
+				dist(current_O,other_N) : 16.106
+			Residue 8:
+				dist(current_N,other_O) : 11.6834
+				dist(current_O,other_N) : 13.2654
+			Residue 9:
+				dist(current_N,other_O) : 11.656
+				dist(current_O,other_N) : 10.618
+			Residue 10:
+				dist(current_N,other_O) : 8.97045
+				dist(current_O,other_N) : 8.0542
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 25.6678
+				dist(current_O,other_N) : 25.1713
+			Residue 3:
+				dist(current_N,other_O) : 25.6858
+				dist(current_O,other_N) : 24.0887
+			Residue 4:
+				dist(current_N,other_O) : 23.3536
+				dist(current_O,other_N) : 22.07
+			Residue 5:
+				dist(current_N,other_O) : 24.8559
+				dist(current_O,other_N) : 22.5507
+			Residue 6:
+				dist(current_N,other_O) : 25.702
+				dist(current_O,other_N) : 21.7398
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 21.8438
+				dist(current_O,other_N) : 22.6778
+			Residue 3:
+				dist(current_N,other_O) : 23.3571
+				dist(current_O,other_N) : 21.7912
+			Residue 4:
+				dist(current_N,other_O) : 25.091
+				dist(current_O,other_N) : 22.0518
+			Residue 5:
+				dist(current_N,other_O) : 26.4376
+				dist(current_O,other_N) : 24.2431
+		Comparing with residues in strand #7
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 22.7048
+				dist(current_O,other_N) : 24.2321
+			Residue 5:
+				dist(current_N,other_O) : 20.2988
+				dist(current_O,other_N) : 22.6167
+			Residue 6:
+				dist(current_N,other_O) : 19.1595
+				dist(current_O,other_N) : 20.0241
+			Residue 7:
+				dist(current_N,other_O) : 17.0901
+				dist(current_O,other_N) : 18.4032
+			Residue 8:
+				dist(current_N,other_O) : 13.7496
+				dist(current_O,other_N) : 16.2793
+			Residue 9:
+				dist(current_N,other_O) : 11.6492
+				dist(current_O,other_N) : 13.3216
+			Residue 10:
+				dist(current_N,other_O) : 7.53828
+				dist(current_O,other_N) : 10.2455
+			Residue 11 is pruned already ...
+			Current residue is pruned ...
+	CURRENT RESIDUE #2
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 20.5216
+				dist(current_O,other_N) : 15.9829
+			Residue 8:
+				dist(current_N,other_O) : 17.7714
+				dist(current_O,other_N) : 17.2127
+			Residue 9:
+				dist(current_N,other_O) : 20.1702
+				dist(current_O,other_N) : 16.9923
+			Residue 10:
+				dist(current_N,other_O) : 19.6559
+				dist(current_O,other_N) : 18.1097
+			Residue 11:
+				dist(current_N,other_O) : 22.4009
+				dist(current_O,other_N) : 19.6005
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 15.8487
+				dist(current_O,other_N) : 18.2526
+			Residue 3:
+				dist(current_N,other_O) : 18.4639
+				dist(current_O,other_N) : 16.5063
+			Residue 4:
+				dist(current_N,other_O) : 15.4438
+				dist(current_O,other_N) : 15.2614
+			Residue 5:
+				dist(current_N,other_O) : 18.035
+				dist(current_O,other_N) : 15.9583
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 13.6425
+				dist(current_O,other_N) : 11.7689
+			Residue 5:
+				dist(current_N,other_O) : 11.6406
+				dist(current_O,other_N) : 10.6634
+			Residue 6:
+				dist(current_N,other_O) : 15.8921
+				dist(current_O,other_N) : 12.4433
+			Residue 7:
+				dist(current_N,other_O) : 15.9693
+				dist(current_O,other_N) : 13.116
+			Residue 8:
+				dist(current_N,other_O) : 18.5473
+				dist(current_O,other_N) : 15.8571
+			Residue 9:
+				dist(current_N,other_O) : 20.0206
+				dist(current_O,other_N) : 16.6032
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 21.7182
+				dist(current_O,other_N) : 21.5103
+			Residue 5:
+				dist(current_N,other_O) : 18.6211
+				dist(current_O,other_N) : 18.0675
+			Residue 6:
+				dist(current_N,other_O) : 14.9163
+				dist(current_O,other_N) : 14.9817
+			Residue 7:
+				dist(current_N,other_O) : 12.5778
+				dist(current_O,other_N) : 12.0519
+			Residue 8:
+				dist(current_N,other_O) : 9.37129
+				dist(current_O,other_N) : 9.39414
+			Residue 9:
+				dist(current_N,other_O) : 9.00288
+				dist(current_O,other_N) : 7.4993
+			Residue 10:
+				dist(current_N,other_O) : 6.26617
+				dist(current_O,other_N) : 6.17565
+			Residue 11 is pruned already ...
+			Residue 12 is pruned already ...
+			Residue 13 is pruned already ...
+			Residue 14 is pruned already ...
+			Residue 15 is pruned already ...
+		Comparing with residues in strand #5
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 22.9732
+				dist(current_O,other_N) : 22.3896
+			Residue 3:
+				dist(current_N,other_O) : 23.1385
+				dist(current_O,other_N) : 21.4496
+			Residue 4:
+				dist(current_N,other_O) : 20.7826
+				dist(current_O,other_N) : 19.3215
+			Residue 5:
+				dist(current_N,other_O) : 22.5388
+				dist(current_O,other_N) : 19.7219
+			Residue 6:
+				dist(current_N,other_O) : 23.4886
+				dist(current_O,other_N) : 19.0447
+		Comparing with residues in strand #6
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 20.262
+				dist(current_O,other_N) : 19.2534
+			Residue 3:
+				dist(current_N,other_O) : 21.3435
+				dist(current_O,other_N) : 18.1838
+			Residue 4:
+				dist(current_N,other_O) : 22.9558
+				dist(current_O,other_N) : 18.425
+			Residue 5:
+				dist(current_N,other_O) : 24.0312
+				dist(current_O,other_N) : 20.8667
+		Comparing with residues in strand #7
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 20.8212
+				dist(current_O,other_N) : 20.2585
+			Residue 5:
+				dist(current_N,other_O) : 18.703
+				dist(current_O,other_N) : 18.4193
+			Residue 6:
+				dist(current_N,other_O) : 17.8957
+				dist(current_O,other_N) : 15.893
+			Residue 7:
+				dist(current_N,other_O) : 16.3001
+				dist(current_O,other_N) : 14.0537
+			Residue 8:
+				dist(current_N,other_O) : 12.3894
+				dist(current_O,other_N) : 11.9372
+			Residue 9:
+				dist(current_N,other_O) : 10.7714
+				dist(current_O,other_N) : 9.30971
+			Residue 10:
+				dist(current_N,other_O) : 6.28691
+				dist(current_O,other_N) : 6.42637
+			Residue 11 is pruned already ...
+			Current residue is pruned ...
+	CURRENT RESIDUE #3
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 16.9906
+				dist(current_O,other_N) : 13.0559
+			Residue 8:
+				dist(current_N,other_O) : 14.3773
+				dist(current_O,other_N) : 13.9513
+			Residue 9:
+				dist(current_N,other_O) : 16.9559
+				dist(current_O,other_N) : 13.415
+			Residue 10:
+				dist(current_N,other_O) : 16.8229
+				dist(current_O,other_N) : 14.4507
+			Residue 11:
+				dist(current_N,other_O) : 19.7558
+				dist(current_O,other_N) : 15.9465
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 13.9407
+				dist(current_O,other_N) : 15.1112
+			Residue 3:
+				dist(current_N,other_O) : 16.1561
+				dist(current_O,other_N) : 13.3095
+			Residue 4:
+				dist(current_N,other_O) : 12.9118
+				dist(current_O,other_N) : 11.8116
+			Residue 5:
+				dist(current_N,other_O) : 14.9659
+				dist(current_O,other_N) : 12.434
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 11.39
+				dist(current_O,other_N) : 8.50088
+			Residue 5:
+				dist(current_N,other_O) : 9.76179
+				dist(current_O,other_N) : 7.55564
+			Residue 6:
+				dist(current_N,other_O) : 14.2578
+				dist(current_O,other_N) : 9.4203
+			Residue 7:
+				dist(current_N,other_O) : 14.3709
+				dist(current_O,other_N) : 10.5935
+			Residue 8:
+				dist(current_N,other_O) : 17.5341
+				dist(current_O,other_N) : 13.6575
+			Residue 9:
+				dist(current_N,other_O) : 18.7285
+				dist(current_O,other_N) : 14.831
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 19.6557
+				dist(current_O,other_N) : 19.5408
+			Residue 5:
+				dist(current_N,other_O) : 16.8649
+				dist(current_O,other_N) : 16.1004
+			Residue 6:
+				dist(current_N,other_O) : 12.7412
+				dist(current_O,other_N) : 12.7185
+			Residue 7:
+				dist(current_N,other_O) : 10.7824
+				dist(current_O,other_N) : 9.82707
+			Residue 8:
+				dist(current_N,other_O) : 6.75262
+				dist(current_O,other_N) : 6.7034
+			Residue 9:
+				dist(current_N,other_O) : 6.90007
+				dist(current_O,other_N) : 4.42612
+			Residue 10:
+				dist(current_N,other_O) : 4.71206
+				dist(current_O,other_N) : 3.03312
+			Current residue is retained ...
+	Pruning from the end ...
+	CURRENT RESIDUE #9
+		Comparing with residues in strand #1
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4 is pruned already ...
+			Residue 5 is pruned already ...
+			Residue 6 is pruned already ...
+			Residue 7:
+				dist(current_N,other_O) : 16.0554
+				dist(current_O,other_N) : 19.8096
+			Residue 8:
+				dist(current_N,other_O) : 16.8386
+				dist(current_O,other_N) : 19.0156
+			Residue 9:
+				dist(current_N,other_O) : 14.7264
+				dist(current_O,other_N) : 17.65
+			Residue 10:
+				dist(current_N,other_O) : 17.8832
+				dist(current_O,other_N) : 19.0102
+			Residue 11:
+				dist(current_N,other_O) : 19.3317
+				dist(current_O,other_N) : 18.9946
+		Comparing with residues in strand #2
+			Residue 1 is pruned already ...
+			Residue 2:
+				dist(current_N,other_O) : 15.5873
+				dist(current_O,other_N) : 17.9697
+			Residue 3:
+				dist(current_N,other_O) : 17.8037
+				dist(current_O,other_N) : 19.2686
+			Residue 4:
+				dist(current_N,other_O) : 18.5077
+				dist(current_O,other_N) : 19.5347
+			Residue 5:
+				dist(current_N,other_O) : 18.4322
+				dist(current_O,other_N) : 20.865
+		Comparing with residues in strand #3
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 16.7103
+				dist(current_O,other_N) : 21.1216
+			Residue 5:
+				dist(current_N,other_O) : 14.4707
+				dist(current_O,other_N) : 19.3887
+			Residue 6:
+				dist(current_N,other_O) : 13.4666
+				dist(current_O,other_N) : 16.8423
+			Residue 7:
+				dist(current_N,other_O) : 10.0674
+				dist(current_O,other_N) : 14.7204
+			Residue 8:
+				dist(current_N,other_O) : 11.5998
+				dist(current_O,other_N) : 13.1581
+			Residue 9:
+				dist(current_N,other_O) : 8.21705
+				dist(current_O,other_N) : 11.2047
+			Residue 10 is pruned already ...
+		Comparing with residues in strand #4
+			Residue 1 is pruned already ...
+			Residue 2 is pruned already ...
+			Residue 3 is pruned already ...
+			Residue 4:
+				dist(current_N,other_O) : 2.99594
+				dist(current_O,other_N) : 4.85919
+			Current residue is retained ...
+

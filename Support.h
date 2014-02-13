@@ -59,6 +59,7 @@ void scaleToAOM(double &);
 template <typename RealType> RealType minimum(RealType, RealType);
 int getIndexOfMaximumElement(vector<double> &);
 void print(ostream &, vector<double> &);
+void print(ostream &, array<double,3> &);
 double ratioBesselFunction(double);
 double ratioBesselFunction_firstDerivative(double);
 double ratioBesselFunction_secondDerivative(double);
@@ -114,6 +115,8 @@ vector<int> assignMixtureComponents(vector<IdealModel> &, vector<Component> &, v
 vector<Mixture> loadIdealMixtureModels();
 vector<double> computeRelativeWeights(vector<Mixture> &);
 double getMeanLength(string);
+vector<array<int,2>> identifyChainBreaks(string &, vector<Atom> &);
+vector<ProteinStructure *> createPartitions(ProteinStructure *);
 
 #endif
 
