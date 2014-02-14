@@ -68,5 +68,5 @@ Segmentation.o: Segmentation.cpp Segmentation.h
 	g++ -c $(CFLAGS) $< -o $@
 
 clean:
-	rm -f *.o *~ main gmon.out compression.log code_length_matrix_*
+	rm -f *.o *~ main gmon.out compression.log pruning.log code_length_matrix_*
 

@@ -501,11 +501,11 @@ OptimalFit Segment::fitIdealModel(Mixture &coil_mixture, Mixture &ideal_mixture,
     msglen += MSG;
 
     // state direction
-    /*if (om < begin_loop+2) {
+    if (om < begin_loop+2) {
       MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],coil_mixture);
-    } else {*/
+    } else {
       MSG = message.encodeUsingMixtureModel(unit_coordinates[om-2],ideal_mixture);
-    //}
+    }
     log << MSG << ")\n";
     msglen += MSG;
   }
