@@ -2023,18 +2023,26 @@ vector<double> computeRelativeWeights(vector<Mixture> &mixtures)
  */
 double getMeanLength(string name)
 {
-  double MEAN_ALPHA_HELIX = 6;
+  /*double MEAN_HELIX_ALPHA = 6;
   double MEAN_STRAND = 5;
-  double MEAN_COIL = 2;
-  double MEAN_TURN = 4;
+  double MEAN_COIL = 2;*/
+
+  double MEAN_COIL = 5.18;
+  double MEAN_STRAND = 5.40;
+  double MEAN_HELIX_310 = 3.36;
+  double MEAN_HELIX_ALPHA = 11.21;
+  double MEAN_HELIX_PI = 5.24;
+
   if (name.compare("strand") == 0) {
     return MEAN_STRAND;
   } else if (name.compare("coil") == 0) {
     return MEAN_COIL;
   } else if (name.compare("helix_alpha") == 0) {
-    return MEAN_ALPHA_HELIX;
-  } else {
-    return MEAN_ALPHA_HELIX;
+    return MEAN_HELIX_ALPHA;
+  } else if (name.compare("helix_310") == 0) {
+    return MEAN_HELIX_310;
+  } else if (name.compare("helix_pi") == 0) {
+    return MEAN_HELIX_PI;
   }
 }
 
