@@ -762,9 +762,11 @@ vector<vector<double>> Mixture::generateRandomSampleSize(bool save_data)
       sample.push_back(x[j]);
     }
   }
+  ofstream fw("sample_size");
   for (int i=0; i<sample_size.size(); i++) {
-    cout << sample_size[i] << endl;
+    fw << sample_size[i] << endl;
   }
+  fw.close();
   return sample;
 }
 
@@ -784,6 +786,11 @@ Mixture::generateProportionally(int num_samples, bool save_data)
     int k = randomComponent();
     sample_size[k]++;
   }
+  ofstream fw("sample_size");
+  for (int i=0; i<sample_size.size(); i++) {
+    fw << sample_size[i] << endl;
+  }
+  fw.close();
   vector<vector<double>> sample;
   for (int i=0; i<K; i++) {
     vector<vector<double>> x = components[i].generate((int)sample_size[i]);
