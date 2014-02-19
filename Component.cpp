@@ -155,9 +155,13 @@ void Component::estimateKappas()
   kappa_ml = estimateKappa_ML();
   kappa_mml = estimateKappa_MML(kappa_ml);
   //kappa_mml = kappa_ml;
-  if (kappa_mml > kappa_ml) {
+  if (constrain_kappa == SET && kappa_mml > MAX_KAPPA) {
+    kappa_mml = MAX_KAPPA;
+  }
+  if (kappa_mml > kappa_ml || kappa_mml <= 0) {
     kappa_mml = kappa_ml;
   }
+  assert(kappa_mml > 0);
   cout << "Kappa (MML): " << kappa_mml << endl;
   von_mises = VonMises3D(unit_mean,kappa_mml);
 }
@@ -185,6 +189,61 @@ double Component::estimateKappa_ML()
  *  \param initial a double
  *  \return the ML estimate of kappa
  */
+//double Component::estimateKappa_MML(double initial)
+//{
+//  double prev = initial;
+//  double current;
+//  int num_iterations = 0;
+//  while(1) {
+//    num_iterations++;
+//    /*if (prev < 0) {
+//      prev = fabs(prev);
+//    }*/
+//    /*if (num_iterations > 20) {
+//      if (constrain_kappa == SET && current >= MAX_KAPPA) {
+//        return MAX_KAPPA;
+//      } else {
+//        assert(prev > 0);
+//        return prev;
+//      }
+//    }*/ 
+//    double fx = computeFirstDerivative(prev);
+//    double fx_der = computeSecondDerivative(prev);
+//    if (fabs(fx_der) > TOLERANCE) {
+//      current = prev - (fx/(double)fx_der);
+//      cout << "Iteration " << num_iterations << ": [" << prev << ", " 
+//           << current <<  ", " << fx << ", " << fx_der << "]" << endl;
+//      if (fabs(current - prev) > TOLERANCE) {
+//        prev = current;
+//      } else {
+//        cout << "No significant change ..." << endl;
+//        cout << "current: " << current << endl;
+//        if (constrain_kappa == SET && current >= MAX_KAPPA) {
+//          return MAX_KAPPA;
+//        } else {
+//          assert(current > 0);
+//          return current;
+//        }
+//      }
+//    } else {
+//      cout << "Iteration " << num_iterations << ": [" << prev << ", " 
+//           << current <<  ", " << fx << ", " << fx_der << "]" << endl;
+//      cout << "Derivative is zero ..." << endl;
+//      if (constrain_kappa == SET && prev >= MAX_KAPPA) {
+//        return MAX_KAPPA;
+//      } else {
+//        assert(prev > 0);
+//        return prev;
+//      }
+//    }
+//  }
+//}
+//
+/*!
+ *  \brief This function is used to compute the MML estimate of kappa.
+ *  \param initial a double
+ *  \return the ML estimate of kappa
+ */
 double Component::estimateKappa_MML(double initial)
 {
   double prev = initial;
@@ -192,17 +251,6 @@ double Component::estimateKappa_MML(double initial)
   int num_iterations = 0;
   while(1) {
     num_iterations++;
-    if (prev < 0) {
-      prev = fabs(prev);
-    }
-    /*if (num_iterations > 20) {
-      if (constrain_kappa == SET && current >= MAX_KAPPA) {
-        return MAX_KAPPA;
-      } else {
-        assert(prev > 0);
-        return prev;
-      }
-    }*/ 
     double fx = computeFirstDerivative(prev);
     double fx_der = computeSecondDerivative(prev);
     if (fabs(fx_der) > TOLERANCE) {
@@ -214,23 +262,13 @@ double Component::estimateKappa_MML(double initial)
       } else {
         cout << "No significant change ..." << endl;
         cout << "current: " << current << endl;
-        if (constrain_kappa == SET && current >= MAX_KAPPA) {
-          return MAX_KAPPA;
-        } else {
-          assert(current > 0);
-          return current;
-        }
+        return current;
       }
     } else {
       cout << "Iteration " << num_iterations << ": [" << prev << ", " 
            << current <<  ", " << fx << ", " << fx_der << "]" << endl;
       cout << "Derivative is zero ..." << endl;
-      if (constrain_kappa == SET && prev >= MAX_KAPPA) {
-        return MAX_KAPPA;
-      } else {
-        assert(prev > 0);
-        return prev;
-      }
+      return prev;
     }
   }
 }

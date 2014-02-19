@@ -37,7 +37,9 @@ Mixture::Mixture(int num_components, vector<vector<double>> &data,
                  K(num_components), data(data), simulation(simulation),
                  update_weights_new(update_weights_new),
                  constrain_kappa(constrain_kappa)
-{}
+{
+  dssp = UNSET;
+}
 
 /*!
  *  \brief This function sets the simulation flag.
@@ -460,6 +462,7 @@ double Mixture::estimateParameters()
   file_name += boost::lexical_cast<string>(K) + ".log";
   ofstream log(file_name.c_str());
   //cout << file_name << endl;
+  //exit(1);
 
   /* set the max allowed diff in msglen */
   double MAX_ALLOWED_DIFF_MSGLEN;
@@ -495,7 +498,7 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (iter > 20 && current <= prev && (prev - current) <= 0.0001 * prev) {
+      if (iter > 10 && current <= prev && (prev - current) <= 0.0001 * prev) {
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
