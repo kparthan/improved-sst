@@ -1326,9 +1326,9 @@ void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=1; i<=20; i++) {
+    for (int i=2; i<=30; i++) {
       //if (i % 2 == 1) {
-        int k = 5 * i;
+        int k = i;
         cout << "Running for K: " << k << endl;
         components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
@@ -1983,9 +1983,9 @@ vector<Mixture> loadIdealMixtureModels()
 
   // load ideal coil 
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_blanks.mixture";
-  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_coil.mixture";
-  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
   Mixture m4;
   m4.load(mixture_file);
   dssp_sst_type = "coil";

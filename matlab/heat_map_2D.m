@@ -5,3 +5,4 @@ function [] = heat_map_2D(file_name)
 M = load(file_name);
 mesh(M);
 %image([0 180], [0 360], M, 'CDataMapping', 'scaled');
+zlim([0,250]);
