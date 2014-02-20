@@ -1326,9 +1326,9 @@ void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=1; i<=20; i++) {
+    for (int i=2; i<=20; i++) {
       //if (i % 2 == 1) {
-        int k = 5 * i;
+        int k = i;
         cout << "Running for K: " << k << endl;
         components.push_back(k);
         Mixture mixture(k,data,parameters.update_weights_new,
