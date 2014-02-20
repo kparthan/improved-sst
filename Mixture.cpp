@@ -498,7 +498,8 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (iter > 10 && current <= prev && (prev - current) <= 100) {
+      if (iter > 10 && current <= prev && (prev - current) <= 0.5) {
+      //if (current >= prev) {
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
                                               // terminates prematurely
@@ -824,7 +825,7 @@ void Mixture::generateHeatmapData(double res)
       spherical2cartesian(x,point);
       double pr = probability(point);
       // 2D bins
-      fbins2D << fixed << setw(10) << setprecision(4) << pr;
+      fbins2D << fixed << setw(10) << setprecision(4) << ceil(pr * 100);
       // 3D bins
       for (int k=0; k<3; k++) {
         fbins3D << fixed << setw(10) << setprecision(4) << point[k];

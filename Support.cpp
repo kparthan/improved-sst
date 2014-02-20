@@ -1983,9 +1983,9 @@ vector<Mixture> loadIdealMixtureModels()
 
   // load ideal coil 
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_blanks.mixture";
-  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
+  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil_binary_bins.mixture";
   //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/50_coil.mixture";
-  //mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
+  mixture_file = CURRENT_DIRECTORY + "/dssp/" + parsed + "/models/ideal_mixture_models/coil.mixture";
   Mixture m4;
   m4.load(mixture_file);
   dssp_sst_type = "coil";
