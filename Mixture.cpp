@@ -498,7 +498,8 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      if (iter > 10 && current <= prev && (prev - current) <= 0.5) {
+      //if (iter > 10 && fabs(prev - current) <= 1) {
+      if (iter > 10 && current <= prev && (prev - current) <= 1) {
       //if (current >= prev) {
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
       //if (prev - current < 0.005 * prev) {  // if decrement is less than 0.5 %
@@ -825,7 +826,7 @@ void Mixture::generateHeatmapData(double res)
       spherical2cartesian(x,point);
       double pr = probability(point);
       // 2D bins
-      fbins2D << fixed << setw(10) << setprecision(4) << ceil(pr * 100);
+      fbins2D << fixed << setw(10) << setprecision(4) << floor(pr * 100);
       // 3D bins
       for (int k=0; k<3; k++) {
         fbins3D << fixed << setw(10) << setprecision(4) << point[k];
@@ -836,6 +837,33 @@ void Mixture::generateHeatmapData(double res)
   }
   fbins2D.close();
   fbins3D.close();
+}
+
+/*!
+ *  \brief This function generates the bins for the given sample data
+ *  \param unit_coordinates a reference to a vector<vector<double>>
+ *  \param res a double
+ */
+void Mixture::generateBins(vector<vector<double>> &unit_coordinates, double res)
+{
+  vector<vector<int>> bins;
+  int num_rows = 180 / res;
+  int num_cols = 360 / res;
+  cout << "rows: " << num_rows << endl;
+  cout << "cols: " << num_cols << endl;
+  vector<int> tmp(num_cols,0);
+  for (int i=0; i<num_rows; i++) {
+    bins.push_back(tmp);
+  }
+  updateBins(bins,res,unit_coordinates);
+  ofstream fbins("./mixture/visualize/bins_2D.dat");
+  for (int i=0; i<bins.size(); i++) {
+    for (int j=0; j<bins[i].size(); j++) {
+      fbins << fixed << setw(10) << bins[i][j];
+    }
+    fbins << endl;
+  }
+  fbins.close();
 }
 
 /*!

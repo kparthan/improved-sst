@@ -146,6 +146,9 @@ class Mixture
     //! Generate heat map data
     void generateHeatmapData(double);
 
+    //! Bins the sample data
+    void generateBins(vector<vector<double>> &, double);
+
     //! Conflates a component with the current mixture
     Mixture conflate(Component &);
 

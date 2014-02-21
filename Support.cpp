@@ -1326,7 +1326,7 @@ void modelMixture(struct Parameters &parameters, vector<vector<double>> &data)
   if (parameters.infer_num_components == SET) {
     vector<double> msglens;
     vector<int> components;
-    for (int i=2; i<=30; i++) {
+    for (int i=2; i<=15; i++) {
       //if (i % 2 == 1) {
         int k = i;
         cout << "Running for K: " << k << endl;
@@ -1491,6 +1491,18 @@ void updateMeanDirection(vector<double> &direction, double &n, Protein &protein)
 void updateBins(vector<vector<int>> &bins, double res, Protein &protein)
 {
   vector<vector<double>> unit_coordinates = protein.getUnitCoordinatesList();
+  updateBins(bins,res,unit_coordinates);
+}
+
+/*!
+ *  \brief This function bins the sample data 
+ *  \param bins a reference to a vector<vector<int>>
+ *  \param res a double
+ *  \param unit_coordinates a reference to a vector<vector<double>> 
+ */
+void updateBins(vector<vector<int>> &bins, double res, 
+                vector<vector<double>> &unit_coordinates)
+{
   double theta,phi;
   int row,col;
   vector<double> spherical(3,0);
@@ -1578,13 +1590,16 @@ void visualizeMixtureComponents(struct Parameters &parameters)
   Mixture mixture;
   mixture.load(parameters.mixture_file);
   bool save = 1;
+  vector<vector<double>> sample;
   if (parameters.sample_generation == USING_MIXTURE_WEIGHTS) {
-    mixture.generateProportionally(parameters.num_samples,save);
+    sample = mixture.generateProportionally(parameters.num_samples,save);
   } else if (parameters.sample_generation == RANDOM_SAMPLE_SIZE) {
-    mixture.generateRandomSampleSize(save);
+    sample = mixture.generateRandomSampleSize(save);
   }
   if (parameters.heat_map == SET) {
-    mixture.generateHeatmapData(parameters.res);
+    //mixture.generateHeatmapData(parameters.res);
+    cout << sample.size() << endl;
+    mixture.generateBins(sample,parameters.res);
   }
 }
 

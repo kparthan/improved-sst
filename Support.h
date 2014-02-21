@@ -101,6 +101,7 @@ bool gatherData(struct Parameters &, vector<vector<double>> &);
 void updateLogFile(string &, double, int);
 void updateMeanDirection(vector<double> &, double &, Protein &);
 void updateBins(vector<vector<int>> &, double, Protein &);
+void updateBins(vector<vector<int>> &, double, vector<vector<double>> &);
 void outputBins(vector<vector<int>> &, struct Parameters &);
 void visualizeMixtureComponents(struct Parameters &);
 void simulateMixtureModel(struct Parameters &);
