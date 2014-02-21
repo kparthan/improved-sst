@@ -498,7 +498,6 @@ double Mixture::estimateParameters()
       //assert(current <= prev);
       // because EM has to consistently produce lower 
       // message lengths otherwise something wrong!
-      //if (iter > 10 && fabs(prev - current) <= 1) {
       if (iter > 10 && current <= prev && (prev - current) <= 1) {
       //if (current >= prev) {
       //if (iter > 20 && current <= prev && prev - current < MAX_ALLOWED_DIFF_MSGLEN) {
