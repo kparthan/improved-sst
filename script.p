@@ -7,10 +7,5 @@ set ytic auto	# set ytics automatically
 set xr [0:]
 set xlabel "# of components"
 set ylabel "message length (in bits)"
-<<<<<<< HEAD
-set output "/home/parthan/Research/Work/improved-sst/dssp/parsed2/models/helix_alpha/mixture/msglens-infer.eps"
-plot "/home/parthan/Research/Work/improved-sst/dssp/parsed2/models/helix_alpha/mixture/msglens-infer.dat" using 1:2 notitle with linespoints lc rgb "red"
-=======
-set output "/home/pkas7/Research/Work/improved-sst/mixture/simulation/msglens-infer.eps"
-plot "/home/pkas7/Research/Work/improved-sst/mixture/simulation/msglens-infer.dat" using 1:2 notitle with linespoints lc rgb "red"
->>>>>>> 0bd9fdfe79d62d0f77e0c28ba4f8f9fa9d29fb2a
+set output "/home/parthan/Research/Work/improved-sst/dssp/parsed2/models/strand/mixture/msglens-infer.eps"
+plot "/home/parthan/Research/Work/improved-sst/dssp/parsed2/models/strand/mixture/msglens-infer.dat" using 1:2 notitle with linespoints lc rgb "red"
