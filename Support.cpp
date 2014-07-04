@@ -12,6 +12,7 @@ vector<double> YAXIS = {0,1,0};
 vector<double> ZAXIS = {0,0,1};
 int DSSP_DATA_COLLECT;
 int DEBUG;
+double MSGLEN_RADIUS = 0,MSGLEN_CELL = 0;
 //ofstream debug("debug");
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1389,6 +1390,8 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
         log << scientific << direction[j] << "\t";
       }
       log << endl;*/
+      //MSGLEN_RADIUS = 0; MSGLEN_CELL = 0;
+      double msg_unif_sphere = 0;
       for (int i=0; i<files.size(); i++) {
         Protein protein;
         protein.load(files[i]);
@@ -1401,7 +1404,15 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
           log << scientific << direction[j] << "\t";
         }
         log << endl;*/
+        protein.computeSuccessiveDistances();
+        msg_unif_sphere += protein.computeMessageLengthUsingSphereModel();
       }
+      cout << "Avg. msglen (unif. sphere): " << msg_unif_sphere / n << endl;
+      cout << "check: (1) msg_radius: " << MSGLEN_RADIUS << " + (2) msg_cell: "
+           << MSGLEN_CELL << " = " << MSGLEN_RADIUS + MSGLEN_CELL << endl;
+      cout << "check: (1) avg_msg_radius: " << MSGLEN_RADIUS/n << " + (2) avg_msg_cell: "
+           << MSGLEN_CELL/n << " = " << (MSGLEN_RADIUS + MSGLEN_CELL)/n << endl;
+      cout << "Avg. = " << (MSGLEN_RADIUS + MSGLEN_CELL) / n << endl;
       //log.close();
       if (parameters.heat_map == SET) {
         outputBins(bins,parameters);

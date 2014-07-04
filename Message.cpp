@@ -1,4 +1,5 @@
 #include "Message.h"
+extern double MSGLEN_RADIUS,MSGLEN_CELL;
 
 /*!
  *  \brief Null constructor module.
@@ -68,8 +69,11 @@ double Message::encodeUsingSphereModel(double radius, Normal &normal)
 {
   // encode the radius
   double msglen = encodeUsingNormalModel(radius,normal);
+  MSGLEN_RADIUS += msglen;
   // encode the position on the sphere
-  msglen += 2 + LOG2_PI + 2 * log2(radius) - 2*log2(AOM);
+  double cell = 2 + LOG2_PI + 2 * log2(radius) - 2*log2(AOM);
+  MSGLEN_CELL += cell;
+  msglen += cell;
   return msglen;
 }
 

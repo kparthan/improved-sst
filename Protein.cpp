@@ -389,15 +389,16 @@ double Protein::computeMessageLengthUsingSphereModel()
 
   // message length to state the number of chains
   int num_chains = chains.size(); // alternately spherical_coordinates.size()
-  msglen += message.encodeUsingLogStarModel(num_chains);
+  //msglen += message.encodeUsingLogStarModel(num_chains);
 
-  for (int i=0; i<distances.size(); i++) {
+  for (int i=0; i<spherical_coordinates.size(); i++) {
     // for each chain state the number of residues
-    int num_residues = distances[i].size();
-    msglen += message.encodeUsingLogStarModel(num_residues);
+    //int num_residues = distances[i].size();
+    //msglen += message.encodeUsingLogStarModel(num_residues);
 
-    for (int j=0; j<distances[i].size(); j++) {
-      msglen += message.encodeUsingSphereModel(distances[i][j],normal);
+    for (int j=0; j<spherical_coordinates[i].size(); j++) {
+      double radius = spherical_coordinates[i][j][0];
+      msglen += message.encodeUsingSphereModel(radius,normal);
     }
   }  
   return msglen;
