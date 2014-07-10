@@ -398,7 +398,9 @@ double Protein::computeMessageLengthUsingSphereModel()
 
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       double radius = spherical_coordinates[i][j][0];
+      double theta = spherical_coordinates[i][j][1];
       msglen += message.encodeUsingSphereModel(radius,normal);
+      //msglen += message.encodeUsingSphereModel(radius,theta,normal);
     }
   }  
   return msglen;

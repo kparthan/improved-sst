@@ -77,6 +77,18 @@ double Message::encodeUsingSphereModel(double radius, Normal &normal)
   return msglen;
 }
 
+double Message::encodeUsingSphereModel(double radius, double theta, Normal &normal)
+{
+  // encode the radius
+  double msglen = encodeUsingNormalModel(radius,normal);
+  MSGLEN_RADIUS += msglen;
+  // encode the position on the sphere
+  double cell = 2 + LOG2_PI -log2(sin(theta)) - 2*log2(AOM);
+  MSGLEN_CELL += cell;
+  msglen += cell;
+  return msglen;
+}
+
 /*!
  *  \brief This function is used to compute the encoding length of a direction
  *  using a mixture model.
