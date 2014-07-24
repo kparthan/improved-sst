@@ -420,26 +420,26 @@ double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
 
   // message length to state the number of chains
   int num_chains = chains.size(); // alternately spherical_coordinates.size()
-  msglen += message.encodeUsingLogStarModel(num_chains);
+  //msglen += message.encodeUsingLogStarModel(num_chains);
 
   for (int i=0; i<spherical_coordinates.size(); i++) {
     // for each chain state the number of residues
-    int num_residues = spherical_coordinates[i].size();
-    msglen += message.encodeUsingLogStarModel(num_residues);
+    //int num_residues = spherical_coordinates[i].size();
+    //msglen += message.encodeUsingLogStarModel(num_residues);
 
     // first point is origin
     // state the second & third points using the sphere model
-    msglen += message.encodeUsingSphereModel(distances[i][0],normal);
-    msglen += message.encodeUsingSphereModel(distances[i][1],normal);
+    //msglen += message.encodeUsingSphereModel(distances[i][0],normal);
+    //msglen += message.encodeUsingSphereModel(distances[i][1],normal);
 
     // state the remaining points using the mixture model
     double r;
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       // state radius
       r = spherical_coordinates[i][j][0];
-      msglen += message.encodeUsingNormalModel(r,normal);
+      //msglen += message.encodeUsingNormalModel(r,normal);
       // state direction 
-      msglen += message.encodeUsingMixtureModel(unit_coordinates[i][j],mixture);
+      msglen += message.encodeUsingMixtureModel(unit_coordinates[i][j],mixture,r);
     }
   }
   return msglen;

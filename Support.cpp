@@ -12,7 +12,7 @@ vector<double> YAXIS = {0,1,0};
 vector<double> ZAXIS = {0,0,1};
 int DSSP_DATA_COLLECT;
 int DEBUG;
-double MSGLEN_RADIUS = 0,MSGLEN_CELL = 0;
+double MSGLEN_RADIUS = 0,MSGLEN_CELL = 0,MSGLEN_VMF_CELL = 0;;
 //ofstream debug("debug");
 
 //////////////////////// GENERAL PURPOSE FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1391,7 +1391,9 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
       }
       log << endl;*/
       //MSGLEN_RADIUS = 0; MSGLEN_CELL = 0;
-      double msg_unif_sphere = 0;
+      double msg_unif_sphere=0,msg_vmf=0;
+      Mixture mixture;
+      mixture.load(parameters.mixture_file,3);
       for (int i=0; i<files.size(); i++) {
         Protein protein;
         protein.load(files[i]);
@@ -1406,6 +1408,7 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
         log << endl;*/
         protein.computeSuccessiveDistances();
         msg_unif_sphere += protein.computeMessageLengthUsingSphereModel();
+        msg_vmf += protein.computeMessageLengthUsingNullModel(mixture);
       }
       cout << "Avg. msglen (unif. sphere): " << msg_unif_sphere / n << endl;
       cout << "check: (1) msg_radius: " << MSGLEN_RADIUS << " + (2) msg_cell: "
@@ -1413,6 +1416,13 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
       cout << "check: (1) avg_msg_radius: " << MSGLEN_RADIUS/n << " + (2) avg_msg_cell: "
            << MSGLEN_CELL/n << " = " << (MSGLEN_RADIUS + MSGLEN_CELL)/n << endl;
       cout << "Avg. = " << (MSGLEN_RADIUS + MSGLEN_CELL) / n << endl;
+
+      cout << "Avg. msglen (vmf sphere): " << msg_vmf / n << endl;
+      cout << "check: (1) msg_radius: " << MSGLEN_RADIUS << " + (2) msg_vmf_cell: "
+           << MSGLEN_VMF_CELL << " = " << MSGLEN_RADIUS + MSGLEN_VMF_CELL << endl;
+      cout << "check: (1) avg_msg_radius: " << MSGLEN_RADIUS/n << " + (2) avg_msg_cell: "
+           << MSGLEN_VMF_CELL/n << " = " << (MSGLEN_RADIUS + MSGLEN_VMF_CELL)/n << endl;
+      cout << "Avg. = " << (MSGLEN_RADIUS + MSGLEN_VMF_CELL) / n << endl;
       //log.close();
       if (parameters.heat_map == SET) {
         outputBins(bins,parameters);
@@ -1765,7 +1775,7 @@ void plotMessageLengthAgainstComponents(vector<int> &components,
 	script << "plot \"" << data_file << "\" using 1:2 notitle " 
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();
-  system("gnuplot -persist script.p");	
+  if(system("gnuplot -persist script.p"));	
 }
 
 ////////////////////////// SST FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -2114,5 +2124,24 @@ vector<ProteinStructure *> createPartitions(ProteinStructure *original)
     vector<array<int,2>> stretches = identifyChainBreaks(id,atoms);
   }
   return partitions;
+}
+
+/*!
+ *  \brief Normalizes a vector
+ *  \param x a reference to a vector<long double>
+ *  \param unit a reference to a vector<long double>
+ *  \return the norm of the vector
+ */
+double normalize(vector<double> &x, vector<double> &unit)
+{
+  double normsq = 0;
+  for (int i=0; i<x.size(); i++) {
+    normsq += x[i] * x[i];
+  }
+  double norm = sqrt(normsq);
+  for (int i=0; i<x.size(); i++) {
+    unit[i] = x[i] / norm;
+  }
+  return norm;
 }
 

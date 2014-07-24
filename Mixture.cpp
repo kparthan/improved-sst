@@ -658,9 +658,9 @@ void Mixture::plotMessageLengthEM()
          << "with linespoints lc rgb \"red\"" << endl ;
   script.close();
   string cmd = "gnuplot -persist " + script_file;
-  system(cmd.c_str());
+  if(system(cmd.c_str()));
   cmd = "rm " + script_file;
-  system(cmd.c_str());
+  if(system(cmd.c_str()));
 }
 
 /*!
@@ -702,6 +702,44 @@ void Mixture::load(string &file_name)
     numbers.clear();
   }
   file.close();
+}
+
+void Mixture::load(string &file_name, int D)
+{
+  sample_size.clear();
+  weights.clear();
+  components.clear();
+  K = 0;
+  ifstream file(file_name.c_str());
+  string line;
+  vector<double> numbers;
+  vector<double> unit_mean(D,0),mean(D,0);
+  double sum_weights = 0;
+  while (getline(file,line)) {
+    K++;
+    boost::char_separator<char> sep("mukap,:()[] \t");
+    boost::tokenizer<boost::char_separator<char> > tokens(line,sep);
+    BOOST_FOREACH (const string& t, tokens) {
+      istringstream iss(t);
+      double x;
+      iss >> x;
+      numbers.push_back(x);
+    }
+    weights.push_back(numbers[0]);
+    sum_weights += numbers[0];
+    for (int i=1; i<=D; i++) {
+      mean[i-1] = numbers[i];
+    }
+    double kappa = numbers[D+1];
+    normalize(mean,unit_mean);
+    Component vmf(unit_mean,kappa);
+    components.push_back(vmf);
+    numbers.clear();
+  }
+  file.close();
+  for (int i=0; i<K; i++) {
+    weights[i] /= sum_weights;
+  }
 }
 
 /*!

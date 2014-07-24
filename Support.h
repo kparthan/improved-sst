@@ -119,5 +119,6 @@ double getMeanLength(string);
 vector<array<int,2>> identifyChainBreaks(string &, vector<Atom> &);
 vector<ProteinStructure *> createPartitions(ProteinStructure *);
 
+double normalize(vector<double> &x, vector<double> &unit);
 #endif
 

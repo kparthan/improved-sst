@@ -130,6 +130,7 @@ class Mixture
 
     //! Loads the mixture file
     void load(string &);
+    void load(string &, int);
 
     //! Randomly choose a component
     int randomComponent();

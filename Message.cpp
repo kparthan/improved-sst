@@ -1,5 +1,5 @@
 #include "Message.h"
-extern double MSGLEN_RADIUS,MSGLEN_CELL;
+extern double MSGLEN_RADIUS,MSGLEN_CELL,MSGLEN_VMF_CELL;
 
 /*!
  *  \brief Null constructor module.
@@ -67,9 +67,10 @@ double Message::encodeUsingNormalModel(double length, Normal &normal)
  */
 double Message::encodeUsingSphereModel(double radius, Normal &normal)
 {
+  double msglen = 0;
   // encode the radius
-  double msglen = encodeUsingNormalModel(radius,normal);
-  MSGLEN_RADIUS += msglen;
+  //msglen += encodeUsingNormalModel(radius,normal);
+  //MSGLEN_RADIUS += msglen;
   // encode the position on the sphere
   double cell = 2 + LOG2_PI + 2 * log2(radius) - 2*log2(AOM);
   MSGLEN_CELL += cell;
@@ -101,6 +102,16 @@ double Message::encodeUsingMixtureModel(vector<double> &direction,
 {
   double density = mixture.probability(direction); 
   double msglen = -log2(density) - 2*log2(AOM);
+  return msglen;
+}
+
+// scaled AOM
+double Message::encodeUsingMixtureModel(vector<double> &direction, 
+                                        Mixture &mixture, double radius)
+{
+  double density = mixture.probability(direction); 
+  double msglen = -log2(density) - 2*log2(AOM) + 2 * log2(radius);
+  MSGLEN_VMF_CELL += msglen;
   return msglen;
 }
 

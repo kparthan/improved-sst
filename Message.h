@@ -32,6 +32,7 @@ class Message
     //! Computes the message length of stating the direction using a
     //! mixture model
     double encodeUsingMixtureModel(vector<double> &, Mixture &);
+    double encodeUsingMixtureModel(vector<double> &, Mixture &, double);
 
     //! Computes the message length of stating the direction using a
     //! single component
