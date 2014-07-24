@@ -27,6 +27,7 @@ class Message
     //! Computes the message length of stating the length using the
     //! sphere model
     double encodeUsingSphereModel(double, Normal &);
+    double encodeUsingSphereModel(double, double, Normal &);
 
     //! Computes the message length of stating the direction using a
     //! mixture model
