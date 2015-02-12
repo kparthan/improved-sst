@@ -1390,7 +1390,7 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
         log << scientific << direction[j] << "\t";
       }
       log << endl;*/
-      //MSGLEN_RADIUS = 0; MSGLEN_CELL = 0;
+      MSGLEN_RADIUS = 0; MSGLEN_CELL = 0;
       double msg_unif_sphere=0,msg_vmf=0;
       Mixture mixture;
       mixture.load(parameters.mixture_file,3);
