@@ -1,0 +1,49 @@
+Using vMF mixture: class_all_updated_mix (13 components)
+Data: ./spherical_system/profiles/
+
+Avg. msglen (unif. sphere): 27.4374
+check: (1) msg_radius: 0 + (2) msg_cell: 3.61199e+07 = 3.61199e+07
+check: (1) avg_msg_radius: 0 + (2) avg_msg_cell: 27.4374 = 27.4374
+Avg. = 27.4374
+
+Avg. msglen (vmf sphere): 24.9684
+check: (1) msg_radius: 0 + (2) msg_vmf_cell: 3.28697e+07 = 3.28697e+07
+check: (1) avg_msg_radius: 0 + (2) avg_msg_cell: 24.9684 = 24.9684
+Avg. = 24.9684
+
+sample size: 1.31645e+06
+
+Kappa (ML): 1.03647
+Iteration 1: [1.03647, 1.02872, 2777.02, 358495]
+Iteration 2: [1.02872, 1.02874, -3.91506, 359513]
+Iteration 3: [1.02874, 1.02874, -5.25738e-05, 359512]
+No significant change ...
+current: 1.02874
+Kappa (MML): 1.02874
+
+---------------------------------------------------------------------
+
+Using vMF mixture: class_b_updated_mix (11 components)
+Data: ./spherical_system/class-b/
+
+Avg. msglen (unif. sphere): 27.4344
+check: (1) msg_radius: 0 + (2) msg_cell: 6.89552e+06 = 6.89552e+06
+check: (1) avg_msg_radius: 0 + (2) avg_msg_cell: 27.4344 = 27.4344
+Avg. = 27.4344
+
+Avg. msglen (vmf sphere): 25.7854
+check: (1) msg_radius: 0 + (2) msg_vmf_cell: 6.48106e+06 = 6.48106e+06
+check: (1) avg_msg_radius: 0 + (2) avg_msg_cell: 25.7854 = 25.7854
+Avg. = 25.7854
+
+sample size: 251346
+
+Kappa (ML): 1.6584
+Iteration 1: [1.6584, 1.62992, 1484.47, 52129]
+Iteration 2: [1.62992, 1.63012, -10.4502, 52865.4]
+Iteration 3: [1.63012, 1.63012, -0.000688716, 52860.3]
+No significant change ...
+current: 1.63012
+Kappa (MML): 1.63012
+
+---------------------------------------------------------------------
