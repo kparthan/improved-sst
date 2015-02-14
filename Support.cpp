@@ -875,7 +875,7 @@ bool checkParsedDSSPFile(Protein &protein, ProteinStructure *p,
   int CHAIN_ID = 12 - 1;
   int RESIDUE_ID = 14 - 1;
 
-  string chain_id;
+  /*string chain_id;
   for (int i=0; i<all_lines.size(); i++) {
     chain_id = all_lines[i][0][CHAIN_ID];
     cout << chain_id << endl;
@@ -908,7 +908,7 @@ bool checkParsedDSSPFile(Protein &protein, ProteinStructure *p,
       return 0;
     }
   }
-  log << "\tThis is a suitable structure." << endl;
+  log << "\tThis is a suitable structure." << endl;*/
   return 1;
 }
 
