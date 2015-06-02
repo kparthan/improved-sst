@@ -437,7 +437,7 @@ double Protein::computeMessageLengthUsingNullModel(Mixture &mixture)
     for (int j=0; j<spherical_coordinates[i].size(); j++) {
       // state radius
       r = spherical_coordinates[i][j][0];
-      //msglen += message.encodeUsingNormalModel(r,normal);
+      msglen += message.encodeUsingNormalModel(r,normal);
       // state direction 
       msglen += message.encodeUsingMixtureModel(unit_coordinates[i][j],mixture,r);
     }

@@ -348,7 +348,7 @@ double Mixture::probability(vector<double> &x)
     px += weights[i] * density[i];
   }
   if (!(px > 0)) {
-    cout << "px: " << px << endl;
+    //cout << "px: " << px << endl;
     for (int i=0; i<K; i++) {
       cout << weights[i] << "\t" << density[i] << endl;
     }
