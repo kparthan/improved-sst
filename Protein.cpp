@@ -217,7 +217,7 @@ void Protein::load(path &path_to_file)
  */
 void Protein::read_profile(string &file_name)
 {
-  cout << "Reading " << file_name << " ..." << endl;
+  //cout << "Reading " << file_name << " ..." << endl;
   ifstream profile(file_name.c_str());
   string line;
   cartesian_coordinates.clear();

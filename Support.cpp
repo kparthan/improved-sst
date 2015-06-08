@@ -1410,6 +1410,7 @@ bool readProfiles(struct Parameters &parameters, vector<double> &direction,
         msg_unif_sphere += protein.computeMessageLengthUsingSphereModel();
         msg_vmf += protein.computeMessageLengthUsingNullModel(mixture);
       }
+      cout << "N: " << n << endl;
       cout << "Avg. msglen (unif. sphere): " << msg_unif_sphere / n << endl;
       cout << "check: (1) msg_radius: " << MSGLEN_RADIUS << " + (2) msg_cell: "
            << MSGLEN_CELL << " = " << MSGLEN_RADIUS + MSGLEN_CELL << endl;
